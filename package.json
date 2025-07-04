@@ -4,11 +4,11 @@
   "description": "Takeit - Projet PFE",
   "homepage": ".",
   "bugs": {
-    "url": "https://github.com/coreui/coreui-free-react-admin-template/issues"
+    "url": "https://github.com/aminederouich/pfe-front/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:coreui/coreui-free-react-admin-template.git"
+    "url": "git@github.com:aminederouich/pfe-front.git"
   },
   "license": "MIT",
   "author": "The CoreUI Team (https://github.com/orgs/coreui/people)",
