@@ -8,6 +8,14 @@ export const toggleCreateTicketModalClose = () => ({
   type: 'TOGGLE_CREATE_TICKET_MODAL_CLOSE',
 })
 
+export const toggleEditTicketModalOpen = () => ({
+  type: 'TOGGLE_EDIT_TICKET_MODAL_OPEN',
+})
+
+export const toggleEditTicketModalClose = () => ({
+  type: 'TOGGLE_EDIT_TICKET_MODAL_CLOSE',
+})
+
 export const GET_ALL_TICKETS_REQUEST = () => ({
   type: 'GET_ALL_TICKETS_REQUEST',
 })

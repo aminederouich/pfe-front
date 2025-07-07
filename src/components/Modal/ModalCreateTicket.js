@@ -32,16 +32,13 @@ const ModalCreateTicket = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const dispatch = useDispatch()
 
-  // Extraire le code du projet depuis le pathname
   const getProjectFromPath = () => {
     const pathSegments = location.pathname.split('/')
-    // Supposons que le format soit /project/{projectCode} ou similar
     const projectCodeFromPath = pathSegments.find((segment) =>
       projects.some(
         (p) => p.value === segment || p.label.toLowerCase().includes(segment.toLowerCase()),
       ),
     )
-
     if (projectCodeFromPath) {
       const foundProject = projects.find(
         (p) =>
@@ -50,12 +47,10 @@ const ModalCreateTicket = () => {
       )
       return foundProject ? foundProject.value : projects[0].value
     }
-
     return projects[0].value
   }
 
   const handleClose = () => {
-    // Reset du formulaire lors de la fermeture
     setNewIssue(emptyIssue)
     setProject(projects[0].value)
     setIssueType(issueTypes[0].value)
@@ -64,16 +59,20 @@ const ModalCreateTicket = () => {
   }
 
   const handleSubmitTicket = async () => {
-    // Validation basique
     if (!newIssue.fields?.summary?.trim()) {
       alert('Le résumé est obligatoire')
+      return
+    }
+
+    if (project === 'externe' && !newIssue.fields?.externalLink?.trim()) {
+      alert('Le lien externe est obligatoire pour un projet externe.')
       return
     }
 
     setIsSubmitting(true)
     try {
       await dispatch(addNewTicketAPI(newIssue))
-      handleClose() // Fermer après succès
+      handleClose()
     } catch (error) {
       console.error('Erreur lors de la création du ticket:', error)
       alert('Erreur lors de la création du ticket')
@@ -90,13 +89,11 @@ const ModalCreateTicket = () => {
     return id
   }
 
-  // Définir le projet basé sur le pathname lors de l'ouverture du modal
   useEffect(() => {
     if (isCreateTicketModalOpen) {
       const projectFromPath = getProjectFromPath()
       setProject(projectFromPath)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCreateTicketModalOpen, location.pathname])
 
   useEffect(() => {
@@ -254,6 +251,31 @@ const ModalCreateTicket = () => {
             </CCol>
           </CRow>
 
+          {project === 'externe' && (
+            <CRow className="mb-3">
+              <CCol md={3}>
+                <CFormLabel className="fw-bold">Lien externe*</CFormLabel>
+              </CCol>
+              <CCol md={9}>
+                <input
+                  type="url"
+                  className="form-control"
+                  placeholder="https://exemple.com"
+                  value={newIssue.fields.externalLink || ''}
+                  onChange={(e) =>
+                    setNewIssue((prev) => ({
+                      ...prev,
+                      fields: { ...prev.fields, externalLink: e.target.value },
+                    }))
+                  }
+                />
+                <small className="form-text text-muted">
+                  Veuillez renseigner le lien externe lié à ce ticket.
+                </small>
+              </CCol>
+            </CRow>
+          )}
+
           <CRow className="mb-3">
             <CCol md={3}>
               <CFormLabel className="fw-bold">Type d&apos;issue*</CFormLabel>
@@ -283,7 +305,7 @@ const ModalCreateTicket = () => {
         {issueType === 'Task' && <TaskIssueForm newIssue={newIssue} setNewIssue={setNewIssue} />}
         {issueType === 'Story' && <StoryIssueForm newIssue={newIssue} setNewIssue={setNewIssue} />}
         {issueType === 'Epic' && (
-          <div className="alert alert-info">Formulaire Epic à implémenter (EpicIssueForm)</div>
+          <div className="alert alert-info">Formulaire Epic à implémenter</div>
         )}
       </CModalBody>
       <CModalFooter>

@@ -38,7 +38,7 @@ const App = () => {
   if (isChecking) {
     return (
       <div className="pt-3 text-center">
-        <CSpinner size="3rem" />
+        <CSpinner />
       </div>
     )
   }
@@ -48,7 +48,7 @@ const App = () => {
       <Suspense
         fallback={
           <div className="pt-3 text-center">
-            <CSpinner size="3rem" />
+            <CSpinner />
           </div>
         }
       >

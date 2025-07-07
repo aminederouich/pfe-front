@@ -3,6 +3,7 @@ import { AppContent, AppFooter, AppHeader } from '../components/index'
 import ModalCreateTicket from '../components/Modal/ModalCreateTicket'
 import ModalEditConfigJira from '../components/Modal/ModalEditConfigJira'
 import ModalEditProject from '../components/Modal/ModalEditProject'
+import ModalEditTicket from '../components/Modal/ModalEditTicket'
 
 const DefaultLayout = () => {
   return (
@@ -11,8 +12,9 @@ const DefaultLayout = () => {
         <AppHeader />
         <div className="body flex-grow-1">
           <AppContent />
-          <ModalEditProject />
           <ModalCreateTicket />
+          <ModalEditTicket />
+          <ModalEditProject />
           <ModalEditConfigJira />
         </div>
         <AppFooter />

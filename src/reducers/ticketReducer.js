@@ -3,6 +3,7 @@ const initialState = {
   loading: false,
   error: null,
   isCreateTicketModalOpen: false,
+  isEditTicketModalOpen: false,
 }
 
 const ticketReducer = (state = initialState, action) => {
@@ -16,6 +17,16 @@ const ticketReducer = (state = initialState, action) => {
       return {
         ...state,
         isCreateTicketModalOpen: false,
+      }
+    case 'TOGGLE_EDIT_TICKET_MODAL_OPEN':
+      return {
+        ...state,
+        isEditTicketModalOpen: true,
+      }
+    case 'TOGGLE_EDIT_TICKET_MODAL_CLOSE':
+      return {
+        ...state,
+        isEditTicketModalOpen: false,
       }
     case 'GET_ALL_TICKETS_REQUEST':
       return {
