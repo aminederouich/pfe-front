@@ -1,185 +1,401 @@
-# CoreUI Free React Admin Template [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)](https://twitter.com/intent/tweet?text=CoreUI%20-%20Free%React%204%20Admin%20Template%20&url=https://coreui.io&hashtags=bootstrap,admin,template,dashboard,panel,free,angular,react,vue)
+# TakeIt - Système de Gestion de Tickets JIRA
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![@coreui coreui](https://img.shields.io/badge/@coreui%20-coreui-lightgrey.svg?style=flat-square)](https://github.com/coreui/coreui)
-[![npm package][npm-coreui-badge]][npm-coreui]
-[![NPM downloads][npm-coreui-download]][npm-coreui]
-[![@coreui react](https://img.shields.io/badge/@coreui%20-react-lightgrey.svg?style=flat-square)](https://github.com/coreui/react)
-[![npm package][npm-coreui-react-badge]][npm-coreui-react]
-[![NPM downloads][npm-coreui-react-download]][npm-coreui-react]  
+[![React](https://img.shields.io/badge/React-18.3.1-blue.svg?style=flat-square)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-6.2.0-646CFF.svg?style=flat-square)](https://vitejs.dev/)
+[![CoreUI](https://img.shields.io/badge/CoreUI-5.4.0-orange.svg?style=flat-square)](https://coreui.io/)
 
-[npm-coreui]: https://www.npmjs.com/package/@coreui/coreui
-[npm-coreui-badge]: https://img.shields.io/npm/v/@coreui/coreui.png?style=flat-square
-[npm-coreui-download]: https://img.shields.io/npm/dm/@coreui/coreui.svg?style=flat-square
-[npm-coreui-react]: https://www.npmjs.com/package/@coreui/react
-[npm-coreui-react-badge]: https://img.shields.io/npm/v/@coreui/react.png?style=flat-square
-[npm-coreui-react-download]: https://img.shields.io/npm/dm/@coreui/react.svg?style=flat-square
-[npm]: https://www.npmjs.com/package/@coreui/react
+**TakeIt** est une application web moderne de gestion de tickets intégrée avec JIRA, développée dans le cadre d'un Projet de Fin d'Études (PFE). Cette solution offre une interface intuitive pour la création, la modification et le suivi des tickets, avec une intégration complète aux fonctionnalités JIRA.
 
-[![Bootstrap Admin Template](https://assets.coreui.io/products/coreui-free-bootstrap-admin-template-light-dark.webp)](https://coreui.io/product/free-react-admin-template/)
+## 🚀 Fonctionnalités
 
-CoreUI is meant to be the UX game changer. Pure & transparent code is devoid of redundant components, so the app is light enough to offer ultimate user experience. This means mobile devices also, where the navigation is just as easy and intuitive as on a desktop or laptop. The CoreUI Layout API lets you customize your project for almost any device – be it Mobile, Web or WebApp – CoreUI covers them all!
+- **Gestion des Tickets** : Création, édition, visualisation et suivi complet des tickets
+- **Intégration JIRA** : Synchronisation bidirectionnelle avec les serveurs JIRA
+- **Tableau de Bord** : Vue d'ensemble des métriques et statistiques des tickets
+- **Gestion des Projets** : Organisation et catégorisation des tickets par projet
+- **Interface Responsive** : Compatible desktop, tablette et mobile
+- **Authentification** : Système de connexion sécurisé
+- **Rapports & Exports** : Génération de rapports PDF avec jsPDF
+- **Thème Moderne** : Interface basée sur CoreUI avec thème sombre/clair
 
-## Table of Contents
+## 📋 Table des Matières
 
-* [Versions](#versions)
-* [CoreUI PRO](#coreui-pro)
-* [CoreUI PRO React Admin Templates](#coreui-pro-react-admin-templates)
-* [Quick Start](#quick-start)
+* [Technologies Utilisées](#technologies-utilisées)
+* [Prérequis](#prérequis)
 * [Installation](#installation)
-* [Basic usage](#basic-usage)
-* [What's included](#whats-included)
-* [Documentation](#documentation)
-* [Versioning](#versioning)
-* [Creators](#creators)
-* [Community](#community)
-* [Support CoreUI Development](#support-coreui-development)
-* [Copyright and License](#copyright-and-license)
+* [Utilisation](#utilisation)
+* [Structure du Projet](#structure-du-projet)
+* [Fonctionnalités Détaillées](#fonctionnalités-détaillées)
+* [Configuration JIRA](#configuration-jira)
+* [Scripts Disponibles](#scripts-disponibles)
+* [Déploiement](#déploiement)
+* [Contribution](#contribution)
+* [Support](#support)
+* [Licence](#licence)
 
-## Versions
+## 🛠️ Technologies Utilisées
 
-* [CoreUI Free Bootstrap Admin Template](https://github.com/coreui/coreui-free-bootstrap-admin-template)
-* [CoreUI Free Angular Admin Template](https://github.com/coreui/coreui-free-angular-admin-template)
-* [CoreUI Free React.js Admin Template (Vite)](https://github.com/coreui/coreui-free-react-admin-template)
-* [CoreUI Free React.js Admin Template (Create React App)](https://github.com/coreui/coreui-free-react-admin-template-cra)
-* [CoreUI Free Vue.js Admin Template](https://github.com/coreui/coreui-free-vue-admin-template)
+### Frontend
+- **React 18.3.1** - Bibliothèque JavaScript pour les interfaces utilisateur
+- **Vite 6.2.0** - Outil de build rapide et serveur de développement
+- **CoreUI 5.4.0** - Framework UI pour React avec composants Bootstrap
+- **Redux & Redux Toolkit** - Gestion d'état centralisée
+- **React Router Dom** - Navigation et routage côté client
+- **Axios** - Client HTTP pour les appels API
 
-## CoreUI PRO
+### UI/UX
+- **Bootstrap 5.3.3** - Framework CSS responsive
+- **Material-UI** - Composants Material Design
+- **CoreUI Icons** - Jeu d'icônes professionnel
+- **SCSS/Sass** - Préprocesseur CSS
+- **React Toastify** - Notifications toast élégantes
 
-* 💪  [CoreUI PRO Angular Admin Template](https://coreui.io/product/angular-dashboard-template/)
-* 💪  [CoreUI PRO Bootstrap Admin Template](https://coreui.io/product/bootstrap-dashboard-template/)
-* 💪  [CoreUI PRO Next.js Admin Template](https://coreui.io/product/next-js-dashboard-template/)
-* 💪  [CoreUI PRO React Admin Template](https://coreui.io/product/react-dashboard-template/)
-* 💪  [CoreUI PRO Vue Admin Template](https://coreui.io/product/vue-dashboard-template/)
+### Outils & Intégrations
+- **jsPDF** - Génération de documents PDF
+- **Chart.js** - Graphiques et visualisations
+- **Date-fns** - Manipulation des dates
+- **TinyMCE** - Éditeur de texte riche
 
-## CoreUI PRO React Admin Templates
+## 📋 Prérequis
 
-| Default Theme | Light Theme |
-| --- | --- |
-| [![CoreUI PRO React Admin Template](https://coreui.io/images/templates/coreui_pro_default_light_dark.webp)](https://coreui.io/product/react-dashboard-template/?theme=default) | [![CoreUI PRO React Admin Template](https://coreui.io/images/templates/coreui_pro_light_light_dark.webp)](https://coreui.io/product/react-dashboard-template/?theme=light)|
+Avant d'installer et d'exécuter l'application, assurez-vous d'avoir :
 
-| Modern Theme | Bright Theme |
-| --- | --- |
-| [![CoreUI PRO React Admin Template](https://coreui.io/images/templates/coreui_pro_default_v3_light_dark.webp)](https://coreui.io/product/react-dashboard-template/?theme=modern) | [![CoreUI PRO React Admin Template](https://coreui.io/images/templates/coreui_pro_light_v3_light_dark.webp)](https://coreui.io/product/react-dashboard-template/?theme=bright)|
+- **Node.js** (version 16.x ou supérieure)
+- **npm** (version 8.x ou supérieure) ou **yarn**
+- **Git** pour le clonage du repository
+- Accès à un serveur JIRA (pour l'intégration complète)
 
-## Quick Start
+## 🚀 Installation
 
-- [Download the latest release](https://github.com/coreui/coreui-free-react-admin-template/archive/refs/heads/main.zip)
-- Clone the repo: `git clone https://github.com/coreui/coreui-free-react-admin-template.git`
-
-### Installation
-
-``` bash
-$ npm install
-```
-
-or
-
-``` bash
-$ yarn install
-```
-
-### Basic usage
-
-``` bash
-# dev server with hot reload at http://localhost:3000
-$ npm start 
-```
-
-or 
-
-``` bash
-# dev server with hot reload at http://localhost:3000
-$ yarn start
-```
-
-Navigate to [http://localhost:3000](http://localhost:3000). The app will automatically reload if you change any of the source files.
-
-#### Build
-
-Run `build` to build the project. The build artifacts will be stored in the `build/` directory.
+### 1. Cloner le repository
 
 ```bash
-# build for production with minification
-$ npm run build
+git clone git@github.com:aminederouich/pfe-front.git
+cd pfe-front
 ```
 
-or
+### 2. Installer les dépendances
+
+Avec npm :
+```bash
+npm install
+```
+
+Ou avec yarn :
+```bash
+yarn install
+```
+
+## 💻 Utilisation
+
+### Serveur de développement
+
+Démarrer le serveur de développement avec rechargement automatique :
 
 ```bash
-# build for production with minification
-$ yarn build
+npm start
+```
+ou
+```bash
+yarn start
 ```
 
-## What's included
+L'application sera accessible à l'adresse [http://localhost:3000](http://localhost:3000)
 
-Within the download you'll find the following directories and files, logically grouping common assets and providing both compiled and minified variations. You'll see something like this:
+### Build de production
+
+Générer les fichiers optimisés pour la production :
+
+```bash
+npm run build
+```
+ou
+```bash
+yarn build
+```
+
+Les fichiers générés seront placés dans le dossier `dist/`
+
+### Prévisualisation de la production
+
+Prévisualiser le build de production localement :
+
+```bash
+npm run serve
+```
+ou
+```bash
+yarn serve
+```
+
+## 📁 Structure du Projet
 
 ```
-coreui-free-react-admin-template
-├── public/          # static files
+pfe-front/
+├── public/                    # Fichiers statiques
 │   ├── favicon.ico
 │   └── manifest.json
 │
-├── src/             # project root
-│   ├── assets/      # images, icons, etc.
-│   ├── components/  # common components - header, footer, sidebar, etc.
-│   ├── layouts/     # layout containers
-│   ├── scss/        # scss styles
-│   ├── views/       # application views
-│   ├── _nav.js      # sidebar navigation config
-│   ├── App.js
-│   ├── index.js
-│   ├── routes.js    # routes config
-│   └── store.js     # template state example 
+├── src/                       # Code source principal
+│   ├── actions/              # Actions Redux
+│   │   ├── authActions.js    # Actions d'authentification
+│   │   ├── ticketActions.js  # Actions pour les tickets
+│   │   ├── jiraActions.js    # Actions JIRA
+│   │   ├── projectActions.js # Actions pour les projets
+│   │   └── userActions.js    # Actions utilisateur
+│   │
+│   ├── assets/               # Ressources statiques
+│   │   ├── brand/           # Logos et branding
+│   │   └── images/          # Images et icônes
+│   │       ├── avatars/     # Avatars utilisateurs
+│   │       ├── issuetype/   # Icônes types d'issues
+│   │       └── priorities/  # Icônes priorités
+│   │
+│   ├── components/           # Composants réutilisables
+│   │   ├── AppHeader.js     # En-tête de l'application
+│   │   ├── AppSidebarNav.js # Navigation latérale
+│   │   ├── header/          # Composants d'en-tête
+│   │   └── Modal/           # Modales
+│   │       ├── ModalCreateTicket.js
+│   │       ├── ModalEditTicket.js
+│   │       └── ModalEditProject.js
+│   │
+│   ├── layout/               # Layouts de page
+│   │   └── DefaultLayout.js  # Layout principal
+│   │
+│   ├── reducers/             # Reducers Redux
+│   │   ├── authReducer.js    # Gestion authentification
+│   │   ├── ticketReducer.js  # Gestion tickets
+│   │   ├── jiraReducer.js    # Gestion JIRA
+│   │   └── projectReducer.js # Gestion projets
+│   │
+│   ├── services/             # Services API
+│   │   ├── authService.js    # Service authentification
+│   │   ├── ticketService.js  # Service tickets
+│   │   ├── jiraService.js    # Service JIRA
+│   │   └── projectService.js # Service projets
+│   │
+│   ├── scss/                 # Styles SCSS
+│   │   ├── _variables.scss   # Variables CSS
+│   │   ├── _mixins.scss      # Mixins SCSS
+│   │   └── style.scss        # Styles principaux
+│   │
+│   ├── utils/                # Utilitaires
+│   │   ├── authProviders.js  # Fournisseurs d'auth
+│   │   ├── emptyIssue.js     # Templates d'issues
+│   │   └── TicketsConsts.js  # Constantes tickets
+│   │
+│   ├── views/                # Pages de l'application
+│   │   ├── dashboard/        # Tableau de bord
+│   │   ├── pages/            # Pages métier
+│   │   │   ├── Tickets/      # Gestion des tickets
+│   │   │   │   └── TicketView.js # Vue détaillée ticket
+│   │   │   ├── jira/         # Configuration JIRA
+│   │   │   ├── projet/       # Gestion projets
+│   │   │   └── login/        # Authentification
+│   │   └── base/             # Composants de base
+│   │
+│   ├── _nav.js               # Configuration navigation
+│   ├── App.js                # Composant racine
+│   ├── index.js              # Point d'entrée
+│   ├── routes.js             # Configuration routes
+│   └── store.js              # Store Redux
 │
-├── index.html       # html template
-├── ...
-├── package.json
-├── ...
-└── vite.config.mjs  # vite config
+├── index.html                # Template HTML
+├── package.json              # Dépendances et scripts
+├── vite.config.mjs          # Configuration Vite
+└── README.md                # Documentation projet
 ```
 
-## Documentation
+## ⚙️ Fonctionnalités Détaillées
 
-The documentation for the CoreUI Admin Template is hosted at our website [CoreUI for React](https://coreui.io/react/docs/templates/installation/)
+### 🎫 Gestion des Tickets
+- **Création de tickets** : Interface intuitive pour créer de nouveaux tickets
+- **Vue détaillée** : Affichage complet des informations ticket (résumé, description, priorité, statut, assigné, etc.)
+- **Édition en ligne** : Modification directe des champs ticket
+- **Sous-tâches** : Visualisation et gestion des sous-tâches
+- **Historique** : Suivi des modifications et commentaires
+- **Filtrage et recherche** : Outils avancés de recherche et filtrage
 
-## Versioning
+### 🔗 Intégration JIRA
+- **Synchronisation bidirectionnelle** : Synchronisation temps réel avec JIRA
+- **Configuration serveur** : Interface de configuration des serveurs JIRA
+- **Import/Export** : Import de tickets existants et export de données
+- **Mapping de champs** : Configuration du mapping des champs personnalisés
 
-For transparency into our release cycle and in striving to maintain backward compatibility, CoreUI Free Admin Template is maintained under [the Semantic Versioning guidelines](http://semver.org/).
+### 📊 Tableau de Bord
+- **Métriques en temps réel** : Statistiques des tickets par statut, priorité, assigné
+- **Graphiques interactifs** : Visualisations avec Chart.js
+- **Rapports personnalisés** : Génération de rapports PDF
+- **Notifications** : Alertes et notifications en temps réel
 
-See [the Releases section of our project](https://github.com/coreui/coreui-free-react-admin-template/releases) for changelogs for each release version.
+### 👥 Gestion des Projets
+- **Organisation par projet** : Regroupement et catégorisation des tickets
+- **Configuration projet** : Paramétrage des workflows et champs personnalisés
+- **Gestion des équipes** : Attribution des rôles et permissions
 
-## Creators
+## 🔧 Configuration JIRA
 
-**Łukasz Holeczek**
+### Variables d'environnement
 
-* <https://twitter.com/lukaszholeczek>
-* <https://github.com/mrholek>
+Créez un fichier `.env` à la racine du projet :
 
-**Andrzej Kopański**
+```env
+# Configuration JIRA
+VITE_JIRA_BASE_URL=https://votre-instance.atlassian.net
+VITE_JIRA_USERNAME=votre-email@exemple.com
+VITE_JIRA_API_TOKEN=votre-token-api
 
-* <https://github.com/xidedix>
+# Configuration API Backend
+VITE_API_BASE_URL=http://localhost:8080/api
+```
 
-**CoreUI Team**
+### Configuration du serveur JIRA
 
-* <https://twitter.com/core_ui>
-* <https://github.com/coreui>
-* <https://github.com/orgs/coreui/people>
+1. **Accédez à la configuration JIRA** via le menu de navigation
+2. **Configurez les paramètres de connexion** :
+   - URL du serveur JIRA
+   - Nom d'utilisateur
+   - Token d'API JIRA
+3. **Testez la connexion** pour vérifier la configuration
+4. **Configurez le mapping des champs** selon vos besoins
 
-## Community
+## 🛠️ Scripts Disponibles
 
-Get updates on CoreUI's development and chat with the project maintainers and community members.
+```bash
+# Démarrer le serveur de développement
+npm start
 
-- Follow [@core_ui on Twitter](https://twitter.com/core_ui).
-- Read and subscribe to [CoreUI Blog](https://coreui.ui/blog/).
+# Build de production
+npm run build
 
-## Support CoreUI Development
+# Prévisualiser le build de production
+npm run serve
 
-CoreUI is an MIT-licensed open source project and is completely free to use. However, the amount of effort needed to maintain and develop new features for the project is not sustainable without proper financial backing. You can support development by buying the [CoreUI PRO](https://coreui.io/pricing/?framework=react&src=github-coreui-free-react-admin-template) or by becoming a sponsor via [Open Collective](https://opencollective.com/coreui/).
+# Linter le code
+npm run lint
 
-## Copyright and License
+# Corriger automatiquement les erreurs de lint
+npm run lint:fix
+```
 
-copyright 2024 creativeLabs Łukasz Holeczek.   
+## 🚀 Déploiement
 
-Code released under [the MIT license](https://github.com/coreui/coreui-free-react-admin-template/blob/main/LICENSE).
+### Build de production
+
+```bash
+npm run build
+```
+
+Les fichiers optimisés seront générés dans le dossier `dist/`
+
+### Déploiement sur serveur web
+
+1. **Upload des fichiers** : Copiez le contenu du dossier `dist/` sur votre serveur web
+2. **Configuration serveur** : Configurez votre serveur pour servir l'application React
+3. **Variables d'environnement** : Configurez les variables d'environnement pour la production
+
+### Exemple de configuration Apache
+
+```apache
+<VirtualHost *:80>
+    DocumentRoot /var/www/takeit/dist
+    ServerName votre-domaine.com
+    
+    <Directory /var/www/takeit/dist>
+        AllowOverride All
+        Require all granted
+    </Directory>
+    
+    # Redirection pour React Router
+    FallbackResource /index.html
+</VirtualHost>
+```
+
+## 🤝 Contribution
+
+Les contributions sont les bienvenues ! Pour contribuer :
+
+1. **Fork** le projet
+2. **Créez** une branche pour votre fonctionnalité (`git checkout -b feature/AmazingFeature`)
+3. **Committez** vos changements (`git commit -m 'Add some AmazingFeature'`)
+4. **Push** vers la branche (`git push origin feature/AmazingFeature`)
+5. **Ouvrez** une Pull Request
+
+### Standards de code
+
+- Utilisez ESLint et Prettier pour le formatage du code
+- Respectez les conventions de nommage React/JavaScript
+- Ajoutez des tests pour les nouvelles fonctionnalités
+- Documentez les nouvelles fonctionnalités
+
+## 📞 Support
+
+Pour toute question ou problème :
+
+- **Issues GitHub** : [Ouvrir une issue](https://github.com/aminederouich/pfe-front/issues)
+- **Documentation** : Consultez ce README et les commentaires dans le code
+- **Email** : Contactez l'équipe de développement
+
+## 📝 Changelog
+
+### Version 0.0.0 (Actuelle)
+- ✅ Gestion complète des tickets JIRA
+- ✅ Interface d'administration moderne
+- ✅ Intégration JIRA bidirectionnelle
+- ✅ Tableau de bord avec métriques
+- ✅ Génération de rapports PDF
+- ✅ Système d'authentification
+- ✅ Design responsive
+
+## 🎯 Roadmap
+
+- [ ] **API REST complète** : Développement de l'API backend
+- [ ] **Tests automatisés** : Implémentation des tests unitaires et d'intégration
+- [ ] **Notifications push** : Système de notifications en temps réel
+- [ ] **Mode hors ligne** : Support pour le mode déconnecté
+- [ ] **Plugins JIRA** : Support des plugins JIRA personnalisés
+- [ ] **Multi-tenant** : Support multi-organisations
+
+## 👨‍💻 Équipe de Développement
+
+**Amine Derouich**
+- GitHub: [@aminederouich](https://github.com/aminederouich)
+- Email: amine.derouich@exemple.com
+
+**Projet de Fin d'Études**
+- Institution : [Nom de votre institution]
+- Année : 2024-2025
+- Encadrant : [Nom de l'encadrant]
+
+## 📄 Licence
+
+Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+
+```
+MIT License
+
+Copyright (c) 2024 Amine Derouich
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
+**⭐ Si ce projet vous a été utile, n'hésitez pas à lui donner une étoile !**
