@@ -8,6 +8,14 @@ export const toggleCreateTicketModalClose = () => ({
   type: 'TOGGLE_CREATE_TICKET_MODAL_CLOSE',
 })
 
+export const toggleEditTicketModalOpen = () => ({
+  type: 'TOGGLE_EDIT_TICKET_MODAL_OPEN',
+})
+
+export const toggleEditTicketModalClose = () => ({
+  type: 'TOGGLE_EDIT_TICKET_MODAL_CLOSE',
+})
+
 export const GET_ALL_TICKETS_REQUEST = () => ({
   type: 'GET_ALL_TICKETS_REQUEST',
 })
@@ -55,9 +63,18 @@ export const getAllTicketAPI = () => (dispatch) => {
 }
 
 export const addNewTicketAPI = (ticketData) => (dispatch) => {
+  // 🟩 Ajout du statut par défaut "À faire"
+  const ticketWithDefaultStatus = {
+    ...ticketData,
+    fields: {
+      ...ticketData.fields,
+      status: { name: 'À faire' },
+    },
+  }
+
   dispatch(ADD_NEW_TICKET_REQUEST())
   return ticketService
-    .addNewTicket(ticketData)
+    .addNewTicket(ticketWithDefaultStatus)
     .then((response) => {
       if (response.error) {
         dispatch(ADD_NEW_TICKET_FAILURE(response.error))

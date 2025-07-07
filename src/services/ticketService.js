@@ -17,6 +17,23 @@ const getAllTickets = () => {
       return error
     })
 }
+const updateTicket = (ticketKey, ticketData) => {
+  return axios
+    .put(
+      `${API_URL}updateTicket/${ticketKey}`,
+      { ticket: ticketData },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      },
+    )
+    .then((response) => response)
+    .catch((error) => {
+      console.error('Erreur mise à jour ticket:', error)
+      return error
+    })
+}
 
 const addNewTicket = (ticketData) => {
   return axios
@@ -41,4 +58,5 @@ const addNewTicket = (ticketData) => {
 export default {
   getAllTickets,
   addNewTicket,
+   updateTicket,
 }

@@ -1,9 +1,8 @@
 export const projects = [
-  {
-    value: 'interne',
-    label: 'Interne',
-  },
+  { label: 'Interne', value: 'interne' },
+  { label: 'Externe', value: 'externe' },
 ]
+
 export const issueTypes = [
   {
     value: 'Bug',
