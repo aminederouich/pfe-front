@@ -130,7 +130,7 @@ const Projet = () => {
   if (loading) {
     return (
       <div className="pt-3 text-center">
-        <CSpinner size="3rem" />
+        <CSpinner />
       </div>
     )
   }

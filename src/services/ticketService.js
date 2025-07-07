@@ -58,5 +58,5 @@ const addNewTicket = (ticketData) => {
 export default {
   getAllTickets,
   addNewTicket,
-   updateTicket,
+  updateTicket,
 }

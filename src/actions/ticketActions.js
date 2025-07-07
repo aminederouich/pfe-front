@@ -63,18 +63,9 @@ export const getAllTicketAPI = () => (dispatch) => {
 }
 
 export const addNewTicketAPI = (ticketData) => (dispatch) => {
-  // 🟩 Ajout du statut par défaut "À faire"
-  const ticketWithDefaultStatus = {
-    ...ticketData,
-    fields: {
-      ...ticketData.fields,
-      status: { name: 'À faire' },
-    },
-  }
-
   dispatch(ADD_NEW_TICKET_REQUEST())
   return ticketService
-    .addNewTicket(ticketWithDefaultStatus)
+    .addNewTicket(ticketData)
     .then((response) => {
       if (response.error) {
         dispatch(ADD_NEW_TICKET_FAILURE(response.error))

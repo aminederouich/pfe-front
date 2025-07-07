@@ -25,6 +25,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilArrowLeft, cilPencil } from '@coreui/icons'
+import { toggleEditTicketModalOpen } from '../../../actions/ticketActions'
 
 const TicketView = () => {
   const { code } = useParams()
@@ -35,11 +36,8 @@ const TicketView = () => {
   const { ticketList, loading } = useSelector((state) => state.ticket)
   const ticket = ticketList.find((t) => t.key === code)
   const [isEditingDescription, setIsEditingDescription] = useState(false)
-const [editedDescription, setEditedDescription] = useState(ticket?.fields?.description || '')
-const [visibleEditModal, setVisibleEditModal] = useState(false)
-
-
-
+  const [editedDescription, setEditedDescription] = useState(ticket?.fields?.description || '')
+  const [visibleEditModal, setVisibleEditModal] = useState(false)
 
   useEffect(() => {
     // Si le ticket n'est pas dans la liste, vous pourriez faire un appel API
@@ -52,31 +50,31 @@ const [visibleEditModal, setVisibleEditModal] = useState(false)
     navigate('/tickets')
   }
   const handleEditTicket = () => {
-  setVisibleEditModal(true)
-}
-const handleSaveDescription = async () => {
-  try {
-    const updatedTicket = {
-      ...ticket,
-      fields: {
-        ...ticket.fields,
-        description: editedDescription, // 🔁 ici
-      },
-    }
-    const response = await ticketService.updateTicket(ticket.key, updatedTicket)
-    if (response.status === 200) {
-      window.location.reload() 
-
-      setVisibleEditModal(false)
-    } else {
-      alert('Erreur lors de la mise à jour.')
-    }
-  } catch (error) {
-    console.error('Erreur API updateTicket:', error)
-    alert('Erreur serveur lors de la mise à jour.')
+    dispatch(toggleEditTicketModalOpen())
   }
-}
 
+  const handleSaveDescription = async () => {
+    try {
+      const updatedTicket = {
+        ...ticket,
+        fields: {
+          ...ticket.fields,
+          description: editedDescription, // 🔁 ici
+        },
+      }
+      const response = await ticketService.updateTicket(ticket.key, updatedTicket)
+      if (response.status === 200) {
+        window.location.reload()
+
+        setVisibleEditModal(false)
+      } else {
+        alert('Erreur lors de la mise à jour.')
+      }
+    } catch (error) {
+      console.error('Erreur API updateTicket:', error)
+      alert('Erreur serveur lors de la mise à jour.')
+    }
+  }
 
   if (loading) {
     return (
@@ -103,8 +101,6 @@ const handleSaveDescription = async () => {
             </CCard>
           </CCol>
         </CRow>
-        
-
       </CContainer>
     )
   }
@@ -190,28 +186,27 @@ const handleSaveDescription = async () => {
               <h4 className="mb-3">{ticket.fields?.summary || 'Pas de résumé'}</h4>
 
               {/* Description modifiable */}
-<div className="mb-3">
-  <h6>Description</h6>
-  {isEditingDescription ? (
-    <textarea
-      className="form-control"
-      rows={4}
-      value={editedDescription}
-      onChange={(e) => setEditedDescription(e.target.value)}
-      onBlur={() => setIsEditingDescription(false)}
-      autoFocus
-    />
-  ) : (
-    <p
-      className="text-muted"
-      style={{ whiteSpace: 'pre-line', cursor: 'pointer' }}
-      onClick={() => setIsEditingDescription(true)}
-    >
-      {editedDescription || 'Cliquez pour ajouter une description'}
-    </p>
-  )}
-</div>
-
+              <div className="mb-3">
+                <h6>Description</h6>
+                {isEditingDescription ? (
+                  <textarea
+                    className="form-control"
+                    rows={4}
+                    value={editedDescription}
+                    onChange={(e) => setEditedDescription(e.target.value)}
+                    onBlur={() => setIsEditingDescription(false)}
+                    autoFocus
+                  />
+                ) : (
+                  <p
+                    className="text-muted"
+                    style={{ whiteSpace: 'pre-line', cursor: 'pointer' }}
+                    onClick={() => setIsEditingDescription(true)}
+                  >
+                    {editedDescription || 'Cliquez pour ajouter une description'}
+                  </p>
+                )}
+              </div>
 
               {ticket.fields?.issuetype && (
                 <div className="mb-3">
@@ -611,7 +606,7 @@ const handleSaveDescription = async () => {
         </CRow>
       )}
 
-           {/* Section Sous-tâches */}
+      {/* Section Sous-tâches */}
       {ticket.fields?.subtasks && ticket.fields.subtasks.length > 0 && (
         <CRow className="mt-4">
           <CCol>
@@ -650,30 +645,8 @@ const handleSaveDescription = async () => {
           </CCol>
         </CRow>
       )}
-
-      {/* ✅ MODAL EN DEHORS des blocs conditionnels */}
-      <CModal visible={visibleEditModal} onClose={() => setVisibleEditModal(false)}>
-        <CModalHeader closeButton>Modifier la description</CModalHeader>
-        <CModalBody>
-          <CFormTextarea
-            rows={5}
-            value={editedDescription}
-            onChange={(e) => setEditedDescription(e.target.value)}
-          />
-        </CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => setVisibleEditModal(false)}>
-            Annuler
-          </CButton>
-          <CButton color="primary" onClick={handleSaveDescription}>
-            Sauvegarder
-          </CButton>
-        </CModalFooter>
-      </CModal>
-
     </CContainer>
   )
 }
-
 
 export default TicketView

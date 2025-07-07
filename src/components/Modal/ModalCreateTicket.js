@@ -121,49 +121,89 @@ const ModalCreateTicket = () => {
 
       switch (issueType) {
         case 'Bug':
-          updatedIssue.fields.issuetype = {
-            id: '10002',
-            name: 'Bug',
-            description: 'Un problème ou une erreur.',
-            iconUrl:
-              'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10303?size=medium',
-            hierarchyLevel: 0,
-            subtask: false,
+          updatedIssue = {
+            ...prevIssue,
+            fields: {
+              ...prevIssue.fields,
+              issuetype: {
+                id: '10002',
+                hierarchyLevel: 0,
+                iconUrl:
+                  'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10303?size=medium',
+                avatarId: 10303,
+                subtask: false,
+                description: 'Un problème ou une erreur.',
+                entityId: 'b6942a7a-0278-49e3-89d3-85295176d3e8',
+                name: 'Bug',
+                self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/issuetype/10002',
+              },
+            },
           }
           break
+
         case 'Task':
-          updatedIssue.fields.issuetype = {
-            id: '10001',
-            name: 'Tâche',
-            description: 'Une tâche distincte.',
-            iconUrl:
-              'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10318?size=medium',
-            hierarchyLevel: 0,
-            subtask: false,
+          updatedIssue = {
+            ...prevIssue,
+            fields: {
+              ...prevIssue.fields,
+              issuetype: {
+                self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/issuetype/10001',
+                name: 'Tâche',
+                description: 'Une tâche distincte.',
+                id: '10001',
+                entityId: 'ca1798d2-e4c6-4758-bfaf-7e38a85cd0ea',
+                iconUrl:
+                  'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10318?size=medium',
+                avatarId: 10318,
+                subtask: false,
+                hierarchyLevel: 0,
+              },
+            },
           }
           break
+
         case 'Story':
-          updatedIssue.fields.issuetype = {
-            id: '10003',
-            name: 'Story',
-            description: "Une fonctionnalité exprimée sous forme d'objectif utilisateur.",
-            iconUrl:
-              'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10315?size=medium',
-            hierarchyLevel: 0,
-            subtask: false,
+          updatedIssue = {
+            ...prevIssue,
+            fields: {
+              ...prevIssue.fields,
+              issuetype: {
+                hierarchyLevel: 0,
+                subtask: false,
+                description: "Une fonctionnalité exprimée sous la forme d'un objectif utilisateur.",
+                iconUrl:
+                  'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10315?size=medium',
+                avatarId: 10315,
+                entityId: '6b7e8da8-f84c-41ac-80ac-ba881764a634',
+                name: 'Story',
+                id: '10003',
+                self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/issuetype/10003',
+              },
+            },
           }
           break
+
         case 'Epic':
-          updatedIssue.fields.issuetype = {
-            id: '10004',
-            name: 'Epic',
-            description: 'Une collection de tâches, bugs ou stories.',
-            iconUrl:
-              'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium',
-            hierarchyLevel: 1,
-            subtask: false,
+          updatedIssue = {
+            ...prevIssue,
+            fields: {
+              ...prevIssue.fields,
+              issuetype: {
+                self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/issuetype/10004',
+                id: '10004',
+                description: 'Une collection de bugs, stories et tâches connexes.',
+                iconUrl:
+                  'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium',
+                name: 'Epic',
+                subtask: false,
+                avatarId: 10307,
+                entityId: 'd1c66b55-cd69-4aba-b239-665a2e2f6af3',
+                hierarchyLevel: 1,
+              },
+            },
           }
           break
+
         default:
           break
       }
@@ -173,7 +213,13 @@ const ModalCreateTicket = () => {
   }, [issueType])
 
   return (
-    <CModal visible={isCreateTicketModalOpen} onClose={handleClose} backdrop="static" size="lg" scrollable>
+    <CModal
+      visible={isCreateTicketModalOpen}
+      onClose={handleClose}
+      backdrop="static"
+      size="lg"
+      scrollable
+    >
       <CModalHeader>
         <CModalTitle>Créer un nouveau ticket</CModalTitle>
       </CModalHeader>

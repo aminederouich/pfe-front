@@ -9,7 +9,6 @@ import {
   CFormSelect,
   CFormInput,
   CRow,
-  CIcon,
   CSpinner,
   CTable,
   CTableBody,
@@ -22,6 +21,7 @@ import {
   CDropdownMenu,
   CDropdownItem,
 } from '@coreui/react'
+import { CIcon } from '@coreui/icons-react'
 import { cilDataTransferDown } from '@coreui/icons'
 import { getAllTicketAPI, toggleCreateTicketModalOpen } from '../../../actions/ticketActions'
 
@@ -73,14 +73,18 @@ const Tickets = () => {
 
   const exportToWord = (tickets) => {
     let content = 'Origin\tKey\tSummary\tStatus\tAssignee\tReporter\n'
-    content += tickets.map((ticket) => [
-      ticket.configId ? 'External' : 'Internal',
-      ticket.key,
-      ticket.fields.summary,
-      ticket.fields.status.name,
-      ticket.fields.assignee?.displayName || 'Unassigned',
-      ticket.fields.reporter?.displayName || 'Unknown',
-    ].join('\t')).join('\n')
+    content += tickets
+      .map((ticket) =>
+        [
+          ticket.configId ? 'External' : 'Internal',
+          ticket.key,
+          ticket.fields.summary,
+          ticket.fields.status.name,
+          ticket.fields.assignee?.displayName || 'Unassigned',
+          ticket.fields.reporter?.displayName || 'Unknown',
+        ].join('\t'),
+      )
+      .join('\n')
 
     const blob = new Blob([content], { type: 'application/msword' })
     const link = document.createElement('a')
@@ -102,29 +106,49 @@ const Tickets = () => {
     return summaryMatch && statusMatch
   })
 
+  // Fonction pour colorer selon le statut
+  const getStatusColor = (status) => {
+    switch (status.toLowerCase()) {
+      case 'à faire':
+      case 'todo':
+        return 'secondary'
+      case 'in progress':
+      case 'en cours':
+        return 'warning'
+      case 'done':
+      case 'terminé':
+      case 'closed':
+        return 'success'
+      default:
+        return 'light'
+    }
+  }
+
   if (loading) {
     return (
       <div className="pt-3 text-center">
-        <CSpinner size="sm" />
-
+        <CSpinner size="3rem" />
       </div>
     )
   }
-
   return (
     <CContainer>
-      <CRow className="mb-3">
-        <CCol sm={6}>
-          <h4 className="fw-bold">My Tickets</h4>
+      <CRow>
+        <CCol sm={3}>
+          <h2>All Ticket View</h2>
         </CCol>
-        <CCol sm={6} className="text-end">
+        <CCol sm={9} className="text-end">
           <CDropdown>
             <CDropdownToggle color="light">
               <CIcon icon={cilDataTransferDown} className="me-2" /> Export
             </CDropdownToggle>
             <CDropdownMenu>
-              <CDropdownItem onClick={() => exportToXML(filteredTickets)}>Export as XML</CDropdownItem>
-              <CDropdownItem onClick={() => exportToWord(filteredTickets)}>Export as Word</CDropdownItem>
+              <CDropdownItem onClick={() => exportToXML(filteredTickets)}>
+                Export as XML
+              </CDropdownItem>
+              <CDropdownItem onClick={() => exportToWord(filteredTickets)}>
+                Export as Word
+              </CDropdownItem>
             </CDropdownMenu>
           </CDropdown>
           <CButton color="primary" className="ms-2" onClick={handleClickAjouterTicket}>
@@ -150,7 +174,11 @@ const Tickets = () => {
           </CFormSelect>
         </CCol>
         <CCol md={2}>
-          <CFormSelect label="Status" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+          <CFormSelect
+            label="Status"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
             <option value="All">All</option>
             <option value="To do">To do</option>
             <option value="In Progress">In Progress</option>
@@ -164,7 +192,11 @@ const Tickets = () => {
           </CFormSelect>
         </CCol>
         <CCol md={2}>
-          <CFormInput label="Contains text" value={searchText} onChange={(e) => setSearchText(e.target.value)} />
+          <CFormInput
+            label="Contains text"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
         </CCol>
         <CCol md={1}>
           <CButton color="primary">Search</CButton>
@@ -210,24 +242,6 @@ const Tickets = () => {
       </CTable>
     </CContainer>
   )
-}
-
-// Fonction pour colorer selon le statut
-const getStatusColor = (status) => {
-  switch (status.toLowerCase()) {
-    case 'à faire':
-    case 'todo':
-      return 'secondary'
-    case 'in progress':
-    case 'en cours':
-      return 'warning'
-    case 'done':
-    case 'terminé':
-    case 'closed':
-      return 'success'
-    default:
-      return 'light'
-  }
 }
 
 export default Tickets
