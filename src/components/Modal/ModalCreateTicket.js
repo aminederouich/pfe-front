@@ -21,7 +21,7 @@ import TaskIssueForm from './ModalBody/TaskIssueForm'
 import StoryIssueForm from './ModalBody/StoryIssueForm'
 import { projects, issueTypes } from '../../utils/TicketsConsts'
 import { emptyIssue } from '../../utils/emptyIssue'
-import { getEnabledConfigJiraAPI } from '../../actions/jiraActions'
+import { getAllConfigJiraAPI } from '../../actions/jiraActions'
 
 const ModalCreateTicket = () => {
   const { isCreateTicketModalOpen } = useSelector((state) => state.ticket)
@@ -31,7 +31,7 @@ const ModalCreateTicket = () => {
   const [newIssue, setNewIssue] = useState(emptyIssue)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const dispatch = useDispatch()
-  const jiraConfigList = useSelector((state) => state.jira.jiraConfigList)
+  const { jiraConfigList } = useSelector((state) => state.jira)
 
   const getProjectFromPath = () => {
     const pathSegments = location.pathname.split('/')
@@ -104,16 +104,6 @@ const ModalCreateTicket = () => {
 
   useEffect(() => {
     const now = new Date().toISOString()
-    const selectedHost = (() => {
-      try {
-        return newIssue.fields.externalLink
-          ? new URL(newIssue.fields.externalLink).host
-          : projects.find((p) => p.value === project)?.label || project
-      } catch {
-        return projects.find((p) => p.value === project)?.label || project
-      }
-    })()
-
     setNewIssue((prevIssue) => ({
       ...prevIssue,
       id: generateId(),
@@ -125,63 +115,114 @@ const ModalCreateTicket = () => {
         statuscategorychangedate: now,
         project: {
           key: project,
-          name: selectedHost,
+          name: projects.find((p) => p.value === project)?.label || project,
         },
       },
     }))
-  }, [isCreateTicketModalOpen, project, newIssue.fields.externalLink])
+  }, [isCreateTicketModalOpen, project])
 
   useEffect(() => {
-    if (project !== 'externe') {
-      setNewIssue((prevIssue) => {
-        let updatedIssue = { ...prevIssue }
-        switch (issueType) {
-          case 'Bug':
-            updatedIssue.fields.issuetype = {
-              id: '10002',
-              name: 'Bug',
-              description: 'Un problème ou une erreur.',
-              subtask: false,
-            }
-            break
-          case 'Task':
-            updatedIssue.fields.issuetype = {
-              id: '10001',
-              name: 'Tâche',
-              description: 'Une tâche distincte.',
-              subtask: false,
-            }
-            break
-          case 'Story':
-            updatedIssue.fields.issuetype = {
-              id: '10003',
-              name: 'Story',
-              description: 'Une fonctionnalité utilisateur.',
-              subtask: false,
-            }
-            break
-          case 'Epic':
-            updatedIssue.fields.issuetype = {
-              id: '10004',
-              name: 'Epic',
-              description: 'Une collection d’issues.',
-              subtask: false,
-            }
-            break
-          default:
-            break
-        }
-        return updatedIssue
-      })
-    }
-  }, [issueType, project])
+    setNewIssue((prevIssue) => {
+      let updatedIssue = { ...prevIssue }
+
+      switch (issueType) {
+        case 'Bug':
+          updatedIssue = {
+            ...prevIssue,
+            fields: {
+              ...prevIssue.fields,
+              issuetype: {
+                id: '10002',
+                hierarchyLevel: 0,
+                iconUrl:
+                  'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10303?size=medium',
+                avatarId: 10303,
+                subtask: false,
+                description: 'Un problème ou une erreur.',
+                entityId: 'b6942a7a-0278-49e3-89d3-85295176d3e8',
+                name: 'Bug',
+                self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/issuetype/10002',
+              },
+            },
+          }
+          break
+
+        case 'Task':
+          updatedIssue = {
+            ...prevIssue,
+            fields: {
+              ...prevIssue.fields,
+              issuetype: {
+                self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/issuetype/10001',
+                name: 'Tâche',
+                description: 'Une tâche distincte.',
+                id: '10001',
+                entityId: 'ca1798d2-e4c6-4758-bfaf-7e38a85cd0ea',
+                iconUrl:
+                  'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10318?size=medium',
+                avatarId: 10318,
+                subtask: false,
+                hierarchyLevel: 0,
+              },
+            },
+          }
+          break
+
+        case 'Story':
+          updatedIssue = {
+            ...prevIssue,
+            fields: {
+              ...prevIssue.fields,
+              issuetype: {
+                hierarchyLevel: 0,
+                subtask: false,
+                description: "Une fonctionnalité exprimée sous la forme d'un objectif utilisateur.",
+                iconUrl:
+                  'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10315?size=medium',
+                avatarId: 10315,
+                entityId: '6b7e8da8-f84c-41ac-80ac-ba881764a634',
+                name: 'Story',
+                id: '10003',
+                self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/issuetype/10003',
+              },
+            },
+          }
+          break
+
+        case 'Epic':
+          updatedIssue = {
+            ...prevIssue,
+            fields: {
+              ...prevIssue.fields,
+              issuetype: {
+                self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/issuetype/10004',
+                id: '10004',
+                description: 'Une collection de bugs, stories et tâches connexes.',
+                iconUrl:
+                  'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium',
+                name: 'Epic',
+                subtask: false,
+                avatarId: 10307,
+                entityId: 'd1c66b55-cd69-4aba-b239-665a2e2f6af3',
+                hierarchyLevel: 1,
+              },
+            },
+          }
+          break
+
+        default:
+          break
+      }
+
+      return updatedIssue
+    })
+  }, [issueType])
 
   useEffect(() => {
     if (project === 'externe') {
-      dispatch(getEnabledConfigJiraAPI())
+      dispatch(getAllConfigJiraAPI())
     }
   }, [project, dispatch])
-
   return (
     <CModal
       visible={isCreateTicketModalOpen}
@@ -204,13 +245,20 @@ const ModalCreateTicket = () => {
               <CFormLabel className="fw-bold">Projet*</CFormLabel>
             </CCol>
             <CCol md={5}>
-              <CFormSelect value={project} onChange={(e) => setProject(e.target.value)}>
+              <CFormSelect
+                value={project}
+                onChange={(event) => setProject(event.target.value)}
+                aria-describedby="project-help"
+              >
                 {projects.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}
               </CFormSelect>
+              <small id="project-help" className="form-text text-muted">
+                Veuillez sélectionner votre projet
+              </small>
             </CCol>
           </CRow>
 
