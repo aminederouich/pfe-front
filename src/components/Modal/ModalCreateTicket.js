@@ -19,9 +19,9 @@ import { addNewTicketAPI, toggleCreateTicketModalClose } from '../../actions/tic
 import BugIssueForm from './ModalBody/BugIssueForm'
 import TaskIssueForm from './ModalBody/TaskIssueForm'
 import StoryIssueForm from './ModalBody/StoryIssueForm'
-// import EpicIssueForm from './ModalBody/EpicIssueForm' // À créer si nécessaire
 import { projects, issueTypes } from '../../utils/TicketsConsts'
 import { emptyIssue } from '../../utils/emptyIssue'
+import { getAllConfigJiraAPI } from '../../actions/jiraActions'
 
 const ModalCreateTicket = () => {
   const { isCreateTicketModalOpen } = useSelector((state) => state.ticket)
@@ -31,6 +31,7 @@ const ModalCreateTicket = () => {
   const [newIssue, setNewIssue] = useState(emptyIssue)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const dispatch = useDispatch()
+  const { jiraConfigList } = useSelector((state) => state.jira)
 
   const getProjectFromPath = () => {
     const pathSegments = location.pathname.split('/')
@@ -59,25 +60,30 @@ const ModalCreateTicket = () => {
   }
 
   const handleSubmitTicket = async () => {
-    if (!newIssue.fields?.summary?.trim()) {
-      alert('Le résumé est obligatoire')
-      return
-    }
-
-    if (project === 'externe' && !newIssue.fields?.externalLink?.trim()) {
-      alert('Le lien externe est obligatoire pour un projet externe.')
-      return
-    }
-
-    setIsSubmitting(true)
-    try {
-      await dispatch(addNewTicketAPI(newIssue))
+    if (project === 'externe') {
+      window.open(newIssue.fields.externalLink, '_blank')
       handleClose()
-    } catch (error) {
-      console.error('Erreur lors de la création du ticket:', error)
-      alert('Erreur lors de la création du ticket')
-    } finally {
-      setIsSubmitting(false)
+    } else {
+      if (!newIssue.fields?.summary?.trim()) {
+        alert('Le résumé est obligatoire')
+        return
+      }
+
+      if (project === 'externe' && !newIssue.fields?.externalLink?.trim()) {
+        alert('Le lien externe est obligatoire pour un projet externe.')
+        return
+      }
+
+      setIsSubmitting(true)
+      try {
+        await dispatch(addNewTicketAPI(newIssue))
+        handleClose()
+      } catch (error) {
+        console.error('Erreur lors de la création du ticket:', error)
+        alert('Erreur lors de la création du ticket')
+      } finally {
+        setIsSubmitting(false)
+      }
     }
   }
 
@@ -212,6 +218,11 @@ const ModalCreateTicket = () => {
     })
   }, [issueType])
 
+  useEffect(() => {
+    if (project === 'externe') {
+      dispatch(getAllConfigJiraAPI())
+    }
+  }, [project, dispatch])
   return (
     <CModal
       visible={isCreateTicketModalOpen}
@@ -251,62 +262,77 @@ const ModalCreateTicket = () => {
             </CCol>
           </CRow>
 
-          {project === 'externe' && (
+          {project === 'externe' ? (
             <CRow className="mb-3">
               <CCol md={3}>
-                <CFormLabel className="fw-bold">Lien externe*</CFormLabel>
+                <CFormLabel className="fw-bold">Configuration Jira*</CFormLabel>
               </CCol>
               <CCol md={9}>
-                <input
-                  type="url"
-                  className="form-control"
-                  placeholder="https://exemple.com"
+                <CFormSelect
                   value={newIssue.fields.externalLink || ''}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const selectedUrl = e.target.value
+                    const selectedHost = new URL(selectedUrl).host
                     setNewIssue((prev) => ({
                       ...prev,
-                      fields: { ...prev.fields, externalLink: e.target.value },
+                      fields: {
+                        ...prev.fields,
+                        externalLink: selectedUrl,
+                        summary: selectedHost,
+                        project: {
+                          key: 'externe',
+                          name: selectedHost,
+                        },
+                      },
                     }))
-                  }
-                />
+                  }}
+                >
+                  <option value="">-- Sélectionnez une configuration Jira --</option>
+                  {jiraConfigList.map((conf) => (
+                    <option key={conf.id} value={`${conf.protocol}://${conf.host}`}>
+                      {conf.host} ({conf.username})
+                    </option>
+                  ))}
+                </CFormSelect>
                 <small className="form-text text-muted">
-                  Veuillez renseigner le lien externe lié à ce ticket.
+                  Veuillez sélectionner une configuration Jira.
                 </small>
               </CCol>
             </CRow>
+          ) : (
+            <>
+              <CRow className="mb-3">
+                <CCol md={3}>
+                  <CFormLabel className="fw-bold">Type d&apos;issue*</CFormLabel>
+                </CCol>
+                <CCol md={5}>
+                  <CFormSelect value={issueType} onChange={(e) => setIssueType(e.target.value)}>
+                    {issueTypes.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </CFormSelect>
+                </CCol>
+              </CRow>
+
+              <hr />
+
+              {issueType === 'Bug' && (
+                <BugIssueForm newIssue={newIssue} setNewIssue={setNewIssue} />
+              )}
+              {issueType === 'Task' && (
+                <TaskIssueForm newIssue={newIssue} setNewIssue={setNewIssue} />
+              )}
+              {issueType === 'Story' && (
+                <StoryIssueForm newIssue={newIssue} setNewIssue={setNewIssue} />
+              )}
+              {issueType === 'Epic' && (
+                <div className="alert alert-info">Formulaire Epic à implémenter</div>
+              )}
+            </>
           )}
-
-          <CRow className="mb-3">
-            <CCol md={3}>
-              <CFormLabel className="fw-bold">Type d&apos;issue*</CFormLabel>
-            </CCol>
-            <CCol md={5}>
-              <CFormSelect
-                value={issueType}
-                onChange={(event) => setIssueType(event.target.value)}
-                aria-describedby="issue-type-help"
-              >
-                {issueTypes.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </CFormSelect>
-              <small id="issue-type-help" className="form-text text-muted">
-                Veuillez sélectionner le type d&apos;issue
-              </small>
-            </CCol>
-          </CRow>
         </CForm>
-
-        <hr />
-
-        {issueType === 'Bug' && <BugIssueForm newIssue={newIssue} setNewIssue={setNewIssue} />}
-        {issueType === 'Task' && <TaskIssueForm newIssue={newIssue} setNewIssue={setNewIssue} />}
-        {issueType === 'Story' && <StoryIssueForm newIssue={newIssue} setNewIssue={setNewIssue} />}
-        {issueType === 'Epic' && (
-          <div className="alert alert-info">Formulaire Epic à implémenter</div>
-        )}
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" onClick={handleClose} disabled={isSubmitting}>
