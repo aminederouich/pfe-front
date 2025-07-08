@@ -162,3 +162,22 @@ export const editConfigJiraAPI =
         throw new Error(error)
       })
   }
+
+export const getEnabledConfigJiraAPI = () => (dispatch) => {
+  dispatch(GetAllConfigJiraRequest())
+  return jiraService
+    .getEnabledConfigJira()
+    .then((response) => {
+      if (response.error) {
+        dispatch(GET_ALL_CONFIG_JIRA_FAILURE(response.error))
+        throw new Error(response.error)
+      } else {
+        dispatch(GET_ALL_CONFIG_JIRA_SUCCESS(response.data.data))
+        return response
+      }
+    })
+    .catch((error) => {
+      dispatch(GET_ALL_CONFIG_JIRA_FAILURE(error))
+      throw new Error(error)
+    })
+}

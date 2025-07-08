@@ -106,11 +106,21 @@ const editConfigJiraAPI = (
       return error
     })
 }
-
+const getEnabledConfigJira = () => {
+  return axios
+    .get(`http://localhost:8081/jira_config/getEnabledConfig`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    .then((res) => res)
+    .catch((err) => err)
+}
 export default {
   getAllConfigJira,
   checkConnectionJiraApi,
   addNewConfigJiraAPI,
   deleteConfigJiraAPI,
   editConfigJiraAPI,
+  getEnabledConfigJira,
 }
