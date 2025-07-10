@@ -14,12 +14,11 @@ import {
   cilCommentSquare,
   cilAccountLogout,
   cilEnvelopeOpen,
-  cilCreditCard,
   cilSettings,
   cilBell,
-  cilFile,
   cilTask,
   cilUser,
+  cilChart,
 } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 
@@ -36,7 +35,6 @@ const AppHeaderDropdownManager = () => {
   const handleLogout = async (e) => {
     e.preventDefault()
     await dispatch(logout())
-    // await dispatch(checkAuthentication())
   }
   return (
     <CDropdown variant="nav-item">
@@ -78,11 +76,19 @@ const AppHeaderDropdownManager = () => {
             42
           </CBadge>
         </CDropdownItem>
+
         <CDropdownHeader className="bg-body-secondary fw-semibold my-2">Settings</CDropdownHeader>
         <CDropdownItem href="#">Profile</CDropdownItem>
         <CDropdownItem href="#">Settings</CDropdownItem>
         <CDropdownItem href="/jira/config-jira-api">configuration jira API</CDropdownItem>
         <CDropdownItem href="#">Projects</CDropdownItem>
+
+        {/* NOUVEL ITEM SCORE */}
+        <CDropdownItem href="/score/Config">
+          <CIcon icon={cilChart} className="me-2" />
+          Score
+        </CDropdownItem>
+
         <CDropdownDivider />
         <CDropdownItem onClick={handleLogout}>
           <CIcon icon={cilAccountLogout} className="me-2" />
