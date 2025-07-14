@@ -19,6 +19,7 @@ import { addNewTicketAPI, toggleCreateTicketModalClose } from '../../actions/tic
 import BugIssueForm from './ModalBody/BugIssueForm'
 import TaskIssueForm from './ModalBody/TaskIssueForm'
 import StoryIssueForm from './ModalBody/StoryIssueForm'
+import EpicIssueForm from './ModalBody/EpicIssueForm'
 import { projects, issueTypes } from '../../utils/TicketsConsts'
 import { emptyIssue } from '../../utils/emptyIssue'
 import { getAllConfigJiraAPI } from '../../actions/jiraActions'
@@ -33,24 +34,6 @@ const ModalCreateTicket = () => {
   const dispatch = useDispatch()
   const { jiraConfigList } = useSelector((state) => state.jira)
 
-  const getProjectFromPath = () => {
-    const pathSegments = location.pathname.split('/')
-    const projectCodeFromPath = pathSegments.find((segment) =>
-      projects.some(
-        (p) => p.value === segment || p.label.toLowerCase().includes(segment.toLowerCase()),
-      ),
-    )
-    if (projectCodeFromPath) {
-      const foundProject = projects.find(
-        (p) =>
-          p.value === projectCodeFromPath ||
-          p.label.toLowerCase().includes(projectCodeFromPath.toLowerCase()),
-      )
-      return foundProject ? foundProject.value : projects[0].value
-    }
-    return projects[0].value
-  }
-
   const handleClose = () => {
     setNewIssue(emptyIssue)
     setProject(projects[0].value)
@@ -60,43 +43,63 @@ const ModalCreateTicket = () => {
   }
 
   const handleSubmitTicket = async () => {
-    if (project === 'externe') {
-      window.open(newIssue.fields.externalLink, '_blank')
-      handleClose()
-    } else {
-      if (!newIssue.fields?.summary?.trim()) {
-        alert('Le résumé est obligatoire')
-        return
-      }
+    // Validation du résumé
+    if (!newIssue.fields?.summary?.trim()) {
+      alert('Le résumé est obligatoire')
+      return
+    }
 
-      if (project === 'externe' && !newIssue.fields?.externalLink?.trim()) {
+    // Traitement des projets externes
+    if (project === 'externe') {
+      if (!newIssue.fields?.externalLink?.trim()) {
         alert('Le lien externe est obligatoire pour un projet externe.')
         return
       }
+      window.open(newIssue.fields.externalLink, '_blank')
+      handleClose()
+      return
+    }
 
-      setIsSubmitting(true)
-      try {
-        await dispatch(addNewTicketAPI(newIssue))
-        handleClose()
-      } catch (error) {
-        console.error('Erreur lors de la création du ticket:', error)
-        alert('Erreur lors de la création du ticket')
-      } finally {
-        setIsSubmitting(false)
-      }
+    // Traitement des projets internes
+    setIsSubmitting(true)
+    try {
+      await dispatch(addNewTicketAPI(newIssue))
+      handleClose()
+    } catch (error) {
+      console.error('Erreur lors de la création du ticket:', error)
+      alert('Erreur lors de la création du ticket')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
   const generateId = () => {
-    let id = ''
-    for (let i = 0; i < 8; i++) {
-      id += Math.floor(Math.random() * 10)
-    }
-    return id
+    // Génération d'un ID plus robuste avec timestamp et nombre aléatoire
+    const timestamp = Date.now()
+    const randomNum = Math.floor(Math.random() * 1000000)
+    return `${timestamp}${randomNum}`
   }
 
   useEffect(() => {
     if (isCreateTicketModalOpen) {
+      const getProjectFromPath = () => {
+        const pathSegments = location.pathname.split('/')
+        const projectCodeFromPath = pathSegments.find((segment) =>
+          projects.some(
+            (p) => p.value === segment || p.label.toLowerCase().includes(segment.toLowerCase()),
+          ),
+        )
+        if (projectCodeFromPath) {
+          const foundProject = projects.find(
+            (p) =>
+              p.value === projectCodeFromPath ||
+              p.label.toLowerCase().includes(projectCodeFromPath.toLowerCase()),
+          )
+          return foundProject ? foundProject.value : projects[0].value
+        }
+        return projects[0].value
+      }
+
       const projectFromPath = getProjectFromPath()
       setProject(projectFromPath)
     }
@@ -328,7 +331,7 @@ const ModalCreateTicket = () => {
                 <StoryIssueForm newIssue={newIssue} setNewIssue={setNewIssue} />
               )}
               {issueType === 'Epic' && (
-                <div className="alert alert-info">Formulaire Epic à implémenter</div>
+                <EpicIssueForm newIssue={newIssue} setNewIssue={setNewIssue} />
               )}
             </>
           )}
