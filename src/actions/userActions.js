@@ -14,21 +14,21 @@ export const GET_ALL_USERS_FAILURE = (error) => ({
   payload: error,
 })
 
-export const getAllUsersAPI = () => (dispatch) => {
+export const getAllUsersAPI = () => async (dispatch) => {
   dispatch(GET_ALL_USERS_REQUEST())
-  ticketService
-    .getAllUsers()
-    .then((response) => {
-      if (response.error) {
-        dispatch(GET_ALL_USERS_FAILURE(response.error))
-        throw new Error(response.error)
-      } else {
-        dispatch(GET_ALL_USERS_SUCCESS(response.data.results))
-        return response
-      }
-    })
-    .catch((error) => {
-      dispatch(GET_ALL_USERS_FAILURE(error))
-      throw new Error(error)
-    })
+
+  try {
+    const response = await ticketService.getAllUsers()
+
+    const allUsers = response?.data?.users || response?.data?.results || response?.data || []
+
+    console.log('📦 Utilisateurs récupérés depuis le backend :', allUsers)
+
+    const employees = allUsers.filter((user) => user.IsEmployee === true)
+
+    dispatch(GET_ALL_USERS_SUCCESS(employees))
+  } catch (error) {
+    console.error('❌ Erreur lors de la récupération des utilisateurs :', error)
+    dispatch(GET_ALL_USERS_FAILURE(error.message || 'Erreur inconnue'))
+  }
 }
