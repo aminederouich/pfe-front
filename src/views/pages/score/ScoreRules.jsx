@@ -1,4 +1,9 @@
 import React, { useState, useEffect } from 'react'
+import { CButton } from '@coreui/react'
+import { useDispatch } from 'react-redux'
+import { addScore } from '../../../actions/scoreAction'
+import { toast } from 'react-toastify'
+
 import {
   CCard,
   CCardBody,
@@ -152,9 +157,60 @@ const ScoreRules = () => {
       </CRow>
     </div>
   )
+  const dispatch = useDispatch()
+
+  const handleSaveScores = () => {
+    const scoreData = {
+      priority: priorityEnabled
+        ? {
+            p1: { checked: p1Checked, score: p1Score },
+            p2: { checked: p2Checked, score: p2Score },
+            p3: { checked: p3Checked, score: p3Score },
+          }
+        : null,
+
+      type: typeEnabled
+        ? {
+            bug: { checked: typeChecks.bug, score: typeScores.bug },
+            epic: { checked: typeChecks.epic, score: typeScores.epic },
+            story: { checked: typeChecks.story, score: typeScores.story },
+            task: { checked: typeChecks.task, score: typeScores.task },
+          }
+        : null,
+
+      deadline: deadlineEnabled
+        ? {
+            rule1: { checked: deadlineChecks.rule1, score: deadlineScores.rule1 },
+            rule2: { checked: deadlineChecks.rule2, score: deadlineScores.rule2 },
+          }
+        : null,
+
+      resolution: resolutionEnabled
+        ? Object.keys(resolutionChecks).reduce((acc, key) => {
+            acc[key] = { checked: resolutionChecks[key], score: resolutionScores[key] }
+            return acc
+          }, {})
+        : null,
+    }
+
+    dispatch(addScore(scoreData))
+  }
 
   return (
     <div>
+      <div
+        style={{
+          position: 'sticky',
+          top: 0,
+          backgroundColor: '#fff',
+          zIndex: 999,
+        }}
+        className="p-3 text-end border-bottom mb-3"
+      >
+        <CButton color="primary" onClick={handleSaveScores}>
+          💾 Save
+        </CButton>
+      </div>
       <h3 className="mb-4">Score Rules Configuration</h3>
 
       <CRow className="mb-4">
