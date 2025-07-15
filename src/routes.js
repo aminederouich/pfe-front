@@ -1,7 +1,8 @@
 import React from 'react'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
-
+const EmployeeList = React.lazy(() => import('./views/pages/employee/EmployeeList'))
+const EmployeeDetail = React.lazy(() => import('./views/pages/employee/EmployeeDetail'))
 const Tickets = React.lazy(() => import('./views/pages/Tickets/TicketsHome'))
 const TicketView = React.lazy(() => import('./views/pages/Tickets/TicketView'))
 const EditTicket = React.lazy(() => import('./views/pages/Tickets/EditTicket'))
@@ -64,6 +65,10 @@ const ScoreRules = React.lazy(() => import('./views/pages/score/ScoreRules'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+
+  { path: '/employees', name: 'employés', element: EmployeeList, exact: true },
+  { path: '/employees/list', name: 'Liste des employés', element: EmployeeList },
+  { path: '/employees/:uid', name: 'Détail Employé', element: EmployeeDetail },
 
   { path: '/tickets', name: 'Tickets', element: Tickets, exact: true },
   { path: '/tickets/list', name: 'liste des Tickets', element: Tickets },
