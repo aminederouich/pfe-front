@@ -34,7 +34,24 @@ const getAllScores = () => {
     })
 }
 
+const getScoreById = (id) => {
+  return axios
+    .get(`${API_URL}getScoreById/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    .then((response) => {
+      return response
+    })
+    .catch((error) => {
+      console.error('Error fetching score by ID:', error)
+      return error
+    })
+}
+
 export default {
   addScore,
   getAllScores,
+  getScoreById,
 }
