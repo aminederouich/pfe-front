@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { CButton } from '@coreui/react'
 import { useDispatch } from 'react-redux'
 import { addScore } from '../../../actions/scoreAction'
-import { toast } from 'react-toastify'
 
 import {
   CCard,
@@ -14,10 +13,15 @@ import {
   CFormInput,
   CBadge,
   CCallout,
+  CContainer,
 } from '@coreui/react'
-import { FaExclamationCircle, FaBug, FaClock, FaCheckCircle } from 'react-icons/fa'
+import { FaBug, FaClock, FaCheckCircle } from 'react-icons/fa'
+import { cilWarning } from '@coreui/icons'
+import CIcon from '@coreui/icons-react'
 
 const ScoreRules = () => {
+  const dispatch = useDispatch()
+
   const [priorityEnabled, setPriorityEnabled] = useState(false)
   const [p1Score, setP1Score] = useState('')
   const [p2Score, setP2Score] = useState('')
@@ -157,7 +161,6 @@ const ScoreRules = () => {
       </CRow>
     </div>
   )
-  const dispatch = useDispatch()
 
   const handleSaveScores = () => {
     const scoreData = {
@@ -197,22 +200,20 @@ const ScoreRules = () => {
   }
 
   return (
-    <div>
-      <div
-        style={{
-          position: 'sticky',
-          top: 0,
-          backgroundColor: '#fff',
-          zIndex: 999,
-        }}
-        className="p-3 text-end border-bottom mb-3"
-      >
-        <CButton color="primary" onClick={handleSaveScores}>
-          💾 Save
-        </CButton>
-      </div>
-      <h3 className="mb-4">Score Rules Configuration</h3>
-
+    <CContainer>
+      <CRow>
+        <CCol sm={10}>
+          <h2>Score Rules Configuration</h2>
+          <p className="text-medium-emphasis">
+            Configure the scoring rules for different ticket attributes.
+          </p>
+        </CCol>
+        <CCol sm={2} className="text-end">
+          <CButton color="primary" className="mb-2" onClick={handleSaveScores}>
+            Save
+          </CButton>
+        </CCol>
+      </CRow>
       <CRow className="mb-4">
         {/* PRIORITY */}
         <CCol md={6}>
@@ -223,13 +224,13 @@ const ScoreRules = () => {
                 checked={priorityEnabled}
                 onChange={() => setPriorityEnabled(!priorityEnabled)}
                 label={
-                  <span>
-                    <FaExclamationCircle className="me-2" />
+                  <>
+                    <CIcon icon={cilWarning} className="me-2" />
                     <strong>Priority Rules</strong>
                     <CBadge color="danger" className="ms-2 text-uppercase">
                       PRIORITY
                     </CBadge>
-                  </span>
+                  </>
                 }
               />
             </CCardHeader>
@@ -416,7 +417,7 @@ const ScoreRules = () => {
           </CCard>
         </CCol>
       </CRow>
-    </div>
+    </CContainer>
   )
 }
 
