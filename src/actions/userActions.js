@@ -19,14 +19,11 @@ export const getAllUsersAPI = () => async (dispatch) => {
 
   try {
     const response = await ticketService.getAllUsers()
-
     const allUsers = response?.data?.users || response?.data?.results || response?.data || []
 
-    console.log('📦 Utilisateurs récupérés depuis le backend :', allUsers)
+    console.log('📦 Tous les utilisateurs récupérés :', allUsers)
 
-    const employees = allUsers.filter((user) => user.IsEmployee === true)
-
-    dispatch(GET_ALL_USERS_SUCCESS(employees))
+    dispatch(GET_ALL_USERS_SUCCESS(allUsers))
   } catch (error) {
     console.error('❌ Erreur lors de la récupération des utilisateurs :', error)
     dispatch(GET_ALL_USERS_FAILURE(error.message || 'Erreur inconnue'))

@@ -44,20 +44,18 @@ const logout = async () => {
   }
 }
 
-const checkAuth = () => {
-  return axios
-    .get(`${API_URL}check-auth`, {
+const checkAuth = async () => {
+  try {
+    const response = await axios.get(`${API_URL}check-auth`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     })
-    .then((response) => {
-      return response
-    })
-    .catch((error) => {
-      console.error('Error checking authentication:')
-      return error
-    })
+    return response
+  } catch (error) {
+    console.error('Error checking authentication:', error)
+    throw error
+  }
 }
 
 const getCurrentUser = () => {
