@@ -18,6 +18,19 @@ const getAllUsers = () => {
     })
 }
 
+const sendInvite = (userData) => {
+  return axios.post(
+    `${API_URL}invite-employee`,
+    userData,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    }
+  )
+}
+
 export default {
   getAllUsers,
+  sendInvite,
 }

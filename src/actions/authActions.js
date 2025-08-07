@@ -39,12 +39,16 @@ export const login = (username, password) => (dispatch) => {
         throw new Error(response.error)
       } else {
         const user = response.user
+
+        localStorage.setItem('userId', user.uid)
+
         if (user.IsEmployee && user.IsManager === false) {
           dispatch(loginSuccess(response, 'employee'))
         }
         if (user.IsManager && user.IsEmployee === false) {
           dispatch(loginSuccess(response, 'manager'))
         }
+
         return response
       }
     })
@@ -78,21 +82,16 @@ export const checkAuthFailure = () => ({
   type: 'AUTH_CHECK_FAILURE',
 })
 
-export const checkAuthentication = () => (dispatch) => {
+export const checkAuthentication = () => async (dispatch) => {
   dispatch(checkAuthRequest())
-  return authService
-    .checkAuth()
-    .then((response) => {
-      if (response.data.error) {
-        dispatch(checkAuthFailure())
-        throw new Error(response.error)
-      } else {
-        dispatch(checkAuthSuccess(response.data))
-        return response
-      }
-    })
-    .catch((error) => {
-      dispatch(checkAuthFailure())
-      throw new Error(error)
-    })
+  try {
+    const response = await authService.checkAuth()
+    dispatch(checkAuthSuccess(response.data))
+    return response
+  } catch (error) {
+    dispatch(checkAuthFailure())
+    const errorMsg = error.response?.data?.error || 'Erreur inconnue'
+    console.error('Authentication check failed:', errorMsg)
+    throw new Error(errorMsg)
+  }
 }
