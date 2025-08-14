@@ -62,10 +62,12 @@ const ConfigJiraApi = React.lazy(() => import('./views/pages/jira/ConfigJiraApi'
 
 const Projet = React.lazy(() => import('./views/pages/projet/Projet'))
 const ScoreRules = React.lazy(() => import('./views/pages/score/ScoreRules'))
+const Login = React.lazy(() => import('./views/pages/login/Login'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/login', name: 'Login', element: Login },
 
   { path: '/employees', name: 'employés', element: EmployeeList, exact: true },
   { path: '/employees/list', name: 'Liste des employés', element: EmployeeList },

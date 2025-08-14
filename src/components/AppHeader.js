@@ -1,22 +1,17 @@
 import React, { useEffect, useRef } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   CContainer,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
   CHeader,
   CHeaderNav,
-  CHeaderToggler,
   CNavLink,
   CNavItem,
   useColorModes,
   CButton,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilBell, cilEnvelopeOpen, cilList, cilMenu, cilMoon, cilSun } from '@coreui/icons'
+import { cilBell, cilEnvelopeOpen, cilList } from '@coreui/icons'
 
 import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown, AppHeaderDropdownManager } from './header/index'
@@ -29,6 +24,10 @@ const AppHeader = () => {
   const dispatch = useDispatch()
   const { theme } = useSelector((state) => state.data)
   const { user } = useSelector((state) => state.auth)
+  const location = useLocation()
+
+  // Liste des routes où on cache le menu utilisateur
+  const hideUserHeaderRoutes = ['/reset-password', '/login', '/register']
 
   useEffect(() => {
     document.addEventListener('scroll', () => {
@@ -98,12 +97,14 @@ const AppHeader = () => {
           <li className="nav-item py-1">
             <div className="vr h-100 mx-2 text-body text-opacity-75"></div>
           </li>
-          {user !== null && user.user.IsEmployee && !user.user.IsManager ? (
-            <AppHeaderDropdown />
-          ) : user !== null && !user.user.IsEmployee && user.user.IsManager ? (
-            <AppHeaderDropdownManager />
-          ) : null}
-          {/* <AppHeaderDropdown /> */}
+          {/* On affiche le menu utilisateur seulement si on n'est PAS sur une route à cacher */}
+          {!hideUserHeaderRoutes.includes(location.pathname) && (
+            user !== null && user.user.IsEmployee && !user.user.IsManager ? (
+              <AppHeaderDropdown />
+            ) : user !== null && !user.user.IsEmployee && user.user.IsManager ? (
+              <AppHeaderDropdownManager />
+            ) : null
+          )}
         </CHeaderNav>
       </CContainer>
       <CContainer className="px-4" fluid>

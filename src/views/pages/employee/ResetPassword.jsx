@@ -1,11 +1,27 @@
-import React, { useState } from 'react'
-import axios from 'axios'
+import React, { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import userService from '../../../services/userService'
+import { logout } from '../../../actions/authActions' // adapte le chemin si besoin
 
 const ResetPassword = () => {
-  const [email, setEmail] = useState('')
+  const location = useLocation()
+  console.log(location)
+  const dispatch = useDispatch()
+  const queryParams = new URLSearchParams(location.search)
+  const emailFromUrl = queryParams.get('email') || ''
+  const [email, setEmail] = useState(emailFromUrl)
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [message, setMessage] = useState('')
+
+  // Déconnexion automatique à l'arrivée sur la page
+  useEffect(() => {
+    dispatch(logout())
+    localStorage.removeItem('token')
+    setEmail(emailFromUrl)
+    // eslint-disable-next-line
+  }, [dispatch, emailFromUrl])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -16,12 +32,11 @@ const ResetPassword = () => {
     }
 
     try {
-      const response = await axios.post('/api/users/set-password', {
-        email,
-        password,
-      })
-
+      await userService.setPassword({ email, password })
       setMessage('✅ Mot de passe défini avec succès. Vous pouvez maintenant vous connecter.')
+      setTimeout(() => {
+        window.location.href = '/login'
+      }, 2000)
     } catch (error) {
       setMessage(`❌ Erreur : ${error.response?.data?.message || error.message}`)
     }
@@ -35,6 +50,7 @@ const ResetPassword = () => {
         padding: '20px',
         border: '1px solid #ccc',
         borderRadius: '8px',
+        background: '#fff'
       }}
     >
       <h2>Définir votre mot de passe</h2>
@@ -49,8 +65,8 @@ const ResetPassword = () => {
             type="email"
             required
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={{ width: '100%', padding: '8px' }}
+            disabled
+            style={{ width: '100%', padding: '8px', background: '#f5f5f5' }}
           />
         </div>
 
@@ -84,6 +100,7 @@ const ResetPassword = () => {
             backgroundColor: '#4CAF50',
             color: 'white',
             border: 'none',
+            borderRadius: '4px',
           }}
         >
           Définir le mot de passe
