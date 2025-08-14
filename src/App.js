@@ -8,14 +8,17 @@ import { CSpinner } from '@coreui/react'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
+const PublicLayout = React.lazy(() => import('./layout/PublicLayout'))
 
 // Pages
 const Login = React.lazy(() => import('./views/pages/login/Login'))
+const ResetPassword = React.lazy(() => import('./views/pages/employee/ResetPassword'))
+// Ajoute Register si tu en as un
+// const Register = React.lazy(() => import('./views/pages/register/Register'))
 
 const App = () => {
   const dispatch = useDispatch()
   const [isChecking, setIsChecking] = useState(true)
-
   const isFirstRender = useRef(true)
 
   const checkAuth = useCallback(async () => {
@@ -53,9 +56,15 @@ const App = () => {
         }
       >
         <Routes>
-          <Route path="/login" name="Login Page" element={<Login />} />
-          <Route element={<PrivateRoute />} exact>
-            <Route path="/" element={<DefaultLayout />} />
+          {/* Public routes (sans header/sidebar) */}
+          <Route element={<PublicLayout />}>
+            <Route path="/login" name="Login Page" element={<Login />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            {/* <Route path="/register" element={<Register />} /> */}
+          </Route>
+
+          {/* Private routes (avec header/sidebar) */}
+          <Route element={<PrivateRoute />}>
             <Route path="*" element={<DefaultLayout />} />
           </Route>
         </Routes>

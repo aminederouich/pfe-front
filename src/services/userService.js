@@ -19,18 +19,18 @@ const getAllUsers = () => {
 }
 
 const sendInvite = (userData) => {
-  return axios.post(
-    `${API_URL}invite-employee`,
-    userData,
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    }
-  )
+  return axios.post(`${API_URL}invite-employee`, userData, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+  })
+}
+const setPassword = (data) => {
+  return axios.post(`${API_URL}set-password`, data)
 }
 
 export default {
   getAllUsers,
   sendInvite,
+  setPassword,
 }
