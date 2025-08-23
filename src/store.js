@@ -11,8 +11,10 @@ import ticketReducer from './reducers/ticketReducer'
 import userReducer from './reducers/userReducer'
 import projectReducer from './reducers/projectReducer'
 import scoreReducer from './reducers/scoreReducer'
+import rulesReducer from './reducers/rulesReducer'
 
 const rootReducer = combineReducers({
+  rules: rulesReducer,
   auth: authReducer,
   data: dataReducer,
   jira: jiraReducer,
@@ -29,4 +31,6 @@ const StoreProvider = ({ children }) => <Provider store={store}>{children}</Prov
 StoreProvider.propTypes = {
   children: PropTypes.node,
 }
+
+export { store }
 export default StoreProvider

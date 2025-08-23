@@ -61,7 +61,7 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 const ConfigJiraApi = React.lazy(() => import('./views/pages/jira/ConfigJiraApi'))
 
 const Projet = React.lazy(() => import('./views/pages/projet/Projet'))
-const ScoreRules = React.lazy(() => import('./views/pages/score/ScoreRules'))
+const ConfigRules = React.lazy(() => import('./views/pages/rule/RulesIndex'))
 const Login = React.lazy(() => import('./views/pages/login/Login'))
 
 const routes = [
@@ -85,8 +85,8 @@ const routes = [
   { path: '/projet', element: Projet, name: 'Projet', exact: true },
   { path: '/projet/list', name: 'liste des projets', element: Projet },
 
-  { path: '/score', name: 'Score', element: ScoreRules, exact: true },
-  { path: '/score/Config', name: 'Configuration de score ', element: ScoreRules },
+  { path: '/rule', name: 'Rule', element: ConfigRules, exact: true },
+  { path: '/rule/Config', name: 'Configuration des rules ', element: ConfigRules },
 
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },

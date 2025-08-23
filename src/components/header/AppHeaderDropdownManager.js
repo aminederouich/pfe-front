@@ -51,46 +51,45 @@ const AppHeaderDropdownManager = () => {
           </CDropdownToggle>
         </CCol>
         <CDropdownMenu className="pt-0" placement="bottom-end">
-          <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">Account</CDropdownHeader>
+          {/* <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">Account</CDropdownHeader>
           <CDropdownItem href="#">
             <CIcon icon={cilBell} className="me-2" />
             Updates
-            <CBadge color="info" className="ms-2">42</CBadge>
+            <CBadge color="info" className="ms-2">
+              42
+            </CBadge>
           </CDropdownItem>
           <CDropdownItem href="#">
             <CIcon icon={cilEnvelopeOpen} className="me-2" />
             Messages
-            <CBadge color="success" className="ms-2">42</CBadge>
+            <CBadge color="success" className="ms-2">
+              42
+            </CBadge>
           </CDropdownItem>
           <CDropdownItem href="#">
             <CIcon icon={cilTask} className="me-2" />
             Tasks
-            <CBadge color="danger" className="ms-2">42</CBadge>
+            <CBadge color="danger" className="ms-2">
+              42
+            </CBadge>
           </CDropdownItem>
           <CDropdownItem href="#">
             <CIcon icon={cilCommentSquare} className="me-2" />
             Comments
-            <CBadge color="warning" className="ms-2">42</CBadge>
-          </CDropdownItem>
+            <CBadge color="warning" className="ms-2">
+              42
+            </CBadge>
+          </CDropdownItem> */}
 
-          <CDropdownHeader className="bg-body-secondary fw-semibold my-2">Settings</CDropdownHeader>
-          <CDropdownItem href="#">Profile</CDropdownItem>
-          <CDropdownItem href="#">Settings</CDropdownItem>
-          <CDropdownItem href="/jira/config-jira-api">configuration jira API</CDropdownItem>
-          <CDropdownItem href="#">Projects</CDropdownItem>
-
-          {/* ITEM SCORE */}
-          <CDropdownItem href="/score/Config">
-            <CIcon icon={cilChart} className="me-2" />
-            Score
-          </CDropdownItem>
-
+          <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">Settings</CDropdownHeader>
+          {/* <CDropdownItem href="#">Profile</CDropdownItem> */}
+          {/* <CDropdownItem href="#">Settings</CDropdownItem> */}
+          <CDropdownItem href="/jira/config-jira-api">configuration des jira API</CDropdownItem>
+          {/* <CDropdownItem href="#">Projects</CDropdownItem> */}
+          <CDropdownItem href="/rule/Config">configuration des rules</CDropdownItem>
           {/* ADD NEW visible uniquement si Manager */}
           {user?.user?.IsManager && (
-            <CDropdownItem onClick={() => setVisible(true)}>
-              <CIcon icon={cilUser} className="me-2" />
-              Add New
-            </CDropdownItem>
+            <CDropdownItem onClick={() => setVisible(true)}>Add New</CDropdownItem>
           )}
 
           <CDropdownDivider />
