@@ -26,23 +26,13 @@ export const emptyIssue = {
       self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/issue/SCRUM-2/watchers',
     },
     reporter: {
-      self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/user?accountId=62c81fef7273faf658f2068d',
-      emailAddress: 'mohamedamine.derouich@sesame.com.tn',
-      accountType: 'atlassian',
-      accountId: '62c81fef7273faf658f2068d',
-      avatarUrls: {
-        '32x32':
-          'https://secure.gravatar.com/avatar/fba9f0dcfc7a2b63c55bfb9d22cde300?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMD-3.png',
-        '16x16':
-          'https://secure.gravatar.com/avatar/fba9f0dcfc7a2b63c55bfb9d22cde300?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMD-3.png',
-        '24x24':
-          'https://secure.gravatar.com/avatar/fba9f0dcfc7a2b63c55bfb9d22cde300?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMD-3.png',
-        '48x48':
-          'https://secure.gravatar.com/avatar/fba9f0dcfc7a2b63c55bfb9d22cde300?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMD-3.png',
-      },
-      timeZone: 'Etc/GMT-1',
+      self: '',
+      emailAddress: '',
+      accountType: '',
+      accountId: '',
+      timeZone: '',
       active: true,
-      displayName: 'Mohamed Amine DEROUICH',
+      displayName: '',
     },
     timespent: null,
     customfield_10001: null,
@@ -58,9 +48,9 @@ export const emptyIssue = {
     },
     resolutiondate: null,
     environment: null,
-    duedate: null,
+    duedate: '',
     votes: {
-      self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/issue/SCRUM-2/votes',
+      self: '',
       hasVoted: false,
       votes: 0,
     },
@@ -73,68 +63,48 @@ export const emptyIssue = {
     created: '',
     lastViewed: '',
     creator: {
-      displayName: 'Mohamed Amine DEROUICH',
-      timeZone: 'Etc/GMT-1',
-      accountType: 'atlassian',
+      displayName: '',
+      timeZone: '',
+      accountType: '',
       active: true,
-      emailAddress: 'mohamedamine.derouich@sesame.com.tn',
-      avatarUrls: {
-        '24x24':
-          'https://secure.gravatar.com/avatar/fba9f0dcfc7a2b63c55bfb9d22cde300?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMD-3.png',
-        '16x16':
-          'https://secure.gravatar.com/avatar/fba9f0dcfc7a2b63c55bfb9d22cde300?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMD-3.png',
-        '32x32':
-          'https://secure.gravatar.com/avatar/fba9f0dcfc7a2b63c55bfb9d22cde300?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMD-3.png',
-        '48x48':
-          'https://secure.gravatar.com/avatar/fba9f0dcfc7a2b63c55bfb9d22cde300?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMD-3.png',
-      },
-      self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/user?accountId=62c81fef7273faf658f2068d',
-      accountId: '62c81fef7273faf658f2068d',
+      emailAddress: '',
+      self: '',
+      accountId: '',
     },
     timeoriginalestimate: null,
     fixVersions: [],
     summary: '',
     updated: '',
     issuetype: {
-      id: '10002',
+      id: '',
       hierarchyLevel: 0,
-      iconUrl:
-        'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10303?size=medium',
-      avatarId: 10303,
+      iconUrl: '',
+      avatarId: '',
       subtask: false,
-      description: 'Un problème ou une erreur.',
-      entityId: 'b6942a7a-0278-49e3-89d3-85295176d3e8',
-      name: 'Bug',
-      self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/issuetype/10002',
+      description: '',
+      entityId: '',
+      name: '',
+      self: '',
     },
     aggregatetimeestimate: null,
     customfield_10016: null,
+    customfield_10015: '',
     customfield_10032: null,
     customfield_10019: '0|i00007:',
     project: {
-      name: 'backendTakeIT',
+      name: '',
       simplified: true,
-      id: '10000',
-      avatarUrls: {
-        '16x16':
-          'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10412?size=xsmall',
-        '48x48':
-          'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10412',
-        '24x24':
-          'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10412?size=small',
-        '32x32':
-          'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10412?size=medium',
-      },
-      key: 'SCRUM',
-      projectTypeKey: 'software',
-      self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/project/10000',
+      id: '',
+      key: '',
+      projectTypeKey: '',
+      self: '',
     },
     statusCategory: {
-      colorName: 'yellow',
-      id: 4,
-      key: 'indeterminate',
-      self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/statuscategory/4',
-      name: 'En cours',
+      key: 'new',
+      self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/statuscategory/2',
+      colorName: 'blue-gray',
+      name: 'A faire',
+      id: 2,
     },
     versions: [],
     timeestimate: null,
@@ -148,18 +118,6 @@ export const emptyIssue = {
   id: '',
   key: 'interne',
   self: '',
-  // createdAt: {
-  //   seconds: 1746709762,
-  //   nanoseconds: 95000000,
-  // },
   configId: '',
-  // lastSync: {
-  //   seconds: 1746801743,
-  //   nanoseconds: 830000000,
-  // },
-  // updatedAt: {
-  //   seconds: 1746801743,
-  //   nanoseconds: 830000000,
-  // },
   expand: 'operations,versionedRepresentations,editmeta,changelog,renderedFields',
 }

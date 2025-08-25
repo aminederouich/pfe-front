@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLocation } from 'react-router-dom'
 import {
   CButton,
   CCol,
@@ -14,43 +13,112 @@ import {
   CModalTitle,
   CRow,
   CCallout,
+  CFormInput,
 } from '@coreui/react'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { Editor } from '@tinymce/tinymce-react'
+import { useTranslation } from 'react-i18next'
+
 import { addNewTicketAPI, toggleCreateTicketModalClose } from '../../actions/ticketActions'
-import BugIssueForm from './ModalBody/BugIssueForm'
-import TaskIssueForm from './ModalBody/TaskIssueForm'
-import StoryIssueForm from './ModalBody/StoryIssueForm'
-import EpicIssueForm from './ModalBody/EpicIssueForm'
-import { projects, issueTypes } from '../../utils/TicketsConsts'
+import { projects, Prioritys, issuetype, status } from '../../utils/TicketsConsts'
 import { emptyIssue } from '../../utils/emptyIssue'
 import { getAllConfigJiraAPI } from '../../actions/jiraActions'
+import { getAllProjectAPI } from '../../actions/projectActions'
 
 const ModalCreateTicket = () => {
+  const dispatch = useDispatch()
+  const { t } = useTranslation()
+
   const { isCreateTicketModalOpen } = useSelector((state) => state.ticket)
-  const location = useLocation()
-  const [project, setProject] = useState(projects[0].value)
-  const [issueType, setIssueType] = useState(issueTypes[0].value)
+  const { projectList } = useSelector((state) => state.project)
+  const { jiraConfigList } = useSelector((state) => state.jira)
+  const { user } = useSelector((state) => state.auth)
+
+  const [projectType, setProjectType] = useState(projects[0].value)
+  const [projectName, setProjectName] = useState('')
   const [newIssue, setNewIssue] = useState(emptyIssue)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const dispatch = useDispatch()
-  const { jiraConfigList } = useSelector((state) => state.jira)
+
+  const handleEditorChange = (content) => {
+    setNewIssue({
+      ...newIssue,
+      fields: {
+        ...newIssue.fields,
+        description: content,
+      },
+    })
+  }
+
+  const handleChangeIssueType = (selectedId) => {
+    const selectedType = issuetype.find((option) => option.id === selectedId)
+    setNewIssue({
+      ...newIssue,
+      fields: {
+        ...newIssue.fields,
+        issuetype: selectedType || {},
+      },
+    })
+  }
+
+  const handleChangeSummary = (event) => {
+    setNewIssue({
+      ...newIssue,
+      fields: {
+        ...newIssue.fields,
+        summary: event.target.value,
+      },
+    })
+  }
+
+  const handlePriorityChange = (event) => {
+    const selectedPriority = event.target.value
+    const priorityObj = Prioritys.find((option) => option.id === selectedPriority) || {}
+    setNewIssue({
+      ...newIssue,
+      fields: {
+        ...newIssue.fields,
+        priority: priorityObj,
+      },
+    })
+  }
+
+  const handleStartDateChange = (date) => {
+    setNewIssue({
+      ...newIssue,
+      fields: {
+        ...newIssue.fields,
+        customfield_10015: date ? date : null,
+      },
+    })
+  }
+
+  const handleEndDateChange = (date) => {
+    setNewIssue({
+      ...newIssue,
+      fields: {
+        ...newIssue.fields,
+        duedate: date ? date : null,
+      },
+    })
+  }
 
   const handleClose = () => {
     setNewIssue(emptyIssue)
-    setProject(projects[0].value)
-    setIssueType(issueTypes[0].value)
+    setProjectType('')
     setIsSubmitting(false)
     dispatch(toggleCreateTicketModalClose())
   }
 
   const handleSubmitTicket = async () => {
-    // Validation du résumé
     if (!newIssue.fields?.summary?.trim()) {
       alert('Le résumé est obligatoire')
       return
     }
 
     // Traitement des projets externes
-    if (project === 'externe') {
+    if (projectType === 'externe') {
       if (!newIssue.fields?.externalLink?.trim()) {
         alert('Le lien externe est obligatoire pour un projet externe.')
         return
@@ -74,158 +142,84 @@ const ModalCreateTicket = () => {
   }
 
   const generateId = () => {
-    // Génération d'un ID plus robuste avec timestamp et nombre aléatoire
     const timestamp = Date.now()
     const randomNum = Math.floor(Math.random() * 1000000)
     return `${timestamp}${randomNum}`
   }
 
   useEffect(() => {
-    if (isCreateTicketModalOpen) {
-      const getProjectFromPath = () => {
-        const pathSegments = location.pathname.split('/')
-        const projectCodeFromPath = pathSegments.find((segment) =>
-          projects.some(
-            (p) => p.value === segment || p.label.toLowerCase().includes(segment.toLowerCase()),
-          ),
-        )
-        if (projectCodeFromPath) {
-          const foundProject = projects.find(
-            (p) =>
-              p.value === projectCodeFromPath ||
-              p.label.toLowerCase().includes(projectCodeFromPath.toLowerCase()),
-          )
-          return foundProject ? foundProject.value : projects[0].value
-        }
-        return projects[0].value
-      }
-
-      const projectFromPath = getProjectFromPath()
-      setProject(projectFromPath)
-    }
-  }, [isCreateTicketModalOpen, location.pathname])
-
-  useEffect(() => {
     const now = new Date().toISOString()
-    setNewIssue((prevIssue) => ({
-      ...prevIssue,
-      id: generateId(),
-      fields: {
-        ...prevIssue.fields,
-        created: now,
-        lastViewed: now,
-        updated: now,
-        statuscategorychangedate: now,
-        project: {
-          key: project,
-          name: projects.find((p) => p.value === project)?.label || project,
-        },
-      },
-    }))
-  }, [isCreateTicketModalOpen, project])
-
-  useEffect(() => {
     setNewIssue((prevIssue) => {
-      let updatedIssue = { ...prevIssue }
-
-      switch (issueType) {
-        case 'Bug':
-          updatedIssue = {
-            ...prevIssue,
-            fields: {
-              ...prevIssue.fields,
-              issuetype: {
-                id: '10002',
-                hierarchyLevel: 0,
-                iconUrl:
-                  'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10303?size=medium',
-                avatarId: 10303,
-                subtask: false,
-                description: 'Un problème ou une erreur.',
-                entityId: 'b6942a7a-0278-49e3-89d3-85295176d3e8',
-                name: 'Bug',
-                self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/issuetype/10002',
-              },
-            },
-          }
-          break
-
-        case 'Task':
-          updatedIssue = {
-            ...prevIssue,
-            fields: {
-              ...prevIssue.fields,
-              issuetype: {
-                self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/issuetype/10001',
-                name: 'Tâche',
-                description: 'Une tâche distincte.',
-                id: '10001',
-                entityId: 'ca1798d2-e4c6-4758-bfaf-7e38a85cd0ea',
-                iconUrl:
-                  'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10318?size=medium',
-                avatarId: 10318,
-                subtask: false,
-                hierarchyLevel: 0,
-              },
-            },
-          }
-          break
-
-        case 'Story':
-          updatedIssue = {
-            ...prevIssue,
-            fields: {
-              ...prevIssue.fields,
-              issuetype: {
-                hierarchyLevel: 0,
-                subtask: false,
-                description: "Une fonctionnalité exprimée sous la forme d'un objectif utilisateur.",
-                iconUrl:
-                  'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10315?size=medium',
-                avatarId: 10315,
-                entityId: '6b7e8da8-f84c-41ac-80ac-ba881764a634',
-                name: 'Story',
-                id: '10003',
-                self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/issuetype/10003',
-              },
-            },
-          }
-          break
-
-        case 'Epic':
-          updatedIssue = {
-            ...prevIssue,
-            fields: {
-              ...prevIssue.fields,
-              issuetype: {
-                self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/issuetype/10004',
-                id: '10004',
-                description: 'Une collection de bugs, stories et tâches connexes.',
-                iconUrl:
-                  'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium',
-                name: 'Epic',
-                subtask: false,
-                avatarId: 10307,
-                entityId: 'd1c66b55-cd69-4aba-b239-665a2e2f6af3',
-                hierarchyLevel: 1,
-              },
-            },
-          }
-          break
-
-        default:
-          break
+      let newKey = projectType
+      if (projectType === 'externe') {
+        newKey = 'externe'
       }
-
-      return updatedIssue
+      return {
+        ...prevIssue,
+        id: generateId(),
+        key: newKey,
+        fields: {
+          ...prevIssue.fields,
+          status: status[0],
+          statusCategory: status[0].statusCategory,
+          customfield_10015: now,
+          created: now,
+          lastViewed: now,
+          updated: now,
+          statuscategorychangedate: now,
+          creator: {
+            displayName: `${user.user.FirstName} ${user.user.LastName}`,
+            timeZone: 'Etc/GMT-1',
+            accountType: 'takeit',
+            active: true,
+            emailAddress: user.user.email,
+            self: '',
+            accountId: user.user.uid,
+          },
+          reporter: {
+            self: '',
+            emailAddress: user.user.email,
+            accountType: 'takeit',
+            accountId: user.user.uid,
+            timeZone: 'Etc/GMT-1',
+            active: true,
+            displayName: `${user.user.FirstName} ${user.user.LastName}`,
+          },
+        },
+      }
     })
-  }, [issueType])
+  }, [isCreateTicketModalOpen, projectType, user])
 
   useEffect(() => {
-    if (project === 'externe') {
+    if (projectType === 'externe') {
       dispatch(getAllConfigJiraAPI())
     }
-  }, [project, dispatch])
+    if (projectType === 'interne') {
+      dispatch(getAllProjectAPI())
+    }
+  }, [projectType, dispatch])
+
+  useEffect(() => {
+    if (projectName && projectName !== '-1') {
+      const selectedProject = projectList.find((p) => p.projectName === projectName)
+      if (selectedProject) {
+        setNewIssue((prev) => ({
+          ...prev,
+          key: selectedProject.key,
+          fields: {
+            ...prev.fields,
+            project: {
+              id: selectedProject.id,
+              name: selectedProject.projectName,
+              key: selectedProject.key,
+              projectTypeKey: selectedProject.projectType,
+            },
+          },
+        }))
+      }
+    }
+  }, [projectName, projectType, projectList])
+
   return (
     <CModal
       visible={isCreateTicketModalOpen}
@@ -235,22 +229,22 @@ const ModalCreateTicket = () => {
       scrollable
     >
       <CModalHeader>
-        <CModalTitle>Créer un nouveau ticket</CModalTitle>
+        <CModalTitle>{t('modal.title')}</CModalTitle>
       </CModalHeader>
       <CModalBody>
         <CCallout color="info" className="mb-3">
-          Les champs obligatoires sont marqués d&apos;un astérisque *
+          {t('modal.description')}
         </CCallout>
 
         <CForm>
           <CRow className="mb-3">
             <CCol md={3}>
-              <CFormLabel className="fw-bold">Projet*</CFormLabel>
+              <CFormLabel className="fw-bold">{t('modal.fields.projectType')}</CFormLabel>
             </CCol>
             <CCol md={5}>
               <CFormSelect
-                value={project}
-                onChange={(event) => setProject(event.target.value)}
+                value={projectType}
+                onChange={(event) => setProjectType(event.target.value)}
                 aria-describedby="project-help"
               >
                 {projects.map((option) => (
@@ -260,15 +254,15 @@ const ModalCreateTicket = () => {
                 ))}
               </CFormSelect>
               <small id="project-help" className="form-text text-muted">
-                Veuillez sélectionner votre projet
+                {t('modal.fieldsHelper.project')}
               </small>
             </CCol>
           </CRow>
 
-          {project === 'externe' ? (
+          {projectType === 'externe' ? (
             <CRow className="mb-3">
               <CCol md={3}>
-                <CFormLabel className="fw-bold">Configuration Jira*</CFormLabel>
+                <CFormLabel className="fw-bold">{t('modal.fields.configJira')}</CFormLabel>
               </CCol>
               <CCol md={9}>
                 <CFormSelect
@@ -290,7 +284,7 @@ const ModalCreateTicket = () => {
                     }))
                   }}
                 >
-                  <option value="">-- Sélectionnez une configuration Jira --</option>
+                  <option value="">{t('modal.fieldsHelper.configJira')}</option>
                   {jiraConfigList.map((conf) => (
                     <option key={conf.id} value={`${conf.protocol}://${conf.host}`}>
                       {conf.host} ({conf.username})
@@ -298,7 +292,7 @@ const ModalCreateTicket = () => {
                   ))}
                 </CFormSelect>
                 <small className="form-text text-muted">
-                  Veuillez sélectionner une configuration Jira.
+                  {t('modal.fieldsHelper.configJiraHelper')}
                 </small>
               </CCol>
             </CRow>
@@ -306,43 +300,154 @@ const ModalCreateTicket = () => {
             <>
               <CRow className="mb-3">
                 <CCol md={3}>
-                  <CFormLabel className="fw-bold">Type d&apos;issue*</CFormLabel>
+                  <CFormLabel className="fw-bold">{t('modal.fields.projectName')}</CFormLabel>
                 </CCol>
                 <CCol md={5}>
-                  <CFormSelect value={issueType} onChange={(e) => setIssueType(e.target.value)}>
-                    {issueTypes.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
+                  <CFormSelect value={projectName} onChange={(e) => setProjectName(e.target.value)}>
+                    <option key="-1" value="-1"></option>
+                    {projectList.map((option) => (
+                      <option key={option.key} value={option.projectName}>
+                        {option.projectName}
                       </option>
                     ))}
                   </CFormSelect>
                 </CCol>
               </CRow>
-
+              <CRow className="mb-3">
+                <CCol md={3}>
+                  <CFormLabel className="fw-bold">{t('modal.fields.issueType')}</CFormLabel>
+                </CCol>
+                <CCol md={5}>
+                  <CFormSelect
+                    value={newIssue.fields.issuetype.id}
+                    onChange={(e) => handleChangeIssueType(e.target.value)}
+                  >
+                    <option key="-1" value="-1"></option>
+                    {issuetype.map(
+                      (option) =>
+                        option.scope.type === 'INTERNE' && (
+                          <option key={option.id} value={option.id}>
+                            {option.name}
+                          </option>
+                        ),
+                    )}
+                  </CFormSelect>
+                </CCol>
+              </CRow>
               <hr />
+              <div className="mt-3">
+                <CRow className="mb-3">
+                  <CCol md={3}>
+                    <CFormLabel className="fw-bold">{t('modal.fields.summary')}</CFormLabel>
+                  </CCol>
+                  <CCol md={9}>
+                    <CFormInput
+                      type="text"
+                      placeholder={t('modal.fieldsHelper.summary')}
+                      value={newIssue.fields.summary || ''}
+                      onChange={(event) => handleChangeSummary(event)}
+                    />
+                  </CCol>
+                </CRow>
 
-              {issueType === 'Bug' && (
-                <BugIssueForm newIssue={newIssue} setNewIssue={setNewIssue} />
-              )}
-              {issueType === 'Task' && (
-                <TaskIssueForm newIssue={newIssue} setNewIssue={setNewIssue} />
-              )}
-              {issueType === 'Story' && (
-                <StoryIssueForm newIssue={newIssue} setNewIssue={setNewIssue} />
-              )}
-              {issueType === 'Epic' && (
-                <EpicIssueForm newIssue={newIssue} setNewIssue={setNewIssue} />
-              )}
+                <CRow className="mb-3">
+                  <CCol md={3}>
+                    <CFormLabel className="fw-bold">{t('modal.fields.description')}</CFormLabel>
+                  </CCol>
+                  <CCol md={9}>
+                    <Editor
+                      apiKey="pgeao7zzbo9u4uoozk1nlccidje7yemdafe1egcax1afrsz8"
+                      initialValue=""
+                      init={{
+                        height: 300,
+                        menubar: false,
+                        plugins: [
+                          'advlist autolink lists link charmap preview anchor',
+                          'searchreplace visualblocks code fullscreen',
+                          'insertdatetime media table code help wordcount',
+                        ],
+                        toolbar:
+                          'undo redo | formatselect | bold italic underline | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+                      }}
+                      onEditorChange={handleEditorChange}
+                    />
+                  </CCol>
+                </CRow>
+
+                <CRow className="mb-3">
+                  <CCol md={3}>
+                    <CFormLabel className="fw-bold">{t('modal.fields.priority')}</CFormLabel>
+                  </CCol>
+                  <CCol md={9}>
+                    <CFormSelect
+                      value={newIssue.fields.priority.id}
+                      onChange={handlePriorityChange}
+                      aria-describedby="priority-help"
+                    >
+                      {Prioritys.map((option) => (
+                        <option key={option.id} value={option.id}>
+                          {option.name}
+                        </option>
+                      ))}
+                    </CFormSelect>
+                    <small id="priority-help" className="form-text text-muted">
+                      {t('modal.fieldsHelper.priority')}
+                    </small>
+                  </CCol>
+                </CRow>
+
+                <CRow className="mb-3">
+                  <CCol md={3}>
+                    <CFormLabel className="fw-bold">{t('modal.fields.startDate')}</CFormLabel>
+                  </CCol>
+                  <CCol md={9}>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DatePicker
+                        value={new Date(newIssue.fields.customfield_10015)}
+                        onChange={handleStartDateChange}
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            variant: 'outlined',
+                            size: 'small',
+                          },
+                        }}
+                      />
+                    </LocalizationProvider>
+                  </CCol>
+                </CRow>
+
+                <CRow className="mb-3">
+                  <CCol md={3}>
+                    <CFormLabel className="fw-bold">{t('modal.fields.endDate')}</CFormLabel>
+                  </CCol>
+                  <CCol md={9}>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DatePicker
+                        value={new Date(newIssue.fields.duedate)}
+                        onChange={handleEndDateChange}
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            variant: 'outlined',
+                            size: 'small',
+                          },
+                        }}
+                      />
+                    </LocalizationProvider>
+                  </CCol>
+                </CRow>
+              </div>
             </>
           )}
         </CForm>
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" onClick={handleClose} disabled={isSubmitting}>
-          Annuler
+          {t('modal.actions.cancel')}
         </CButton>
         <CButton color="primary" onClick={handleSubmitTicket} disabled={isSubmitting}>
-          {isSubmitting ? 'Création...' : 'Créer'}
+          {isSubmitting ? t('modal.actions.creating') : t('modal.actions.create')}
         </CButton>
       </CModalFooter>
     </CModal>
