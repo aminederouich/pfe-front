@@ -1,3 +1,5 @@
+import '../src/i18n'
+import I18nProvider from './I18nProvider'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import StoreProvider from './store'
@@ -12,17 +14,19 @@ const root = createRoot(container)
 root.render(
   <React.StrictMode>
     <StoreProvider>
-      <StyledEngineProvider injectFirst>
-        <ToastContainer
-          hideProgressBar
-          pauseOnFocusLoss={false}
-          autoClose={2000}
-          closeOnClick
-          position="top-center"
-          theme="colored"
-        />
-        <App />
-      </StyledEngineProvider>
+      <I18nProvider>
+        <StyledEngineProvider injectFirst>
+          <ToastContainer
+            hideProgressBar
+            pauseOnFocusLoss={false}
+            autoClose={2000}
+            closeOnClick
+            position="top-center"
+            theme="colored"
+          />
+          <App />
+        </StyledEngineProvider>
+      </I18nProvider>
     </StoreProvider>
   </React.StrictMode>,
 )
