@@ -3,61 +3,6 @@ export const projects = [
   { label: 'Externe', value: 'externe' },
 ]
 
-export const issueTypes = [
-  {
-    value: 'Bug',
-    label: 'Bug',
-  },
-  {
-    value: 'Task',
-    label: 'Task',
-  },
-  {
-    value: 'Story',
-    label: 'Story',
-  },
-  {
-    value: 'Epic',
-    label: 'Epic',
-  },
-  // {
-  //   value: 'Sub-task',
-  //   label: 'Sub-task',
-  // },
-  // {
-  //   value: 'Improvement',
-  //   label: 'Improvement',
-  // },
-  // {
-  //   value: 'New Feature',
-  //   label: 'New Feature',
-  // },
-  // {
-  //   value: 'Test',
-  //   label: 'Test',
-  // },
-  // {
-  //   value: 'Documentation',
-  //   label: 'Documentation',
-  // },
-  // {
-  //   value: 'Test Execution',
-  //   label: 'Test Execution',
-  // },
-  // {
-  //   value: 'Pre-Condition',
-  //   label: 'Pre-Condition',
-  // },
-  // {
-  //   value: 'Test Plan',
-  //   label: 'Test Plan',
-  // },
-  // {
-  //   value: 'Incident',
-  //   label: 'Incident',
-  // },
-]
-
 export const Prioritys = [
   {
     id: '1',
@@ -165,7 +110,25 @@ export const issuetype = [
     avatarId: 10303,
     hierarchyLevel: 0,
     scope: {
-      type: 'PROJECT',
+      type: 'INTERNE',
+      project: {
+        id: '10000',
+      },
+    },
+  },
+  {
+    self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/issuetype/101111',
+    id: '100111',
+    description: 'Une nouvelle fonctionnalité.',
+    iconUrl:
+      'https://sesame-team-pfe.atlassian.net/rest/api/3/universal_avatar/view/type/issuetype/avatar/10311?size=medium',
+    name: 'New Feature',
+    untranslatedName: 'New-Feature',
+    subtask: false,
+    avatarId: 10311,
+    hierarchyLevel: 0,
+    scope: {
+      type: 'INTERNE',
       project: {
         id: '10000',
       },
@@ -186,6 +149,193 @@ export const issuetype = [
       type: 'PROJECT',
       project: {
         id: '10000',
+      },
+    },
+  },
+  {
+    self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/issuetype/10005',
+    id: '10005',
+    description:
+      "Les sous-tâches sont de petites unités de travail qui font partie d'une tâche plus importante.",
+    iconUrl:
+      'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10316?size=medium',
+    name: 'Sous-tâche',
+    untranslatedName: 'Sous-tâche',
+    subtask: true,
+    avatarId: 10316,
+    hierarchyLevel: -1,
+    scope: {
+      type: 'PROJECT',
+      project: {
+        id: '10000',
+      },
+    },
+  },
+  {
+    self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/issuetype/10004',
+    id: '10004',
+    description: 'Une collection de bugs, stories et tâches connexes.',
+    iconUrl:
+      'https://sesame-team-pfe.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium',
+    name: 'Epic',
+    untranslatedName: 'Epic',
+    subtask: false,
+    avatarId: 10307,
+    hierarchyLevel: 1,
+    scope: {
+      type: 'PROJECT',
+      project: {
+        id: '10000',
+      },
+    },
+  },
+]
+
+export const status = [
+  {
+    self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/status/10000',
+    description: '',
+    iconUrl: 'https://sesame-team-pfe.atlassian.net/',
+    name: 'À faire',
+    untranslatedName: 'To Do',
+    id: '10000',
+    statusCategory: {
+      self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/statuscategory/2',
+      id: 2,
+      key: 'new',
+      colorName: 'blue-gray',
+      name: 'A faire',
+    },
+    scope: {
+      type: 'PROJECT',
+      project: {
+        id: '10000',
+      },
+    },
+  },
+  {
+    self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/status/10001',
+    description: 'Ce ticket est en cours de traitement par la personne assignée.',
+    iconUrl: 'https://sesame-team-pfe.atlassian.net/',
+    name: 'En cours',
+    untranslatedName: 'In Progress',
+    id: '10001',
+    statusCategory: {
+      self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/statuscategory/4',
+      id: 4,
+      key: 'indeterminate',
+      colorName: 'yellow',
+      name: 'En cours',
+    },
+    scope: {
+      type: 'PROJECT',
+      project: {
+        id: '10000',
+      },
+    },
+  },
+  {
+    self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/status/10002',
+    description: '',
+    iconUrl: 'https://sesame-team-pfe.atlassian.net/',
+    name: 'Terminé(e)',
+    untranslatedName: 'Done',
+    id: '10002',
+    statusCategory: {
+      self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/statuscategory/3',
+      id: 3,
+      key: 'done',
+      colorName: 'green',
+      name: 'Terminé',
+    },
+    scope: {
+      type: 'PROJECT',
+      project: {
+        id: '10000',
+      },
+    },
+  },
+  {
+    self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/status/10033',
+    description: '',
+    iconUrl: 'https://sesame-team-pfe.atlassian.net/',
+    name: 'en attend de validation',
+    untranslatedName: 'en attend de validation',
+    id: '10033',
+    statusCategory: {
+      self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/statuscategory/4',
+      id: 4,
+      key: 'indeterminate',
+      colorName: 'yellow',
+      name: 'En cours',
+    },
+    scope: {
+      type: 'PROJECT',
+      project: {
+        id: '10000',
+      },
+    },
+  },
+  {
+    self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/status/10066',
+    description: '',
+    iconUrl: 'https://sesame-team-pfe.atlassian.net/',
+    name: 'À faire',
+    untranslatedName: 'To Do',
+    id: '10066',
+    statusCategory: {
+      self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/statuscategory/2',
+      id: 2,
+      key: 'new',
+      colorName: 'blue-gray',
+      name: 'A faire',
+    },
+    scope: {
+      type: 'PROJECT',
+      project: {
+        id: '10033',
+      },
+    },
+  },
+  {
+    self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/status/10067',
+    description: 'Ce ticket est en cours de traitement par la personne assignée.',
+    iconUrl: 'https://sesame-team-pfe.atlassian.net/',
+    name: 'En cours',
+    untranslatedName: 'In Progress',
+    id: '10067',
+    statusCategory: {
+      self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/statuscategory/4',
+      id: 4,
+      key: 'indeterminate',
+      colorName: 'yellow',
+      name: 'En cours',
+    },
+    scope: {
+      type: 'PROJECT',
+      project: {
+        id: '10033',
+      },
+    },
+  },
+  {
+    self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/status/10068',
+    description: '',
+    iconUrl: 'https://sesame-team-pfe.atlassian.net/',
+    name: 'Terminé(e)',
+    untranslatedName: 'Done',
+    id: '10068',
+    statusCategory: {
+      self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/statuscategory/3',
+      id: 3,
+      key: 'done',
+      colorName: 'green',
+      name: 'Terminé',
+    },
+    scope: {
+      type: 'PROJECT',
+      project: {
+        id: '10033',
       },
     },
   },
