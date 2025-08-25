@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -11,7 +12,14 @@ import {
   CButton,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilBell, cilEnvelopeOpen, cilList } from '@coreui/icons'
+import {
+  cilBell,
+  cilEnvelopeOpen,
+  cilLanguage,
+  cilList,
+  cilSignLanguage,
+  cilTranslate,
+} from '@coreui/icons'
 
 import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown, AppHeaderDropdownManager } from './header/index'
@@ -19,6 +27,7 @@ import { switchThemeMode } from '../actions/appActions'
 import { toggleCreateTicketModalOpen } from '../actions/ticketActions'
 
 const AppHeader = () => {
+  const { t, i18n } = useTranslation()
   const headerRef = useRef()
   const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
   const dispatch = useDispatch()
@@ -49,6 +58,9 @@ const AppHeader = () => {
       <CContainer className="border-bottom px-4" fluid>
         <CHeaderNav className="d-none d-md-flex">
           <CNavItem>
+            <CNavLink>{t('welcome')}</CNavLink>
+          </CNavItem>
+          <CNavItem>
             <CNavLink to="/dashboard" as={NavLink}>
               Dashboard
             </CNavLink>
@@ -67,6 +79,28 @@ const AppHeader = () => {
             <CNavLink to="/tickets/list" as={NavLink}>
               Tickets
             </CNavLink>
+          </CNavItem>
+        </CHeaderNav>
+        {/* Sélecteur de langue */}
+        <CHeaderNav>
+          <CNavItem>
+            <CButton
+              color={i18n.language === 'fr' ? 'secondary' : 'light'}
+              size="sm"
+              onClick={() => i18n.changeLanguage('fr')}
+              className="me-2"
+            >
+              FR
+            </CButton>
+          </CNavItem>
+          <CNavItem>
+            <CButton
+              color={i18n.language === 'en' ? 'secondary' : 'light'}
+              size="sm"
+              onClick={() => i18n.changeLanguage('en')}
+            >
+              EN
+            </CButton>
           </CNavItem>
         </CHeaderNav>
         <CHeaderNav className="ms-auto">
@@ -98,13 +132,12 @@ const AppHeader = () => {
             <div className="vr h-100 mx-2 text-body text-opacity-75"></div>
           </li>
           {/* On affiche le menu utilisateur seulement si on n'est PAS sur une route à cacher */}
-          {!hideUserHeaderRoutes.includes(location.pathname) && (
-            user !== null && user.user.IsEmployee && !user.user.IsManager ? (
+          {!hideUserHeaderRoutes.includes(location.pathname) &&
+            (user !== null && user.user.IsEmployee && !user.user.IsManager ? (
               <AppHeaderDropdown />
             ) : user !== null && !user.user.IsEmployee && user.user.IsManager ? (
               <AppHeaderDropdownManager />
-            ) : null
-          )}
+            ) : null)}
         </CHeaderNav>
       </CContainer>
       <CContainer className="px-4" fluid>
