@@ -108,6 +108,25 @@ const ModalCreateTicket = () => {
     })
   }
 
+  const handleMeAssignee = () => {
+    if (user) {
+      setNewIssue({
+        ...newIssue,
+        fields: {
+          ...newIssue.fields,
+          assignee: {
+            emailAddress: user.user.email,
+            accountId: user.user.uid,
+            displayName: user.user.FirstName + ' ' + user.user.LastName,
+            accountType: 'takeit',
+            timeZone: 'Etc/GMT-1',
+            active: true,
+          },
+        },
+      })
+    }
+  }
+
   const handleEndDateChange = (date) => {
     setNewIssue({
       ...newIssue,
@@ -235,6 +254,14 @@ const ModalCreateTicket = () => {
             timeZone: 'Etc/GMT-1',
             active: true,
             displayName: `${user.user.FirstName} ${user.user.LastName}`,
+          },
+          assignee: {
+            emailAddress: user.user.IsEmployee ? user.user.email : '',
+            accountId: user.user.IsEmployee ? user.user.uid : '',
+            displayName: user.user.IsEmployee ? user.user.FirstName + ' ' + user.user.LastName : '',
+            accountType: 'takeit',
+            timeZone: 'Etc/GMT-1',
+            active: true,
           },
         },
       }
@@ -437,7 +464,7 @@ const ModalCreateTicket = () => {
                       onChange={(event) => handleChangeSummary(event)}
                       required={projectType === 'interne'}
                       invalid={!newIssue.fields?.summary}
-                      valid={newIssue.fields?.summary}
+                      valid={!!newIssue.fields?.summary}
                     />
                   </CCol>
                 </CRow>
@@ -476,7 +503,7 @@ const ModalCreateTicket = () => {
                       value={newIssue.fields.priority.id}
                       onChange={handlePriorityChange}
                       aria-describedby="priority-help"
-                      valid={newIssue.fields?.priority?.id}
+                      valid={!!newIssue.fields?.priority?.id}
                       invalid={!newIssue.fields?.priority?.id}
                     >
                       {Prioritys.map((option) => (
@@ -495,26 +522,41 @@ const ModalCreateTicket = () => {
                   <CCol md={3}>
                     <CFormLabel className="fw-bold">{t('modal.fields.assignee')}</CFormLabel>
                   </CCol>
-                  <CCol md={9}>
+                  <CCol md={6}>
                     <CFormSelect
                       required={projectType === 'interne'}
-                      value={newIssue.fields.assignee.id}
+                      value={newIssue.fields.assignee.accountId}
+                      defaultValue={user.user.uid}
+                      disabled={user.user.IsEmployee}
                       onChange={handleAssigneeChange}
                       aria-describedby="assignee-help"
-                      valid={newIssue.fields?.assignee?.id}
-                      invalid={!newIssue.fields?.assignee?.id}
+                      valid={!!newIssue.fields?.assignee?.accountId}
+                      invalid={!newIssue.fields?.assignee?.accountId}
                     >
-                      <option key="-1" value="-1"></option>
-
+                      {!user.user.IsEmployee && (
+                        <option key="-1" value="-1">
+                          {t('modal.fields.nonAssigned')}
+                        </option>
+                      )}
+                      <option key={user.user.uid} value={user.user.uid} disabled>
+                        {user.user.FirstName} {user.user.LastName}
+                      </option>
                       {usersList.map((option) => (
                         <option key={option.uid} value={option.uid}>
                           {option.firstName} {option.lastName}
                         </option>
                       ))}
                     </CFormSelect>
-                    <small id="priority-help" className="form-text text-muted">
-                      {t('modal.fieldsHelper.priority')}
-                    </small>
+                  </CCol>
+                  <CCol md={3}>
+                    <CButton
+                      color="primary"
+                      variant="outline"
+                      onClick={() => handleMeAssignee()}
+                      disabled={isSubmitting || user.user.IsEmployee}
+                    >
+                      {t('modal.actions.assigneeToMe')}
+                    </CButton>
                   </CCol>
                 </CRow>
 
@@ -535,6 +577,7 @@ const ModalCreateTicket = () => {
                             size: 'small',
                           },
                         }}
+                        format="dd/MM/yyyy"
                       />
                     </LocalizationProvider>
                   </CCol>
