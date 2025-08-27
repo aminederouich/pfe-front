@@ -20,6 +20,7 @@ const fr = {
         description: 'Description',
         priority: 'Priorité *',
         assignee: 'Assigné à *',
+        nonAssigned: 'Non assigné',
         startDate: 'Date début *',
         endDate: 'Date limite',
       },
@@ -40,6 +41,7 @@ const fr = {
         sameStartEndDate: 'La date de début et la date de fin ne peuvent pas être identiques.',
       },
       actions: {
+        assigneeToMe: "Me l'assigner",
         create: 'Créer',
         creating: 'Création...',
         cancel: 'Annuler',
