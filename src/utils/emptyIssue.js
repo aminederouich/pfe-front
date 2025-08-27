@@ -3,7 +3,14 @@ export const emptyIssue = {
     components: [],
     statuscategorychangedate: '',
     workratio: -1,
-    assignee: null,
+    assignee: {
+      emailAddress: '',
+      accountId: '',
+      active: true,
+      timeZone: 'Etc/GMT-1',
+      displayName: '',
+      accountType: 'takeit',
+    },
     aggregatetimeoriginalestimate: null,
     status: {
       id: '10000',

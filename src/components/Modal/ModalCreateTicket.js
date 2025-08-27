@@ -26,6 +26,8 @@ import { projects, Prioritys, issuetype, status } from '../../utils/TicketsConst
 import { emptyIssue } from '../../utils/emptyIssue'
 import { getAllConfigJiraAPI } from '../../actions/jiraActions'
 import { getAllProjectAPI } from '../../actions/projectActions'
+import { getAllUsersAPI } from '../../actions/userActions'
+import { toast } from 'react-toastify'
 
 const ModalCreateTicket = () => {
   const dispatch = useDispatch()
@@ -35,11 +37,13 @@ const ModalCreateTicket = () => {
   const { projectList } = useSelector((state) => state.project)
   const { jiraConfigList } = useSelector((state) => state.jira)
   const { user } = useSelector((state) => state.auth)
+  const { usersList } = useSelector((state) => state.user)
 
-  const [projectType, setProjectType] = useState(projects[0].value)
+  const [projectType, setProjectType] = useState('-1')
   const [projectName, setProjectName] = useState('')
   const [newIssue, setNewIssue] = useState(emptyIssue)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [validated, setValidated] = useState(false)
 
   const handleEditorChange = (content) => {
     setNewIssue({
@@ -84,12 +88,22 @@ const ModalCreateTicket = () => {
     })
   }
 
-  const handleStartDateChange = (date) => {
+  const handleAssigneeChange = (event) => {
+    const selectedUser = event.target.value
+    const userObj = usersList.find((option) => option.uid === selectedUser) || {}
+
     setNewIssue({
       ...newIssue,
       fields: {
         ...newIssue.fields,
-        customfield_10015: date ? date : null,
+        assignee: {
+          emailAddress: userObj.email,
+          accountId: userObj.uid,
+          displayName: userObj.firstName + ' ' + userObj.lastName,
+          accountType: 'takeit',
+          timeZone: 'Etc/GMT-1',
+          active: true,
+        },
       },
     })
   }
@@ -107,25 +121,62 @@ const ModalCreateTicket = () => {
   const handleClose = () => {
     setNewIssue(emptyIssue)
     setProjectType('')
+    setProjectName('')
     setIsSubmitting(false)
     dispatch(toggleCreateTicketModalClose())
   }
 
   const handleSubmitTicket = async () => {
-    if (!newIssue.fields?.summary?.trim()) {
-      alert('Le résumé est obligatoire')
-      return
-    }
-
     // Traitement des projets externes
     if (projectType === 'externe') {
       if (!newIssue.fields?.externalLink?.trim()) {
-        alert('Le lien externe est obligatoire pour un projet externe.')
+        toast.error(t('modal.fieldsErrors.externalLink'))
         return
       }
       window.open(newIssue.fields.externalLink, '_blank')
       handleClose()
       return
+    }
+
+    if (projectType === 'interne') {
+      if (!newIssue.fields?.project?.id || newIssue.fields?.project?.id === '-1') {
+        setValidated(false)
+        toast.error(t('modal.fieldsErrors.project'))
+        return
+      }
+      if (!newIssue.fields?.issuetype?.id || newIssue.fields?.issuetype?.id === '-1') {
+        setValidated(false)
+        toast.error(t('modal.fieldsErrors.issuetype'))
+        return
+      }
+      if (!newIssue.fields?.summary?.trim()) {
+        setValidated(false)
+        toast.error(t('modal.fieldsErrors.summary'))
+        return
+      }
+      if (!newIssue.fields?.priority?.id) {
+        setValidated(false)
+        toast.error(t('modal.fieldsErrors.priority'))
+        return
+      }
+      if (
+        newIssue.fields?.customfield_10015 &&
+        newIssue.fields?.duedate &&
+        newIssue.fields?.duedate !== ''
+      ) {
+        const startDate = new Date(newIssue.fields.customfield_10015)
+        const endDate = new Date(newIssue.fields.duedate)
+        // Compare only the date part (year, month, day)
+        if (
+          startDate.getFullYear() === endDate.getFullYear() &&
+          startDate.getMonth() === endDate.getMonth() &&
+          startDate.getDate() === endDate.getDate()
+        ) {
+          toast.error(t('modal.fieldsErrors.sameStartEndDate'))
+          setValidated(false)
+          return
+        }
+      }
     }
 
     // Traitement des projets internes
@@ -196,6 +247,7 @@ const ModalCreateTicket = () => {
     }
     if (projectType === 'interne') {
       dispatch(getAllProjectAPI())
+      dispatch(getAllUsersAPI())
     }
   }, [projectType, dispatch])
 
@@ -217,6 +269,20 @@ const ModalCreateTicket = () => {
           },
         }))
       }
+    } else if (projectName === '-1') {
+      setNewIssue((prev) => ({
+        ...prev,
+        key: '',
+        fields: {
+          ...prev.fields,
+          project: {
+            id: '',
+            name: '',
+            key: '',
+            projectTypeKey: '',
+          },
+        },
+      }))
     }
   }, [projectName, projectType, projectList])
 
@@ -231,12 +297,17 @@ const ModalCreateTicket = () => {
       <CModalHeader>
         <CModalTitle>{t('modal.title')}</CModalTitle>
       </CModalHeader>
-      <CModalBody>
-        <CCallout color="info" className="mb-3">
-          {t('modal.description')}
-        </CCallout>
+      <CForm
+        className="needs-validation overflow-auto"
+        noValidate
+        validated={validated}
+        onSubmit={handleSubmitTicket}
+      >
+        <CModalBody>
+          <CCallout color="info" className="mb-3">
+            {t('modal.description')}
+          </CCallout>
 
-        <CForm>
           <CRow className="mb-3">
             <CCol md={3}>
               <CFormLabel className="fw-bold">{t('modal.fields.projectType')}</CFormLabel>
@@ -246,7 +317,10 @@ const ModalCreateTicket = () => {
                 value={projectType}
                 onChange={(event) => setProjectType(event.target.value)}
                 aria-describedby="project-help"
+                required
+                invalid={projectType === '' || projectType === '-1'}
               >
+                <option key="-1" value="-1"></option>
                 {projects.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -267,19 +341,15 @@ const ModalCreateTicket = () => {
               <CCol md={9}>
                 <CFormSelect
                   value={newIssue.fields.externalLink || ''}
+                  required={projectType === 'externe'}
+                  invalid={newIssue.fields.externalLink === ''}
                   onChange={(e) => {
                     const selectedUrl = e.target.value
-                    const selectedHost = new URL(selectedUrl).host
                     setNewIssue((prev) => ({
                       ...prev,
                       fields: {
                         ...prev.fields,
                         externalLink: selectedUrl,
-                        summary: selectedHost,
-                        project: {
-                          key: 'externe',
-                          name: selectedHost,
-                        },
                       },
                     }))
                   }}
@@ -296,14 +366,24 @@ const ModalCreateTicket = () => {
                 </small>
               </CCol>
             </CRow>
-          ) : (
+          ) : projectType === 'interne' ? (
             <>
               <CRow className="mb-3">
                 <CCol md={3}>
                   <CFormLabel className="fw-bold">{t('modal.fields.projectName')}</CFormLabel>
                 </CCol>
                 <CCol md={5}>
-                  <CFormSelect value={projectName} onChange={(e) => setProjectName(e.target.value)}>
+                  <CFormSelect
+                    value={projectName}
+                    onChange={(e) => setProjectName(e.target.value)}
+                    required={projectType === 'interne'}
+                    invalid={
+                      newIssue.fields?.project?.id === '' || newIssue.fields?.project?.id === '-1'
+                    }
+                    valid={
+                      newIssue.fields?.project?.id !== '' || newIssue.fields?.project?.id !== '-1'
+                    }
+                  >
                     <option key="-1" value="-1"></option>
                     {projectList.map((option) => (
                       <option key={option.key} value={option.projectName}>
@@ -319,8 +399,17 @@ const ModalCreateTicket = () => {
                 </CCol>
                 <CCol md={5}>
                   <CFormSelect
+                    required={projectType === 'interne'}
                     value={newIssue.fields.issuetype.id}
                     onChange={(e) => handleChangeIssueType(e.target.value)}
+                    invalid={
+                      newIssue.fields?.issuetype?.id === '' ||
+                      newIssue.fields?.issuetype?.id === '-1'
+                    }
+                    valid={
+                      newIssue.fields?.issuetype?.id !== '' ||
+                      newIssue.fields?.issuetype?.id !== '-1'
+                    }
                   >
                     <option key="-1" value="-1"></option>
                     {issuetype.map(
@@ -346,6 +435,9 @@ const ModalCreateTicket = () => {
                       placeholder={t('modal.fieldsHelper.summary')}
                       value={newIssue.fields.summary || ''}
                       onChange={(event) => handleChangeSummary(event)}
+                      required={projectType === 'interne'}
+                      invalid={!newIssue.fields?.summary}
+                      valid={newIssue.fields?.summary}
                     />
                   </CCol>
                 </CRow>
@@ -380,9 +472,12 @@ const ModalCreateTicket = () => {
                   </CCol>
                   <CCol md={9}>
                     <CFormSelect
+                      required={projectType === 'interne'}
                       value={newIssue.fields.priority.id}
                       onChange={handlePriorityChange}
                       aria-describedby="priority-help"
+                      valid={newIssue.fields?.priority?.id}
+                      invalid={!newIssue.fields?.priority?.id}
                     >
                       {Prioritys.map((option) => (
                         <option key={option.id} value={option.id}>
@@ -398,22 +493,28 @@ const ModalCreateTicket = () => {
 
                 <CRow className="mb-3">
                   <CCol md={3}>
-                    <CFormLabel className="fw-bold">{t('modal.fields.startDate')}</CFormLabel>
+                    <CFormLabel className="fw-bold">{t('modal.fields.assignee')}</CFormLabel>
                   </CCol>
                   <CCol md={9}>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <DatePicker
-                        value={new Date(newIssue.fields.customfield_10015)}
-                        onChange={handleStartDateChange}
-                        slotProps={{
-                          textField: {
-                            fullWidth: true,
-                            variant: 'outlined',
-                            size: 'small',
-                          },
-                        }}
-                      />
-                    </LocalizationProvider>
+                    <CFormSelect
+                      required={projectType === 'interne'}
+                      value={newIssue.fields.assignee.id}
+                      onChange={handleAssigneeChange}
+                      aria-describedby="assignee-help"
+                      valid={newIssue.fields?.assignee?.id}
+                      invalid={!newIssue.fields?.assignee?.id}
+                    >
+                      <option key="-1" value="-1"></option>
+
+                      {usersList.map((option) => (
+                        <option key={option.uid} value={option.uid}>
+                          {option.firstName} {option.lastName}
+                        </option>
+                      ))}
+                    </CFormSelect>
+                    <small id="priority-help" className="form-text text-muted">
+                      {t('modal.fieldsHelper.priority')}
+                    </small>
                   </CCol>
                 </CRow>
 
@@ -424,6 +525,7 @@ const ModalCreateTicket = () => {
                   <CCol md={9}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                       <DatePicker
+                        minDate={new Date(newIssue.fields.customfield_10015)}
                         value={new Date(newIssue.fields.duedate)}
                         onChange={handleEndDateChange}
                         slotProps={{
@@ -439,17 +541,19 @@ const ModalCreateTicket = () => {
                 </CRow>
               </div>
             </>
+          ) : (
+            <></>
           )}
-        </CForm>
-      </CModalBody>
-      <CModalFooter>
-        <CButton color="secondary" onClick={handleClose} disabled={isSubmitting}>
-          {t('modal.actions.cancel')}
-        </CButton>
-        <CButton color="primary" onClick={handleSubmitTicket} disabled={isSubmitting}>
-          {isSubmitting ? t('modal.actions.creating') : t('modal.actions.create')}
-        </CButton>
-      </CModalFooter>
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={handleClose} disabled={isSubmitting}>
+            {t('modal.actions.cancel')}
+          </CButton>
+          <CButton color="primary" onClick={handleSubmitTicket} disabled={isSubmitting}>
+            {isSubmitting ? t('modal.actions.creating') : t('modal.actions.create')}
+          </CButton>
+        </CModalFooter>
+      </CForm>
     </CModal>
   )
 }
