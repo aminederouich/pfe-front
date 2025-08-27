@@ -17,10 +17,11 @@ const fr = {
         projectName: 'Nom du projet *',
         issueType: 'Type de ticket *',
         summary: 'Résumé *',
-        description: 'Description *',
+        description: 'Description',
         priority: 'Priorité *',
+        assignee: 'Assigné à *',
         startDate: 'Date début *',
-        endDate: 'Date de fin *',
+        endDate: 'Date limite',
       },
       fieldsHelper: {
         project: 'Sélectionnez le projet auquel ce ticket appartient.',
@@ -29,6 +30,14 @@ const fr = {
         priority: 'Sélectionnez le niveau de priorité pour ce ticket...',
         configJira: 'Sélectionnez une configuration Jira...',
         configJiraHelper: 'Veuillez sélectionner une configuration Jira.',
+      },
+      fieldsErrors: {
+        externalLink: 'Le lien externe est obligatoire pour un projet externe.',
+        project: 'Le projet est obligatoire pour un projet interne.',
+        issuetype: 'Le type de ticket est obligatoire pour un projet interne.',
+        summary: 'Le résumé est obligatoire pour un projet interne.',
+        priority: 'La priorité est obligatoire pour un projet interne.',
+        sameStartEndDate: 'La date de début et la date de fin ne peuvent pas être identiques.',
       },
       actions: {
         create: 'Créer',

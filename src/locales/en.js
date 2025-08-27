@@ -17,10 +17,11 @@ const en = {
         projectName: 'Project name *',
         issueType: 'Issue type *',
         summary: 'Summary *',
-        description: 'Description *',
+        description: 'Description',
         priority: 'Priority *',
+        assignee: 'Assignee *',
         startDate: 'Start date *',
-        endDate: 'End date *',
+        endDate: 'Deadline *',
       },
       fieldsHelper: {
         project: 'Select the project this ticket belongs to.',
@@ -29,6 +30,14 @@ const en = {
         priority: 'Select the priority level for this ticket...',
         configJira: 'Select a Jira configuration...',
         configJiraHelper: 'Please select a Jira configuration.',
+      },
+      fieldsErrors: {
+        externalLink: 'The external link is required for an external project.',
+        project: 'The project is required for an internal project.',
+        issuetype: 'The issue type is required for an internal project.',
+        summary: 'The summary is required for an internal project.',
+        priority: 'The priority is required for an internal project.',
+        sameStartEndDate: 'The start date and end date cannot be the same.',
       },
       actions: {
         create: 'Create',
