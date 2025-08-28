@@ -10,21 +10,17 @@ import {
   CNavItem,
   useColorModes,
   CButton,
+  CImage,
+  CNavbarBrand,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import {
-  cilBell,
-  cilEnvelopeOpen,
-  cilLanguage,
-  cilList,
-  cilSignLanguage,
-  cilTranslate,
-} from '@coreui/icons'
+import { cilBell, cilEnvelopeOpen, cilList } from '@coreui/icons'
 
 import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown, AppHeaderDropdownManager } from './header/index'
 import { switchThemeMode } from '../actions/appActions'
 import { toggleCreateTicketModalOpen } from '../actions/ticketActions'
+import Logo from '../assets/images/logoh.png'
 
 const AppHeader = () => {
   const { t, i18n } = useTranslation()
@@ -56,10 +52,13 @@ const AppHeader = () => {
   return (
     <CHeader position="sticky" className="mb-4 p-0" ref={headerRef}>
       <CContainer className="border-bottom px-4" fluid>
-        <CHeaderNav className="d-none d-md-flex">
-          <CNavItem>
+        <CNavbarBrand>
+          <CImage src={Logo} alt="Logo" height={45} />
+        </CNavbarBrand>
+        <CHeaderNav className="d-none d-md-flex ms-4">
+          {/* <CNavItem>
             <CNavLink>{t('welcome')}</CNavLink>
-          </CNavItem>
+          </CNavItem> */}
           <CNavItem>
             <CNavLink to="/dashboard" as={NavLink}>
               Dashboard
