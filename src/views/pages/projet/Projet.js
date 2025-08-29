@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { use, useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   CButton,
@@ -19,6 +19,7 @@ import {
   toggleEditProjectModalOpen,
 } from '../../../actions/projectActions'
 import AddNewProject from '../../forms/addNewProject'
+import { useTranslation } from 'react-i18next'
 
 const columns = [
   {
@@ -54,10 +55,14 @@ const columns = [
 ]
 
 const Projet = () => {
+  const { t } = useTranslation()
   const { projectList, loading } = useSelector((state) => state.project)
   const isFirstRender = useRef(true)
   const [visible, setVisible] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(1)
   const [projectItems, setProjectItems] = useState([])
+  const [columnsTable, setColumnsTable] = useState(columns)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -104,7 +109,7 @@ const Projet = () => {
               onClick={(e) => handleClickDelete(e)}
               id={`delete-${item.id}`}
             >
-              delete
+              {t('projectPage.actions.delete')}
             </CButton>
             <CButton
               variant="ghost"
@@ -112,15 +117,20 @@ const Projet = () => {
               onClick={(e) => handleClickEdit(e)}
               id={`edit-${item.id}`}
             >
-              Edit
+              {t('projectPage.actions.edit')}
             </CButton>
           </CButtonGroup>
         ),
       }))
+      const transformedColumns = columns.map((column) => ({
+        ...column,
+        label: t(`projectPage.fields.${column.key}`),
+      }))
       setProjectItems(transformedItems)
+      setColumnsTable(transformedColumns)
       setVisible(false)
     }
-  }, [projectList, setProjectItems, handleClickDelete, handleClickEdit])
+  }, [projectList, setProjectItems, handleClickDelete, handleClickEdit, t])
 
   const handleClickAjouterProject = (event) => {
     event.preventDefault()
@@ -135,20 +145,30 @@ const Projet = () => {
     )
   }
 
+  // Pagination state
+
+  // Calculate paginated items
+  const paginatedItems = projectItems.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  )
+
+  const totalPages = Math.ceil(projectItems.length / itemsPerPage)
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page)
+  }
+
   return (
     <CContainer>
       <CRow>
         <CCol sm={10}>
-          <h2>All project types</h2>
-          {/* <p className="text-medium-emphasis">Current Jira API configuration settings</p> */}
+          <h2>{t('projectPage.allProjects')}</h2>
+          <p className="text-medium-emphasis">{t('projectPage.description')}</p>
         </CCol>
         <CCol sm={2} className="text-end">
-          <CButton
-            color="success"
-            className="mb-2"
-            onClick={(event) => handleClickAjouterProject(event)}
-          >
-            Ajouter Project
+          <CButton color="success" className="mb-2" onClick={handleClickAjouterProject}>
+            {t('projectPage.actions.add')}
           </CButton>
         </CCol>
       </CRow>
@@ -159,7 +179,67 @@ const Projet = () => {
           </CCardBody>
         </CCard>
       </CCollapse>
-      <CTable columns={columns} items={projectItems} bordered hover responsive />
+      <CTable columns={columnsTable} items={paginatedItems} bordered hover responsive />
+      <CRow>
+        <CCol className="d-flex justify-content-end">
+          <CButtonGroup>
+            <CButton
+              color="secondary"
+              disabled={totalPages <= 1 || currentPage === 1}
+              onClick={() => handlePageChange(1)}
+            >
+              &#171;
+            </CButton>
+            <CButton
+              color="secondary"
+              disabled={totalPages <= 1 || currentPage === 1}
+              onClick={() => handlePageChange(currentPage - 1)}
+            >
+              &lt;
+            </CButton>
+            {[...Array(totalPages)].map((_, idx) => (
+              <CButton
+                key={idx + 1}
+                color={currentPage === idx + 1 ? 'primary' : 'secondary'}
+                disabled={totalPages <= 1}
+                onClick={() => handlePageChange(idx + 1)}
+              >
+                {idx + 1}
+              </CButton>
+            ))}
+            <CButton
+              color="secondary"
+              disabled={totalPages <= 1 || currentPage === totalPages}
+              onClick={() => handlePageChange(currentPage + 1)}
+            >
+              &gt;
+            </CButton>
+            <CButton
+              color="secondary"
+              disabled={totalPages <= 1 || currentPage === totalPages}
+              onClick={() => handlePageChange(totalPages)}
+            >
+              &#187;
+            </CButton>
+          </CButtonGroup>
+          <select
+            className="form-select ms-3"
+            style={{ width: 'auto', display: 'inline-block' }}
+            value={itemsPerPage}
+            onChange={(e) => {
+              setCurrentPage(1)
+              setItemsPerPage(Number(e.target.value))
+            }}
+            disabled={projectItems.length === 0}
+          >
+            {[1, 5, 10, 20, 50].map((n) => (
+              <option key={n} value={n}>
+                {n} / page
+              </option>
+            ))}
+          </select>
+        </CCol>
+      </CRow>
     </CContainer>
   )
 }
