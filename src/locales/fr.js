@@ -1,4 +1,5 @@
 import modalCreateTicketFr from './modals/modalCreateTicket/fr'
+import projectPage from './pages/project/fr'
 
 const fr = {
   translation: {
@@ -8,9 +9,9 @@ const fr = {
     projects: 'Projets',
     tickets: 'Tickets',
     create: 'Créer',
-    // Ajoutez d'autres clés si besoin
+    projectPage: projectPage,
     //Modal Create Ticket
-    modal: modalCreateTicketFr,
+    modalCreateTicketFr: modalCreateTicketFr,
   },
 }
 
