@@ -3,8 +3,10 @@ import { CButton, CCallout, CCol, CForm, CFormInput, CFormSelect, CRow } from '@
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { addNewProjectAPI } from '../../actions/projectActions'
+import { useTranslation } from 'react-i18next'
 
 const AddNewProject = () => {
+  const { t } = useTranslation()
   const { user } = useSelector((state) => state.auth.user)
   const [projectName, setProjectName] = useState('')
   const [key, setKey] = useState('')
@@ -13,15 +15,15 @@ const AddNewProject = () => {
   const handleFormSubmit = (e) => {
     e.preventDefault()
     if (!projectName || !key || !projectType) {
-      toast.error('Please fill in all required fields')
+      toast.error(t('projectPage.toast.fill'))
       return
     }
     if (key.length < 3) {
-      toast.error('Key must be at least 3 characters long')
+      toast.error(t('projectPage.toast.key'))
       return
     }
     if (!/^[A-Z]+$/.test(key)) {
-      toast.error('Key must contain only uppercase letters')
+      toast.error(t('projectPage.toast.keyUppercase'))
       return
     }
     dispatch(
@@ -30,7 +32,12 @@ const AddNewProject = () => {
         key,
         projectType,
         projectCategory: 'No category',
-        projectLead: user.uid,
+        projectLead: {
+          uid: user.uid,
+          FirstName: user.FirstName,
+          LastName: user.LastName,
+          email: user.email,
+        },
       }),
     )
   }
@@ -42,8 +49,8 @@ const AddNewProject = () => {
           <CFormInput
             type="text"
             id="FormControlInputHostURL"
-            label="Project Name"
-            placeholder="project name"
+            label={t('projectPage.fields.projectName')}
+            placeholder={t('projectPage.fields.projectName')}
             aria-describedby="exampleFormControlInputHelpInline"
             required
             onChange={(e) => setProjectName(e.target.value)}
@@ -52,9 +59,9 @@ const AddNewProject = () => {
         </CCol>
         <CCol sm={4}>
           <CFormInput
-            type="test"
+            type="text"
             id="FormControlInputUsername"
-            label="Key"
+            label={t('projectPage.fields.key')}
             aria-describedby="exampleFormControlInputHelpInline"
             required
             value={key}
@@ -66,8 +73,8 @@ const AddNewProject = () => {
         <CCol sm={4}>
           <CFormSelect
             id="FormControlSelectProjectType"
-            label="Project Type"
-            aria-label="Project Type"
+            label={t('projectPage.fields.projectType')}
+            aria-label={t('projectPage.fields.projectType')}
             options={[
               { label: '' },
               { label: 'Software', value: 'software' },
@@ -79,9 +86,9 @@ const AddNewProject = () => {
         </CCol>
         <CCol sm={4}>
           <CFormInput
-            type="test"
+            type="text"
             id="FormControlInputUsername"
-            label="Project Category"
+            label={t('projectPage.fields.projectCategory')}
             aria-describedby="exampleFormControlInputHelpInline"
             required
             value="No category"
@@ -92,17 +99,17 @@ const AddNewProject = () => {
       <CFormInput
         type="text"
         id="FormControlInputUsername"
-        label="Project Lead"
+        label={t('projectPage.fields.projectLead')}
         aria-describedby="exampleFormControlInputHelpInline"
         required
         value={user.FirstName.concat(' ', user.LastName)}
         disabled
-        text="Le Project Lead est automatiquement défini comme l'utilisateur qui crée le projet"
+        text={t('projectPage.fieldsHelper.projectLead')}
       />
       <br />
       <div className="d-flex gap-2">
         <CButton color="primary" type="submit" onClick={(e) => handleFormSubmit(e)}>
-          Add new Project
+          {t('projectPage.actions.add')}
         </CButton>
       </div>
     </CForm>

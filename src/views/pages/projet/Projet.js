@@ -60,7 +60,7 @@ const Projet = () => {
   const isFirstRender = useRef(true)
   const [visible, setVisible] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(5)
   const [projectItems, setProjectItems] = useState([])
   const [columnsTable, setColumnsTable] = useState(columns)
   const dispatch = useDispatch()
@@ -99,7 +99,7 @@ const Projet = () => {
         projectName: item.projectName,
         key: item.key,
         projectType: item.projectType,
-        projectLead: item.projectLead,
+        projectLead: item.projectLead.FirstName.concat(' ', item.projectLead.LastName),
         projectCategory: item.projectCategory,
         actions: (
           <CButtonGroup size="sm" role="group" aria-label="Small button group">
