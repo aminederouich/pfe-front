@@ -15,8 +15,10 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toggleEditProjectModalClose, editProjectAPI } from '../../actions/projectActions'
 import { toast } from 'react-toastify'
+import { useTranslation } from 'react-i18next'
 
 const ModalEditProject = () => {
+  const { t } = useTranslation()
   const { user } = useSelector((state) => state.auth.user)
 
   const dispatch = useDispatch()
@@ -27,6 +29,8 @@ const ModalEditProject = () => {
   const [key, setKey] = useState('')
   const [projectName, setProjectName] = useState('')
   const [projectType, setProjectType] = useState('')
+  const [projectCategory, setProjectCategory] = useState('No category')
+  const [projectLead, setProjectLead] = useState('')
 
   useEffect(() => {
     if (projectIdToEdit !== null) {
@@ -35,6 +39,8 @@ const ModalEditProject = () => {
         setKey(projectToEdit.key)
         setProjectName(projectToEdit.projectName)
         setProjectType(projectToEdit.projectType)
+        setProjectCategory(projectToEdit.projectCategory)
+        setProjectLead(projectToEdit.projectLead)
       }
     }
   }, [projectIdToEdit, projectList])
@@ -42,7 +48,7 @@ const ModalEditProject = () => {
   const handleFormSubmit = (e) => {
     e.preventDefault()
     if (!projectName || !projectType) {
-      toast.error('Please fill in all required fields')
+      toast.error(t('projectPage.toast.fill'))
       return
     }
     dispatch(
@@ -65,7 +71,7 @@ const ModalEditProject = () => {
       alignment="center"
     >
       <CModalHeader onClose={() => dispatch(toggleEditProjectModalClose())}>
-        Modifier configuration Jira
+        {t('projectPage.modifierConfigurationJira')}
       </CModalHeader>
       <CModalBody>
         <CForm>
@@ -74,8 +80,8 @@ const ModalEditProject = () => {
               <CFormInput
                 type="text"
                 id="FormControlInputHostURL"
-                label="Project Name"
-                placeholder="project name"
+                label={t('projectPage.fields.projectName')}
+                placeholder={t('projectPage.fieldsHelper.projectName')}
                 aria-describedby="exampleFormControlInputHelpInline"
                 required
                 onChange={(e) => setProjectName(e.target.value)}
@@ -84,9 +90,9 @@ const ModalEditProject = () => {
             </CCol>
             <CCol sm={4}>
               <CFormInput
-                type="test"
+                type="text"
                 id="FormControlInputUsername"
-                label="Key"
+                label={t('projectPage.fields.key')}
                 aria-describedby="exampleFormControlInputHelpInline"
                 required
                 disabled
@@ -98,8 +104,8 @@ const ModalEditProject = () => {
             <CCol sm={6}>
               <CFormSelect
                 id="FormControlSelectProjectType"
-                label="Project Type"
-                aria-label="Project Type"
+                label={t('projectPage.fields.projectType')}
+                aria-label={t('projectPage.fields.projectType')}
                 options={[
                   { label: '' },
                   { label: 'Software', value: 'software' },
@@ -111,12 +117,12 @@ const ModalEditProject = () => {
             </CCol>
             <CCol sm={6}>
               <CFormInput
-                type="test"
+                type="text"
                 id="FormControlInputUsername"
-                label="Project Category"
+                label={t('projectPage.fields.projectCategory')}
                 aria-describedby="exampleFormControlInputHelpInline"
                 required
-                value="No category"
+                value={projectCategory}
                 disabled
               />
             </CCol>
@@ -124,18 +130,22 @@ const ModalEditProject = () => {
           <CFormInput
             type="text"
             id="FormControlInputUsername"
-            label="Project Lead"
+            label={t('projectPage.fields.projectLead')}
             aria-describedby="exampleFormControlInputHelpInline"
             required
-            value={user.FirstName.concat(' ', user.LastName)}
+            value={
+              projectLead && projectLead.FirstName && projectLead.LastName
+                ? projectLead.FirstName.concat(' ', projectLead.LastName)
+                : ''
+            }
             disabled
-            text="Le Project Lead est automatiquement défini comme l'utilisateur qui crée le projet"
+            text={t('projectPage.fieldsHelper.projectLead')}
           />
         </CForm>
       </CModalBody>
       <CModalFooter>
         <CButton color="primary" onClick={(e) => handleFormSubmit(e)}>
-          Edit Project
+          {t('projectPage.actions.edit')}
         </CButton>
       </CModalFooter>
     </CModal>
