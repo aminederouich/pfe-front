@@ -1,4 +1,3 @@
-
 const projectPage = {
   title: 'Project Page',
   allProjects: 'All projects',

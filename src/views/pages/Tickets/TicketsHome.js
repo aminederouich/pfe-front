@@ -20,12 +20,16 @@ import {
   CDropdownToggle,
   CDropdownMenu,
   CDropdownItem,
+  CPagination,
+  CPaginationItem,
 } from '@coreui/react'
 import { CIcon } from '@coreui/icons-react'
 import { cilDataTransferDown } from '@coreui/icons'
 import { getAllTicketAPI, toggleCreateTicketModalOpen } from '../../../actions/ticketActions'
+import { useTranslation } from 'react-i18next'
 
 const Tickets = () => {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const isFirstRender = useRef(true)
@@ -33,6 +37,10 @@ const Tickets = () => {
 
   const [searchText, setSearchText] = useState('')
   const [statusFilter, setStatusFilter] = useState('All')
+
+  // États pour la pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -106,21 +114,34 @@ const Tickets = () => {
     return summaryMatch && statusMatch
   })
 
+  // Logique de pagination
+  const totalItems = filteredTickets.length
+  const totalPages = Math.ceil(totalItems / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const currentTickets = filteredTickets.slice(startIndex, endIndex)
+
+  // Fonctions de pagination
+  const handlePageChange = (page) => {
+    setCurrentPage(page)
+  }
+
+  const handleItemsPerPageChange = (e) => {
+    setItemsPerPage(parseInt(e.target.value))
+    setCurrentPage(1) // Reset à la première page
+  }
+
   // Fonction pour colorer selon le statut
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
-      case 'à faire':
-      case 'todo':
+      case 'new':
         return 'secondary'
-      case 'in progress':
-      case 'en cours':
+      case 'indeterminate':
         return 'warning'
       case 'done':
-      case 'terminé':
-      case 'closed':
         return 'success'
       default:
-        return 'light'
+        return 'dark'
     }
   }
 
@@ -134,11 +155,12 @@ const Tickets = () => {
   return (
     <CContainer>
       <CRow>
-        <CCol sm={3}>
-          <h2>All Ticket View</h2>
+        <CCol sm={9}>
+          <h2>{t('ticketPage.title')}</h2>
+          <p className="text-medium-emphasis">{t('ticketPage.description')}</p>
         </CCol>
-        <CCol sm={9} className="text-end">
-          <CDropdown>
+        <CCol sm={3} className="text-end">
+          {/* <CDropdown>
             <CDropdownToggle color="light">
               <CIcon icon={cilDataTransferDown} className="me-2" /> Export
             </CDropdownToggle>
@@ -150,15 +172,15 @@ const Tickets = () => {
                 Export as Word
               </CDropdownItem>
             </CDropdownMenu>
-          </CDropdown>
+          </CDropdown> */}
           <CButton color="primary" className="ms-2" onClick={handleClickAjouterTicket}>
-            Create
+            {t('ticketPage.actions.add')}
           </CButton>
         </CCol>
       </CRow>
 
       {/* Filters */}
-      <CRow className="mb-3 align-items-end">
+      {/* <CRow className="mb-3 align-items-end">
         <CCol md={2}>
           <CFormSelect label="Support" defaultValue="All">
             <option>All</option>
@@ -201,22 +223,10 @@ const Tickets = () => {
         <CCol md={1}>
           <CButton color="primary">Search</CButton>
         </CCol>
-      </CRow>
-
-      {/* Ticket Table */}
-      <CTable bordered hover responsive align="middle">
-        <CTableHead color="light">
-          <CTableRow>
-            <CTableHeaderCell scope="col">Origin</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Key</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Summary</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Status</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Assignee</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Reporter</CTableHeaderCell>
-          </CTableRow>
-        </CTableHead>
+      </CRow> */}
+      <CTable hover responsive align="middle" small>
         <CTableBody>
-          {filteredTickets.map((ticket, index) => (
+          {currentTickets.map((ticket, index) => (
             <CTableRow
               key={index}
               style={{ cursor: 'pointer' }}
@@ -224,22 +234,101 @@ const Tickets = () => {
             >
               <CTableDataCell>
                 <CBadge color={ticket.configId ? 'info' : 'secondary'} shape="rounded-pill">
-                  {ticket.configId ? 'External' : 'Internal'}
+                  {ticket.configId
+                    ? t('ticketPage.fields.external')
+                    : t('ticketPage.fields.internal')}
                 </CBadge>
+              </CTableDataCell>
+              <CTableDataCell>
+                <img src={ticket.fields.issuetype?.iconUrl} alt={ticket.fields.issuetype?.name} />
               </CTableDataCell>
               <CTableDataCell>{ticket.key}</CTableDataCell>
               <CTableDataCell>{ticket.fields.summary}</CTableDataCell>
               <CTableDataCell>
-                <CBadge color={getStatusColor(ticket.fields.status.name)}>
-                  {ticket.fields.status.name.toUpperCase()}
+                <CBadge
+                  color={getStatusColor(ticket.fields.status?.statusCategory?.key || '')}
+                  shape="rounded-pill"
+                >
+                  {ticket.fields.status.name}
                 </CBadge>
               </CTableDataCell>
+              <CTableDataCell>
+                <img src={ticket.fields.priority?.iconUrl} alt={ticket.fields.priority?.name} />
+              </CTableDataCell>
               <CTableDataCell>{ticket.fields.assignee?.displayName || 'Unassigned'}</CTableDataCell>
-              <CTableDataCell>{ticket.fields.reporter?.displayName || 'Unknown'}</CTableDataCell>
             </CTableRow>
           ))}
         </CTableBody>
       </CTable>
+
+      {/* Contrôles de pagination inférieurs */}
+      {totalPages > 1 && (
+        <CRow>
+          <CCol sm={3}>
+            <div className="d-flex align-items-center">
+              <span className="me-2">{t('ticketPage.other.show')}</span>
+              <CFormSelect
+                size="sm"
+                style={{ width: 'auto' }}
+                value={itemsPerPage}
+                onChange={handleItemsPerPageChange}
+              >
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </CFormSelect>
+              <span className="ms-2">{t('ticketPage.other.elementsPerPage')}</span>
+            </div>
+          </CCol>
+
+          <CCol sm={6}>
+            <CPagination className="justify-content-center" size="sm">
+              <CPaginationItem
+                disabled={currentPage === 1}
+                onClick={() => handlePageChange(currentPage - 1)}
+              >
+                &lt;
+              </CPaginationItem>
+
+              {/* Génération des numéros de page */}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                // Afficher seulement quelques pages autour de la page actuelle
+                if (
+                  page === 1 ||
+                  page === totalPages ||
+                  (page >= currentPage - 2 && page <= currentPage + 2)
+                ) {
+                  return (
+                    <CPaginationItem
+                      key={page}
+                      active={page === currentPage}
+                      onClick={() => handlePageChange(page)}
+                    >
+                      {page}
+                    </CPaginationItem>
+                  )
+                } else if (page === currentPage - 3 || page === currentPage + 3) {
+                  return (
+                    <CPaginationItem key={page} disabled>
+                      ...
+                    </CPaginationItem>
+                  )
+                }
+                return null
+              })}
+
+              <CPaginationItem
+                disabled={currentPage === totalPages}
+                onClick={() => handlePageChange(currentPage + 1)}
+              >
+                &gt;
+              </CPaginationItem>
+            </CPagination>
+          </CCol>
+        </CRow>
+      )}
     </CContainer>
   )
 }
