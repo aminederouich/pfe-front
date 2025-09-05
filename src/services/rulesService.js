@@ -38,8 +38,22 @@ const getRuleByIdOwner = async () => {
     return error
   }
 }
+const getRuleByIdManager = async (idManager) => {
+  try {
+    const response = await axios.get(`${API_URL}getRuleByIdOwner/${idManager}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    return response
+  } catch (error) {
+    console.error('Error fetching rule by ID and manager:', error)
+    return error
+  }
+}
 
 export default {
   addRule,
   getRuleByIdOwner,
+  getRuleByIdManager,
 }

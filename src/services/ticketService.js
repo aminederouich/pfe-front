@@ -2,25 +2,23 @@ import axios from 'axios'
 
 const API_URL = 'http://localhost:8081/ticket/'
 
-const getAllTickets = () => {
-  return axios
-    .get(`${API_URL}getAllTicket`, {
+const getAllTickets = async () => {
+  try {
+    const response = await axios.get(`${API_URL}getAllTicket`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     })
-    .then((response) => {
-      return response
-    })
-    .catch((error) => {
-      console.error('Error fetching all config Jira:', error)
-      return error
-    })
+    return response
+  } catch (error) {
+    console.error('Error fetching all config Jira:', error)
+    return error
+  }
 }
-const updateTicket = (ticketKey, ticketData) => {
-  return axios
-    .put(
-      `${API_URL}updateTicket/${ticketKey}`,
+const updateTicket = async (ticketData) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}updateTicket/`,
       { ticket: ticketData },
       {
         headers: {
@@ -28,16 +26,16 @@ const updateTicket = (ticketKey, ticketData) => {
         },
       },
     )
-    .then((response) => response)
-    .catch((error) => {
-      console.error('Erreur mise à jour ticket:', error)
-      return error
-    })
+    return response
+  } catch (error) {
+    console.error('Erreur mise à jour ticket:', error)
+    return error
+  }
 }
 
-const addNewTicket = (ticketData) => {
-  return axios
-    .post(
+const addNewTicket = async (ticketData) => {
+  try {
+    const response = await axios.post(
       `${API_URL}addNewTicket`,
       { ticket: ticketData },
       {
@@ -46,13 +44,11 @@ const addNewTicket = (ticketData) => {
         },
       },
     )
-    .then((response) => {
-      return response
-    })
-    .catch((error) => {
-      console.error('Error fetching all config Jira:', error)
-      return error
-    })
+    return response
+  } catch (error) {
+    console.error('Error fetching all config Jira:', error)
+    return error
+  }
 }
 
 export default {

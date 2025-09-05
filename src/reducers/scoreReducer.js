@@ -8,6 +8,9 @@ import {
   GET_SCORE_BY_ID_REQUEST,
   GET_SCORE_BY_ID_SUCCESS,
   GET_SCORE_BY_ID_FAILURE,
+  CALCULATE_SCORE_TICKET_DONE_REQUEST,
+  CALCULATE_SCORE_TICKET_DONE_SUCCESS,
+  CALCULATE_SCORE_TICKET_DONE_FAILURE,
 } from '../actions/scoreAction'
 
 const initialState = {
@@ -35,6 +38,12 @@ const scoreReducer = (state = initialState, action) => {
     case GET_SCORE_BY_ID_SUCCESS:
       return { ...state, loading: false, score: action.payload }
     case GET_SCORE_BY_ID_FAILURE:
+      return { ...state, loading: false, error: action.payload }
+    case CALCULATE_SCORE_TICKET_DONE_REQUEST:
+      return { ...state, loading: true }
+    case CALCULATE_SCORE_TICKET_DONE_SUCCESS:
+      return { ...state, loading: false }
+    case CALCULATE_SCORE_TICKET_DONE_FAILURE:
       return { ...state, loading: false, error: action.payload }
     default:
       return state
