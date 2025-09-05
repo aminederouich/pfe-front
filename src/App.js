@@ -5,6 +5,7 @@ import './scss/style.scss'
 import PrivateRoute from './PrivateRute'
 import { checkAuthentication } from './actions/authActions'
 import { CSpinner } from '@coreui/react'
+import { getAllTicketAPI } from './actions/ticketActions'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -23,7 +24,12 @@ const App = () => {
 
   const checkAuth = useCallback(async () => {
     try {
-      await dispatch(checkAuthentication())
+      const res = await dispatch(checkAuthentication())
+      if (res.error) {
+        console.log('User is not authenticated')
+      } else {
+        dispatch(getAllTicketAPI())
+      }
     } catch (error) {
       console.error('Authentication check failed:', error)
     } finally {

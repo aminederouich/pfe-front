@@ -50,8 +50,27 @@ const getScoreById = (id) => {
     })
 }
 
+const calculateScoreTicketDone = async (ticketId, ruleId) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}calculate`,
+      { ticketId, ruleId },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      },
+    )
+    return response
+  } catch (error) {
+    console.error('Error calculating score for ticket done:', error)
+    return error
+  }
+}
+
 export default {
   addScore,
   getAllScores,
   getScoreById,
+  calculateScoreTicketDone,
 }

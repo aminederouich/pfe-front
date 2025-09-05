@@ -1,4 +1,6 @@
+import rulesService from '../services/rulesService'
 import scoreService from '../services/scoreService'
+import { store } from '../store'
 
 // Actions Types
 export const GET_SCORES_REQUEST = 'GET_SCORES_REQUEST'
@@ -12,6 +14,10 @@ export const ADD_SCORE_FAILURE = 'ADD_SCORE_FAILURE'
 export const GET_SCORE_BY_ID_REQUEST = 'GET_SCORE_BY_ID_REQUEST'
 export const GET_SCORE_BY_ID_SUCCESS = 'GET_SCORE_BY_ID_SUCCESS'
 export const GET_SCORE_BY_ID_FAILURE = 'GET_SCORE_BY_ID_FAILURE'
+
+export const CALCULATE_SCORE_TICKET_DONE_REQUEST = 'CALCULATE_SCORE_TICKET_DONE_REQUEST'
+export const CALCULATE_SCORE_TICKET_DONE_SUCCESS = 'CALCULATE_SCORE_TICKET_DONE_SUCCESS'
+export const CALCULATE_SCORE_TICKET_DONE_FAILURE = 'CALCULATE_SCORE_TICKET_DONE_FAILURE'
 
 export const getAllScores = () => async (dispatch) => {
   dispatch({ type: GET_SCORES_REQUEST })
@@ -42,5 +48,24 @@ export const getScoreByIdAPI = (id) => async (dispatch) => {
     dispatch({ type: GET_SCORE_BY_ID_SUCCESS, payload: response.data })
   } catch (error) {
     dispatch({ type: GET_SCORE_BY_ID_FAILURE, payload: error.message })
+  }
+}
+
+export const calculateScoreTicketDoneAPI = (ticketId) => async (dispatch) => {
+  dispatch({ type: CALCULATE_SCORE_TICKET_DONE_REQUEST })
+  try {
+    const state = store.getState()
+    const userId = state.auth.user?.user?.managerId
+    const ruleManager = await rulesService.getRuleByIdManager(userId)
+    if (!ruleManager?.data?.data.id) {
+      throw new Error('Rule manager not found')
+    }
+    const ruleId = ruleManager.data.data.id
+    const response = await scoreService.calculateScoreTicketDone(ticketId, ruleId)
+    dispatch({ type: CALCULATE_SCORE_TICKET_DONE_SUCCESS, payload: response.data.data })
+    return ruleManager.data
+  } catch (error) {
+    dispatch({ type: CALCULATE_SCORE_TICKET_DONE_FAILURE, payload: error.message })
+    return Promise.reject(error)
   }
 }

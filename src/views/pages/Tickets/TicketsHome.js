@@ -7,47 +7,45 @@ import {
   CCol,
   CContainer,
   CFormSelect,
-  CFormInput,
   CRow,
   CSpinner,
   CTable,
   CTableBody,
   CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
   CTableRow,
-  CDropdown,
-  CDropdownToggle,
-  CDropdownMenu,
-  CDropdownItem,
   CPagination,
   CPaginationItem,
 } from '@coreui/react'
-import { CIcon } from '@coreui/icons-react'
-import { cilDataTransferDown } from '@coreui/icons'
-import { getAllTicketAPI, toggleCreateTicketModalOpen } from '../../../actions/ticketActions'
+import {
+  getAllTicketAPI,
+  ticketToView,
+  toggleCreateTicketModalOpen,
+  updateTicketAPI,
+} from '../../../actions/ticketActions'
 import { useTranslation } from 'react-i18next'
+import CIcon from '@coreui/icons-react'
+import { cilActionUndo, cilCheck, cilPen } from '@coreui/icons'
+import { toast } from 'react-toastify'
 
 const Tickets = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const isFirstRender = useRef(true)
+  const [hoveredIndex, setHoveredIndex] = useState(null)
+  const [editIndex, setEditIndex] = useState(null)
+  const [editValue, setEditValue] = useState('')
   const { ticketList, loading } = useSelector((state) => state.ticket)
-
-  const [searchText, setSearchText] = useState('')
-  const [statusFilter, setStatusFilter] = useState('All')
-
-  // États pour la pagination
+  // const [hoveredIndex, setHoveredIndex] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(10)
 
-  useEffect(() => {
-    if (isFirstRender.current) {
-      dispatch(getAllTicketAPI())
-      isFirstRender.current = false
-    }
-  }, [dispatch])
+  // useEffect(() => {
+  //   if (isFirstRender.current) {
+  //     dispatch(getAllTicketAPI())
+  //     isFirstRender.current = false
+  //   }
+  // }, [dispatch])
 
   const handleClickAjouterTicket = (event) => {
     event.preventDefault()
@@ -55,71 +53,16 @@ const Tickets = () => {
   }
 
   const handleRowClick = (ticket) => {
-    navigate(`/ticket/${ticket.key}`)
+    dispatch(ticketToView(ticket))
+    navigate(`/ticket/${ticket.id}`)
   }
-
-  const exportToXML = (tickets) => {
-    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<tickets>'
-    tickets.forEach((ticket) => {
-      xml += `\n  <ticket>`
-      xml += `\n    <origin>${ticket.configId ? 'External' : 'Internal'}</origin>`
-      xml += `\n    <key>${ticket.key}</key>`
-      xml += `\n    <summary>${ticket.fields.summary}</summary>`
-      xml += `\n    <status>${ticket.fields.status.name}</status>`
-      xml += `\n    <assignee>${ticket.fields.assignee?.displayName || 'Unassigned'}</assignee>`
-      xml += `\n    <reporter>${ticket.fields.reporter?.displayName || 'Unknown'}</reporter>`
-      xml += `\n  </ticket>`
-    })
-    xml += '\n</tickets>'
-
-    const blob = new Blob([xml], { type: 'application/xml' })
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(blob)
-    link.download = 'tickets.xml'
-    link.click()
-  }
-
-  const exportToWord = (tickets) => {
-    let content = 'Origin\tKey\tSummary\tStatus\tAssignee\tReporter\n'
-    content += tickets
-      .map((ticket) =>
-        [
-          ticket.configId ? 'External' : 'Internal',
-          ticket.key,
-          ticket.fields.summary,
-          ticket.fields.status.name,
-          ticket.fields.assignee?.displayName || 'Unassigned',
-          ticket.fields.reporter?.displayName || 'Unknown',
-        ].join('\t'),
-      )
-      .join('\n')
-
-    const blob = new Blob([content], { type: 'application/msword' })
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(blob)
-    link.download = 'tickets.doc'
-    link.click()
-  }
-
-  const filteredTickets = ticketList.filter((ticket) => {
-    const summaryMatch = ticket.fields.summary.toLowerCase().includes(searchText.toLowerCase())
-    const statusName = ticket.fields.status.name.toLowerCase()
-
-    const statusMatch =
-      statusFilter === 'All' ||
-      (statusFilter === 'To do' && ['à faire', 'todo'].includes(statusName)) ||
-      (statusFilter === 'In Progress' && ['en cours', 'in progress'].includes(statusName)) ||
-      (statusFilter === 'Done' && ['terminé(e)', 'done', 'closed'].includes(statusName))
-
-    return summaryMatch && statusMatch
-  })
 
   // Logique de pagination
-  const totalItems = filteredTickets.length
+  const totalItems = ticketList.length
   const totalPages = Math.ceil(totalItems / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
-  const currentTickets = filteredTickets.slice(startIndex, endIndex)
+  const currentTickets = ticketList.slice(startIndex, endIndex)
 
   // Fonctions de pagination
   const handlePageChange = (page) => {
@@ -145,10 +88,27 @@ const Tickets = () => {
     }
   }
 
+  const handleEditTicket = (e, ticket, editValue, field) => {
+    e.stopPropagation()
+    const ticketUpdated = {
+      ...ticket,
+      fields: { [field]: editValue },
+    }
+    dispatch(updateTicketAPI(ticketUpdated)).then((res) => {
+      if (res?.data?.success) {
+        toast.success('Ticket mis à jour avec succès')
+        setTimeout(() => {
+          dispatch(getAllTicketAPI())
+        }, 1000)
+        setEditIndex(null)
+      }
+    })
+  }
+
   if (loading) {
     return (
       <div className="pt-3 text-center">
-        <CSpinner size="3rem" />
+        <CSpinner />
       </div>
     )
   }
@@ -160,104 +120,112 @@ const Tickets = () => {
           <p className="text-medium-emphasis">{t('ticketPage.description')}</p>
         </CCol>
         <CCol sm={3} className="text-end">
-          {/* <CDropdown>
-            <CDropdownToggle color="light">
-              <CIcon icon={cilDataTransferDown} className="me-2" /> Export
-            </CDropdownToggle>
-            <CDropdownMenu>
-              <CDropdownItem onClick={() => exportToXML(filteredTickets)}>
-                Export as XML
-              </CDropdownItem>
-              <CDropdownItem onClick={() => exportToWord(filteredTickets)}>
-                Export as Word
-              </CDropdownItem>
-            </CDropdownMenu>
-          </CDropdown> */}
           <CButton color="primary" className="ms-2" onClick={handleClickAjouterTicket}>
             {t('ticketPage.actions.add')}
           </CButton>
         </CCol>
       </CRow>
-
-      {/* Filters */}
-      {/* <CRow className="mb-3 align-items-end">
-        <CCol md={2}>
-          <CFormSelect label="Support" defaultValue="All">
-            <option>All</option>
-            <option>4YOU</option>
-            <option>Other</option>
-          </CFormSelect>
-        </CCol>
-        <CCol md={2}>
-          <CFormSelect label="Issue Type" defaultValue="All">
-            <option>All</option>
-            <option>Bug</option>
-            <option>Task</option>
-          </CFormSelect>
-        </CCol>
-        <CCol md={2}>
-          <CFormSelect
-            label="Status"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="All">All</option>
-            <option value="To do">To do</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Done">Done</option>
-          </CFormSelect>
-        </CCol>
-        <CCol md={3}>
-          <CFormSelect label="Assignee" defaultValue="me">
-            <option value="me">Current User</option>
-            <option value="all">All</option>
-          </CFormSelect>
-        </CCol>
-        <CCol md={2}>
-          <CFormInput
-            label="Contains text"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
-        </CCol>
-        <CCol md={1}>
-          <CButton color="primary">Search</CButton>
-        </CCol>
-      </CRow> */}
       <CTable hover responsive align="middle" small>
         <CTableBody>
-          {currentTickets.map((ticket, index) => (
-            <CTableRow
-              key={index}
-              style={{ cursor: 'pointer' }}
-              onClick={() => handleRowClick(ticket)}
-            >
-              <CTableDataCell>
-                <CBadge color={ticket.configId ? 'info' : 'secondary'} shape="rounded-pill">
-                  {ticket.configId
-                    ? t('ticketPage.fields.external')
-                    : t('ticketPage.fields.internal')}
-                </CBadge>
-              </CTableDataCell>
-              <CTableDataCell>
-                <img src={ticket.fields.issuetype?.iconUrl} alt={ticket.fields.issuetype?.name} />
-              </CTableDataCell>
-              <CTableDataCell>{ticket.key}</CTableDataCell>
-              <CTableDataCell>{ticket.fields.summary}</CTableDataCell>
-              <CTableDataCell>
-                <CBadge
-                  color={getStatusColor(ticket.fields.status?.statusCategory?.key || '')}
-                  shape="rounded-pill"
-                >
-                  {ticket.fields.status.name}
-                </CBadge>
-              </CTableDataCell>
-              <CTableDataCell>
-                <img src={ticket.fields.priority?.iconUrl} alt={ticket.fields.priority?.name} />
-              </CTableDataCell>
-              <CTableDataCell>{ticket.fields.assignee?.displayName || 'Unassigned'}</CTableDataCell>
-            </CTableRow>
-          ))}
+          {console.log(currentTickets)}
+          {currentTickets.map((ticket, index) =>
+            Object.prototype.hasOwnProperty.call(ticket, 'fields') ? (
+              <CTableRow
+                key={index}
+                style={{ cursor: 'pointer' }}
+                onClick={() => handleRowClick(ticket)}
+              >
+                <CTableDataCell style={{ width: '5%' }}>
+                  <CBadge color={ticket.configId ? 'info' : 'secondary'} shape="rounded-pill">
+                    {ticket.configId
+                      ? t('ticketPage.fields.external')
+                      : t('ticketPage.fields.internal')}
+                  </CBadge>
+                </CTableDataCell>
+                <CTableDataCell style={{ width: '5%' }}>
+                  <img src={ticket.fields.issuetype?.iconUrl} alt={ticket.fields.issuetype?.name} />
+                </CTableDataCell>
+                <CTableDataCell>{ticket.key}</CTableDataCell>
+                <CTableDataCell>
+                  <div
+                    tabIndex={0}
+                    onMouseEnter={() => setHoveredIndex(index)}
+                    onMouseLeave={() => setHoveredIndex(null)}
+                    style={{ display: 'flex', alignItems: 'center', gap: 4 }}
+                  >
+                    {editIndex === index ? (
+                      <>
+                        <input
+                          type="text"
+                          value={editValue}
+                          autoFocus
+                          onChange={(e) => setEditValue(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') setEditIndex(null)
+                          }}
+                          style={{ flex: 1 }}
+                        />
+                        <CIcon
+                          icon={cilCheck}
+                          style={{ cursor: 'pointer', marginLeft: 8 }}
+                          onClick={(e) => {
+                            handleEditTicket(e, ticket, editValue, 'summary')
+                          }}
+                        />
+                        <CIcon
+                          icon={cilActionUndo}
+                          style={{ cursor: 'pointer', marginLeft: 8 }}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setEditIndex(null)
+                          }}
+                        />
+                      </>
+                    ) : (
+                      <div
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setEditIndex(index)
+                          setEditValue(ticket.fields.summary)
+                        }}
+                      >
+                        {ticket.fields.summary}
+                        {hoveredIndex === index && (
+                          <CIcon
+                            icon={cilPen}
+                            style={{ cursor: 'pointer', marginLeft: 8 }}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setEditIndex(index)
+                              setEditValue(ticket.fields.summary)
+                            }}
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </CTableDataCell>
+                <CTableDataCell style={{ width: '12%' }}>
+                  <CBadge
+                    color={getStatusColor(ticket.fields.status?.statusCategory?.key || '')}
+                    shape="rounded-pill"
+                  >
+                    {ticket.fields.status.name}
+                  </CBadge>
+                </CTableDataCell>
+                <CTableDataCell style={{ width: '2%' }}>
+                  <img
+                    src={ticket.fields.priority?.iconUrl}
+                    alt={ticket.fields.priority?.name}
+                    style={{ width: '-webkit-fill-available' }}
+                  />
+                </CTableDataCell>
+                <CTableDataCell>
+                  {ticket.fields.assignee?.displayName || 'Unassigned'}
+                </CTableDataCell>
+              </CTableRow>
+            ) : null,
+          )}
         </CTableBody>
       </CTable>
 
