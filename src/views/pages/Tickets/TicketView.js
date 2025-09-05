@@ -187,11 +187,11 @@ const TicketView = () => {
       toast.success('Ticket mis à jour avec succès')
 
       const tickets = await dispatch(getAllTicketAPI())
-      console.log(tickets)
-      // Actions à effectuer après la récupération de tous les tickets
-      setTimeout(() => {
-        dispatch(calculateScoreTicketDoneAPI(ticket.id))
-      }, 5000)
+      if (tickets?.data?.results) {
+        if (field === 'status') {
+          dispatch(calculateScoreTicketDoneAPI(ticket.id))
+        }
+      }
     }
   }
 
