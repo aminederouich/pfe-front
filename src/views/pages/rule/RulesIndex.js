@@ -64,7 +64,7 @@ const ScoreRules = () => {
       OnDeadline: { checked: false, value: 0 },
     },
     resolution: {
-      Done: { checked: false, value: 0 },
+      Terminé: { checked: false, value: 0 },
     },
   })
 
@@ -471,8 +471,8 @@ const ScoreRules = () => {
                       step="1"
                       size="sm"
                       disabled={!resolutionEnabled}
-                      value={ruleConfig.resolution['Done']?.value || 0}
-                      onChange={(e) => handleResolutionChange('Done', e.target.value)}
+                      value={ruleConfig.resolution['Terminé']?.value || 0}
+                      onChange={(e) => handleResolutionChange('Terminé', e.target.value)}
                     />
                   </CCol>
                 </CRow>
