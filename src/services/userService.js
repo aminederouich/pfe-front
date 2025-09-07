@@ -2,6 +2,22 @@ import axios from 'axios'
 
 const API_URL = 'http://localhost:8081/user/'
 
+const getUserById = (uid) => {
+  return axios
+    .get(`${API_URL}getUserByUid/${uid}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    .then((response) => {
+      return response
+    })
+    .catch((error) => {
+      console.error('Error fetching user by ID:', error)
+      return error
+    })
+}
+
 const getAllUsers = () => {
   return axios
     .get(`${API_URL}getAllUsers`, {
@@ -30,6 +46,7 @@ const setPassword = (data) => {
 }
 
 export default {
+  getUserById,
   getAllUsers,
   sendInvite,
   setPassword,

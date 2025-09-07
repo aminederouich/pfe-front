@@ -6,6 +6,7 @@ import PrivateRoute from './PrivateRute'
 import { checkAuthentication } from './actions/authActions'
 import { CSpinner } from '@coreui/react'
 import { getAllTicketAPI } from './actions/ticketActions'
+import { getAllUsersAPI } from './actions/userActions'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -29,6 +30,7 @@ const App = () => {
         console.log('User is not authenticated')
       } else {
         dispatch(getAllTicketAPI())
+        dispatch(getAllUsersAPI())
       }
     } catch (error) {
       console.error('Authentication check failed:', error)

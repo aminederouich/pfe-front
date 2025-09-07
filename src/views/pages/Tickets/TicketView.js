@@ -178,9 +178,38 @@ const TicketView = () => {
   }
 
   const handleEditTicketField = async (ticket, editValue, field) => {
-    const ticketUpdated = {
+    let ticketUpdated = {}
+    ticketUpdated = {
       ...ticket,
       fields: { [field]: editValue },
+    }
+    if (field === 'status') {
+      if (editValue.name === 'Terminé(e)') {
+        ticketUpdated = {
+          ...ticket,
+          fields: {
+            ...ticketUpdated.fields,
+            resolution: {
+              id: '10000',
+              self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/resolution/10000',
+              description: 'Ce ticket a été traité.',
+              name: 'Terminé',
+            },
+            resolutiondate: new Date().toISOString(),
+          },
+        }
+      }
+
+      if (editValue.name !== 'Terminé(e)') {
+        ticketUpdated = {
+          ...ticket,
+          fields: {
+            ...ticketUpdated.fields,
+            resolution: {},
+            resolutiondate: null,
+          },
+        }
+      }
     }
     const res = await dispatch(updateTicketAPI(ticketUpdated))
     if (res?.data?.success) {
@@ -189,7 +218,7 @@ const TicketView = () => {
       const tickets = await dispatch(getAllTicketAPI())
       if (tickets?.data?.results) {
         if (field === 'status') {
-          dispatch(calculateScoreTicketDoneAPI(ticket.id))
+          dispatch(calculateScoreTicketDoneAPI(ticket))
         }
       }
     }

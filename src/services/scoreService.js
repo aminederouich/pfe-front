@@ -50,11 +50,11 @@ const getScoreById = (id) => {
     })
 }
 
-const calculateScoreTicketDone = async (ticketId, ruleId) => {
+const calculateScoreTicketDone = async (ticket, ruleId) => {
   try {
     const response = await axios.post(
       `${API_URL}calculate`,
-      { ticketId, ruleId },
+      { ticket, ruleId },
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,

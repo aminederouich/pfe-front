@@ -1,39 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { CCard, CCardHeader, CCardBody, CRow, CCol, CBadge, CSpinner } from '@coreui/react'
 import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux'
+import { getUserByUidAPI } from '../../../actions/userActions'
+import { getAllTicketAPI } from '../../../actions/ticketActions'
 
 const EmployeeDetail = () => {
   const { uid } = useParams()
-  const [employee, setEmployee] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [ticketStats, setTicketStats] = useState(null)
+  const dispatch = useDispatch()
+  const isFirstRender = useRef(true)
+  const { user, loading } = useSelector((state) => state.user)
 
   useEffect(() => {
-    const fetchEmployee = async () => {
-      try {
-        const res = await axios.get(`http://localhost:8081/user/${uid}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        })
-        setEmployee(res.data)
-
-        const stats = await axios.get(`http://localhost:8081/tickets/stats/${uid}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        })
-        setTicketStats(stats.data)
-      } catch (err) {
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
+    if (isFirstRender.current) {
+      dispatch(getUserByUidAPI(uid))
+      isFirstRender.current = false
     }
-
-    fetchEmployee()
-  }, [uid])
+  }, [dispatch, uid])
 
   if (loading) {
     return (
@@ -43,7 +27,7 @@ const EmployeeDetail = () => {
     )
   }
 
-  if (!employee) return <p>Employé introuvable</p>
+  if (!user) return <p>Employé introuvable</p>
 
   return (
     <CCard className="mb-4 shadow-sm border-0">
@@ -51,45 +35,30 @@ const EmployeeDetail = () => {
       <CCardBody>
         <CRow className="mb-3">
           <CCol md={6}>
-            <strong>Nom :</strong> {employee.LastName}
+            <strong>Nom :</strong> {user.LastName}
           </CCol>
           <CCol md={6}>
-            <strong>Prénom :</strong> {employee.FirstName}
+            <strong>Prénom :</strong> {user.FirstName}
           </CCol>
         </CRow>
         <CRow className="mb-3">
           <CCol md={6}>
-            <strong>Email :</strong> {employee.email}
+            <strong>Email :</strong> {user.email}
           </CCol>
           <CCol md={6}>
-            <strong>Téléphone :</strong> {employee.phoneNumber || 'Non renseigné'}
+            <strong>Téléphone :</strong> {user.phoneNumber || 'Non renseigné'}
           </CCol>
         </CRow>
         <CRow className="mb-3">
           <CCol md={6}>
             <strong>Rôle :</strong>{' '}
-            {employee.IsManager ? (
+            {user.IsManager ? (
               <CBadge color="warning">Manager</CBadge>
             ) : (
               <CBadge color="info">Employé</CBadge>
             )}
           </CCol>
         </CRow>
-        {ticketStats && (
-          <>
-            <hr />
-            <h5 className="mt-3">Statistiques des tickets</h5>
-            <p>
-              <strong>Total :</strong> {ticketStats.total}
-            </p>
-            <p>
-              <strong>Cette semaine :</strong> {ticketStats.weekly}
-            </p>
-            <p>
-              <strong>Score global :</strong> {ticketStats.score}
-            </p>
-          </>
-        )}
       </CCardBody>
     </CCard>
   )

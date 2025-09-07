@@ -12,6 +12,10 @@ import {
   CTableDataCell,
   CSpinner,
   CBadge,
+  CContainer,
+  CRow,
+  CCol,
+  CButton,
 } from '@coreui/react'
 import { getAllUsersAPI } from '../../../actions/userActions'
 
@@ -19,70 +23,75 @@ const EmployeeList = () => {
   const dispatch = useDispatch()
   const isFirstRender = useRef(true)
 
-  const { usersList: users, loading } = useSelector((state) => state.user)
+  const { usersList, loading } = useSelector((state) => state.user)
 
-  useEffect(() => {
-    if (isFirstRender.current) {
-      dispatch(getAllUsersAPI())
-      isFirstRender.current = false
-    }
-  }, [dispatch])
+  // useEffect(() => {
+  //   if (isFirstRender.current) {
+  //     dispatch(getAllUsersAPI())
+  //     isFirstRender.current = false
+  //   }
+  // }, [dispatch])
+
+  if (loading) {
+    return (
+      <div className="pt-3 text-center">
+        <CSpinner />
+      </div>
+    )
+  }
 
   return (
-    <CCard className="mb-4 shadow-sm border-0">
-      <CCardHeader className="bg-primary text-white fw-bold">Liste des employés</CCardHeader>
-      <CCardBody>
-        {loading ? (
-          <div className="text-center">
-            <CSpinner color="primary" />
-          </div>
-        ) : (
-          <CTable striped hover responsive bordered align="middle">
-            <CTableHead color="light">
-              <CTableRow className="text-center">
-                <CTableHeaderCell scope="col">Nom</CTableHeaderCell>
-                <CTableHeaderCell scope="col">Prénom</CTableHeaderCell>
-                <CTableHeaderCell scope="col">Email</CTableHeaderCell>
-                <CTableHeaderCell scope="col">Rôle</CTableHeaderCell>
+    <CContainer>
+      <CRow>
+        <CCol sm={9}>
+          <h2>list of User</h2>
+          <p className="text-medium-emphasis">Description of the user list</p>
+        </CCol>
+      </CRow>
+      <CTable striped hover responsive bordered align="middle">
+        <CTableHead color="light">
+          <CTableRow className="text-center">
+            <CTableHeaderCell scope="col">Nom</CTableHeaderCell>
+            <CTableHeaderCell scope="col">Prénom</CTableHeaderCell>
+            <CTableHeaderCell scope="col">Email</CTableHeaderCell>
+            <CTableHeaderCell scope="col">Rôle</CTableHeaderCell>
+          </CTableRow>
+        </CTableHead>
+        <CTableBody>
+          {usersList && usersList.length > 0 ? (
+            usersList.map((user) => (
+              <CTableRow
+                key={user.uid}
+                className="text-center align-middle"
+                style={{ cursor: 'pointer' }}
+                onClick={() => (window.location.href = `/employees/${user.uid}`)}
+              >
+                <CTableDataCell>
+                  <span className="text-dark fw-semibold">{user.LastName || '-'}</span>
+                </CTableDataCell>
+                <CTableDataCell>{user.FirstName || '-'}</CTableDataCell>
+                <CTableDataCell>{user.email || '-'}</CTableDataCell>
+                <CTableDataCell>
+                  {user.IsManager ? (
+                    <CBadge color="danger">Manager</CBadge>
+                  ) : user.IsEmployee ? (
+                    <CBadge color="info">Employé</CBadge>
+                  ) : (
+                    <CBadge color="secondary">Utilisateur</CBadge>
+                  )}
+                </CTableDataCell>
               </CTableRow>
-            </CTableHead>
-            <CTableBody>
-              {users && users.length > 0 ? (
-                users.map((user) => (
-                  <CTableRow
-                    key={user.uid}
-                    className="text-center align-middle"
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => (window.location.href = `/employees/${user.uid}`)}
-                  >
-                    <CTableDataCell>
-                      <span className="text-dark fw-semibold">{user.LastName || '-'}</span>
-                    </CTableDataCell>
-                    <CTableDataCell>{user.FirstName || '-'}</CTableDataCell>
-                    <CTableDataCell>{user.email || '-'}</CTableDataCell>
-                    <CTableDataCell>
-                      {user.IsManager ? (
-                        <CBadge color="danger">Manager</CBadge>
-                      ) : user.IsEmployee ? (
-                        <CBadge color="info">Employé</CBadge>
-                      ) : (
-                        <CBadge color="secondary">Utilisateur</CBadge>
-                      )}
-                    </CTableDataCell>
-                  </CTableRow>
-                ))
-              ) : (
-                <CTableRow>
-                  <CTableDataCell colSpan="4" className="text-center text-muted">
-                    Aucun utilisateur trouvé.
-                  </CTableDataCell>
-                </CTableRow>
-              )}
-            </CTableBody>
-          </CTable>
-        )}
-      </CCardBody>
-    </CCard>
+            ))
+          ) : (
+            <CTableRow>
+              <CTableDataCell colSpan="4" className="text-center text-muted">
+                Aucun utilisateur trouvé.
+              </CTableDataCell>
+            </CTableRow>
+          )}
+        </CTableBody>
+      </CTable>
+    </CContainer>
   )
 }
 
