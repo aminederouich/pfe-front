@@ -51,7 +51,7 @@ export const getScoreByIdAPI = (id) => async (dispatch) => {
   }
 }
 
-export const calculateScoreTicketDoneAPI = (ticketId) => async (dispatch) => {
+export const calculateScoreTicketDoneAPI = (ticket) => async (dispatch) => {
   dispatch({ type: CALCULATE_SCORE_TICKET_DONE_REQUEST })
   try {
     const state = store.getState()
@@ -61,7 +61,7 @@ export const calculateScoreTicketDoneAPI = (ticketId) => async (dispatch) => {
       throw new Error('Rule manager not found')
     }
     const ruleId = ruleManager.data.data.id
-    const response = await scoreService.calculateScoreTicketDone(ticketId, ruleId)
+    const response = await scoreService.calculateScoreTicketDone(ticket, ruleId)
     dispatch({ type: CALCULATE_SCORE_TICKET_DONE_SUCCESS, payload: response.data.data })
     return ruleManager.data
   } catch (error) {
