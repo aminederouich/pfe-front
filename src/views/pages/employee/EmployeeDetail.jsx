@@ -1,11 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { CCard, CCardHeader, CCardBody, CRow, CCol, CBadge, CSpinner } from '@coreui/react'
-import axios from 'axios'
+import { CCard, CCardBody, CRow, CCol, CBadge, CSpinner, CContainer, CImage } from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUserByUidAPI } from '../../../actions/userActions'
-import { getAllTicketAPI } from '../../../actions/ticketActions'
-
+import userimg from '../../../assets/images/avatars/1.jpg'
 const EmployeeDetail = () => {
   const { uid } = useParams()
   const dispatch = useDispatch()
@@ -30,37 +28,48 @@ const EmployeeDetail = () => {
   if (!user) return <p>Employé introuvable</p>
 
   return (
-    <CCard className="mb-4 shadow-sm border-0">
-      <CCardHeader className="bg-info text-white fw-bold">Détails de l&apos;employé</CCardHeader>
-      <CCardBody>
-        <CRow className="mb-3">
-          <CCol md={6}>
-            <strong>Nom :</strong> {user.LastName}
-          </CCol>
-          <CCol md={6}>
-            <strong>Prénom :</strong> {user.FirstName}
-          </CCol>
-        </CRow>
-        <CRow className="mb-3">
-          <CCol md={6}>
-            <strong>Email :</strong> {user.email}
-          </CCol>
-          <CCol md={6}>
-            <strong>Téléphone :</strong> {user.phoneNumber || 'Non renseigné'}
-          </CCol>
-        </CRow>
-        <CRow className="mb-3">
-          <CCol md={6}>
-            <strong>Rôle :</strong>{' '}
-            {user.IsManager ? (
-              <CBadge color="warning">Manager</CBadge>
-            ) : (
-              <CBadge color="info">Employé</CBadge>
-            )}
-          </CCol>
-        </CRow>
-      </CCardBody>
-    </CCard>
+    <CContainer>
+      <CRow>
+        <CCol sm={10}>
+          <h2>Détails de l&apos;employé</h2>
+          <p className="text-medium-emphasis"></p>
+        </CCol>
+      </CRow>
+      <CCard>
+        <CCardBody>
+          <CRow>
+            <CCol md={4} className="d-flex flex-column align-items-start">
+              <CImage
+                src={user.imgURL || userimg}
+                roundedCircle
+                className="rounded-circle"
+                alt="Profile Picture"
+                width={120}
+                height={120}
+              />
+              <h5 className="fw-bold mb-1">
+                {user.FirstName} {user.LastName}
+              </h5>
+              <p className="text-muted mb-2">{user.email}</p>
+            </CCol>
+            <hr className="vr" />
+
+            <CCol md={7}>
+              <CRow>
+                <CCol xs={6}>
+                  <p className="mb-1 text-muted">Role</p>
+                  {user.IsManager ? (
+                    <CBadge color="warning">Manager</CBadge>
+                  ) : (
+                    <CBadge color="info">Employé</CBadge>
+                  )}
+                </CCol>
+              </CRow>
+            </CCol>
+          </CRow>
+        </CCardBody>
+      </CCard>
+    </CContainer>
   )
 }
 
