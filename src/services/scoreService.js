@@ -2,52 +2,60 @@ import axios from 'axios'
 
 const API_URL = 'http://localhost:8081/scores/'
 
-const addScore = (data) => {
-  return axios
-    .post(`${API_URL}add`, data, {
+const addScore = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}add`, data, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     })
-    .then((response) => {
-      return response
-    })
-    .catch((error) => {
-      console.error('Error fetching all config Jira:', error)
-      return error
-    })
+    return response
+  } catch (error) {
+    console.error('Error fetching all config Jira:', error)
+    return error
+  }
 }
 
-const getAllScores = () => {
-  return axios
-    .get(`${API_URL}getAll`, {
+const getAllScores = async () => {
+  try {
+    const response = await axios.get(`${API_URL}getAll`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     })
-    .then((response) => {
-      return response
-    })
-    .catch((error) => {
-      console.error('Error fetching all config Jira:', error)
-      return error
-    })
+    return response
+  } catch (error) {
+    console.error('Error fetching all config Jira:', error)
+    return error
+  }
 }
 
-const getScoreById = (id) => {
-  return axios
-    .get(`${API_URL}getScoreById/${id}`, {
+const getScoreById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}getScoreById/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     })
-    .then((response) => {
-      return response
+    return response
+  } catch (error) {
+    console.error('Error fetching score by ID:', error)
+    return error
+  }
+}
+
+const getScoreByOwnerId = async (ownerId) => {
+  try {
+    const response = await axios.get(`${API_URL}users/score/${ownerId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
     })
-    .catch((error) => {
-      console.error('Error fetching score by ID:', error)
-      return error
-    })
+    return response
+  } catch (error) {
+    console.error('Error fetching score by owner ID:', error)
+    return error
+  }
 }
 
 const calculateScoreTicketDone = async (ticket, ruleId) => {
@@ -72,5 +80,6 @@ export default {
   addScore,
   getAllScores,
   getScoreById,
+  getScoreByOwnerId,
   calculateScoreTicketDone,
 }
