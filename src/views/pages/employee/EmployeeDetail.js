@@ -1,9 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { CCard, CCardBody, CRow, CCol, CBadge, CSpinner, CContainer, CImage } from '@coreui/react'
+import {
+  CCard,
+  CCardBody,
+  CRow,
+  CCol,
+  CBadge,
+  CSpinner,
+  CContainer,
+  CImage,
+  CWidgetStatsB,
+} from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUserByUidAPI } from '../../../actions/userActions'
 import userimg from '../../../assets/images/avatars/1.jpg'
+import { getScoreByOwnerIdAPI } from '../../../actions/scoreAction'
+import UserScoreWidgetStats from '../../../components/charts/userScoreWidgetStats'
 const EmployeeDetail = () => {
   const { uid } = useParams()
   const dispatch = useDispatch()
@@ -16,6 +28,10 @@ const EmployeeDetail = () => {
       isFirstRender.current = false
     }
   }, [dispatch, uid])
+
+  useEffect(() => {
+    dispatch(getScoreByOwnerIdAPI(uid))
+  }, [dispatch, uid, user])
 
   if (loading) {
     return (
@@ -69,6 +85,7 @@ const EmployeeDetail = () => {
           </CRow>
         </CCardBody>
       </CCard>
+      <UserScoreWidgetStats />
     </CContainer>
   )
 }

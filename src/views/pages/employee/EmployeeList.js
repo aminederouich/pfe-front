@@ -48,30 +48,31 @@ const EmployeeList = () => {
           <p className="text-medium-emphasis">Description of the user list</p>
         </CCol>
       </CRow>
-      <CTable striped hover responsive bordered align="middle">
-        <CTableHead color="light">
+      <CTable align="middle" className="mb-0 border" hover responsive>
+        <CTableHead className="text-nowrap">
           <CTableRow className="text-center">
-            <CTableHeaderCell scope="col">Nom</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Prénom</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Email</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Rôle</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary">Nom</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary">Prénom</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary">Email</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary">Rôle</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
         <CTableBody>
           {usersList && usersList.length > 0 ? (
             usersList.map((user) => (
               <CTableRow
+                v-for="item in tableItems"
                 key={user.uid}
                 className="text-center align-middle"
                 style={{ cursor: 'pointer' }}
                 onClick={() => (window.location.href = `/employees/${user.uid}`)}
               >
-                <CTableDataCell>
+                <CTableDataCell className="text-center">
                   <span className="text-dark fw-semibold">{user.LastName || '-'}</span>
                 </CTableDataCell>
-                <CTableDataCell>{user.FirstName || '-'}</CTableDataCell>
-                <CTableDataCell>{user.email || '-'}</CTableDataCell>
-                <CTableDataCell>
+                <CTableDataCell className="text-center">{user.FirstName || '-'}</CTableDataCell>
+                <CTableDataCell className="text-center">{user.email || '-'}</CTableDataCell>
+                <CTableDataCell className="text-center">
                   {user.IsManager ? (
                     <CBadge color="danger">Manager</CBadge>
                   ) : user.IsEmployee ? (

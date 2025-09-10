@@ -3,9 +3,9 @@ import scoreService from '../services/scoreService'
 import { store } from '../store'
 
 // Actions Types
-export const GET_SCORES_REQUEST = 'GET_SCORES_REQUEST'
-export const GET_SCORES_SUCCESS = 'GET_SCORES_SUCCESS'
-export const GET_SCORES_FAILURE = 'GET_SCORES_FAILURE'
+export const GET_SCORE_REQUEST = 'GET_SCORE_REQUEST'
+export const GET_SCORE_SUCCESS = 'GET_SCORE_SUCCESS'
+export const GET_SCORE_FAILURE = 'GET_SCORE_FAILURE'
 
 export const ADD_SCORE_REQUEST = 'ADD_SCORE_REQUEST'
 export const ADD_SCORE_SUCCESS = 'ADD_SCORE_SUCCESS'
@@ -15,17 +15,21 @@ export const GET_SCORE_BY_ID_REQUEST = 'GET_SCORE_BY_ID_REQUEST'
 export const GET_SCORE_BY_ID_SUCCESS = 'GET_SCORE_BY_ID_SUCCESS'
 export const GET_SCORE_BY_ID_FAILURE = 'GET_SCORE_BY_ID_FAILURE'
 
+export const GET_SCORE_BY_OWNER_ID_REQUEST = 'GET_SCORE_BY_OWNER_ID_REQUEST'
+export const GET_SCORE_BY_OWNER_ID_SUCCESS = 'GET_SCORE_BY_OWNER_ID_SUCCESS'
+export const GET_SCORE_BY_OWNER_ID_FAILURE = 'GET_SCORE_BY_OWNER_ID_FAILURE'
+
 export const CALCULATE_SCORE_TICKET_DONE_REQUEST = 'CALCULATE_SCORE_TICKET_DONE_REQUEST'
 export const CALCULATE_SCORE_TICKET_DONE_SUCCESS = 'CALCULATE_SCORE_TICKET_DONE_SUCCESS'
 export const CALCULATE_SCORE_TICKET_DONE_FAILURE = 'CALCULATE_SCORE_TICKET_DONE_FAILURE'
 
 export const getAllScores = () => async (dispatch) => {
-  dispatch({ type: GET_SCORES_REQUEST })
+  dispatch({ type: GET_SCORE_REQUEST })
   try {
     const response = await scoreService.getAllScores()
-    dispatch({ type: GET_SCORES_SUCCESS, payload: response.data })
+    dispatch({ type: GET_SCORE_SUCCESS, payload: response.data })
   } catch (error) {
-    dispatch({ type: GET_SCORES_FAILURE, payload: error.message })
+    dispatch({ type: GET_SCORE_FAILURE, payload: error.message })
   }
 }
 
@@ -48,6 +52,16 @@ export const getScoreByIdAPI = (id) => async (dispatch) => {
     dispatch({ type: GET_SCORE_BY_ID_SUCCESS, payload: response.data })
   } catch (error) {
     dispatch({ type: GET_SCORE_BY_ID_FAILURE, payload: error.message })
+  }
+}
+
+export const getScoreByOwnerIdAPI = (id) => async (dispatch) => {
+  dispatch({ type: GET_SCORE_BY_OWNER_ID_REQUEST })
+  try {
+    const response = await scoreService.getScoreByOwnerId(id)
+    dispatch({ type: GET_SCORE_BY_OWNER_ID_SUCCESS, payload: response.data })
+  } catch (error) {
+    dispatch({ type: GET_SCORE_BY_OWNER_ID_FAILURE, payload: error.message })
   }
 }
 
