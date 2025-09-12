@@ -25,12 +25,12 @@ const EmployeeList = () => {
 
   const { usersList, loading } = useSelector((state) => state.user)
 
-  // useEffect(() => {
-  //   if (isFirstRender.current) {
-  //     dispatch(getAllUsersAPI())
-  //     isFirstRender.current = false
-  //   }
-  // }, [dispatch])
+  useEffect(() => {
+    if (isFirstRender.current) {
+      dispatch(getAllUsersAPI())
+      isFirstRender.current = false
+    }
+  }, [dispatch])
 
   if (loading) {
     return (

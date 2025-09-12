@@ -40,12 +40,12 @@ const Tickets = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(10)
 
-  // useEffect(() => {
-  //   if (isFirstRender.current) {
-  //     dispatch(getAllTicketAPI())
-  //     isFirstRender.current = false
-  //   }
-  // }, [dispatch])
+  useEffect(() => {
+    if (isFirstRender.current) {
+      dispatch(getAllTicketAPI())
+      isFirstRender.current = false
+    }
+  }, [dispatch])
 
   const handleClickAjouterTicket = (event) => {
     event.preventDefault()
