@@ -1,7 +1,6 @@
 import React from 'react'
-import { createStore, applyMiddleware, combineReducers } from 'redux'
+import { legacy_createStore as createStore, applyMiddleware, combineReducers, compose } from 'redux'
 import { thunk } from 'redux-thunk'
-import { composeWithDevTools } from 'redux-devtools-extension'
 import { Provider } from 'react-redux'
 import PropTypes from 'prop-types'
 import authReducer from './reducers/authReducer'
@@ -12,6 +11,8 @@ import userReducer from './reducers/userReducer'
 import projectReducer from './reducers/projectReducer'
 import scoreReducer from './reducers/scoreReducer'
 import rulesReducer from './reducers/rulesReducer'
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 const rootReducer = combineReducers({
   rules: rulesReducer,
@@ -24,7 +25,7 @@ const rootReducer = combineReducers({
   score: scoreReducer,
 })
 
-const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)))
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)))
 
 const StoreProvider = ({ children }) => <Provider store={store}>{children}</Provider>
 
