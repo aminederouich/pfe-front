@@ -1,4 +1,5 @@
-import modalCreateTicketEn from './modals/modalCreateTicket/en.js'
+import modalCreateTicketEn from './modals/modalCreateTicket/en'
+import loginPage from './pages/login/en.js'
 import projectPage from './pages/project/en.js'
 import ticketPage from './pages/ticket/en.js'
 
@@ -10,10 +11,11 @@ const en = {
     projects: 'Projects',
     tickets: 'Tickets',
     create: 'Create',
+    loginPage: loginPage,
     projectPage: projectPage,
     ticketPage: ticketPage,
     //Modal Create Ticket
-    modal: modalCreateTicketEn,
+    modalCreateTicket: modalCreateTicketEn,
   },
 }
 

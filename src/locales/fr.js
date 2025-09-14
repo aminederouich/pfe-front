@@ -1,4 +1,5 @@
 import modalCreateTicketFr from './modals/modalCreateTicket/fr'
+import loginPage from './pages/login/fr'
 import projectPage from './pages/project/fr'
 import ticketPage from './pages/ticket/fr'
 
@@ -10,10 +11,11 @@ const fr = {
     projects: 'Projets',
     tickets: 'Tickets',
     create: 'Créer',
+    loginPage: loginPage,
     projectPage: projectPage,
     ticketPage: ticketPage,
     //Modal Create Ticket
-    modalCreateTicketFr: modalCreateTicketFr,
+    modalCreateTicket: modalCreateTicketFr,
   },
 }
 

@@ -21,6 +21,7 @@ const modalCreateTicketEn = {
     priority: 'Select the priority level for this ticket...',
     configJira: 'Select a Jira configuration...',
     configJiraHelper: 'Please select a Jira configuration.',
+    projectName: 'Select the project name...',
   },
   fieldsErrors: {
     externalLink: 'The external link is required for an external project.',

@@ -4,6 +4,7 @@ import { SignInPage } from '@toolpad/core/SignInPage'
 import { useTheme } from '@mui/material/styles'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 
 import { login, checkAuthentication } from '../../../actions/authActions'
 import { providers } from '../../../utils/authProviders'
@@ -15,6 +16,7 @@ const BRANDING = {
 }
 
 const Login = () => {
+  const { t } = useTranslation()
   const theme = useTheme()
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -36,7 +38,7 @@ const Login = () => {
               const loginResponse = await dispatch(login(email, password))
 
               if (loginResponse.error) {
-                return { error: 'Invalid username or password' }
+                return { error: t('loginPage.error.invalidCredentials') }
               }
 
               await dispatch(checkAuthentication())
@@ -48,12 +50,11 @@ const Login = () => {
 
               return { error: 'Unexpected response format' }
             } catch (error) {
-              console.error('Login error:', error)
               return { error: 'Authentication failed' }
             }
           }
 
-          return { error: "Cette fonctionnalité n'est pas disponible pour le moment." }
+          return { error: t('loginPage.error.invalidFeature') }
         }}
         slotProps={{
           form: { noValidate: false },

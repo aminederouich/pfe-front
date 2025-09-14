@@ -6,6 +6,9 @@ export const TOGGLE_CREATE_TICKET_MODAL_CLOSE = 'TOGGLE_CREATE_TICKET_MODAL_CLOS
 export const TOGGLE_EDIT_TICKET_MODAL_OPEN = 'TOGGLE_EDIT_TICKET_MODAL_OPEN'
 export const TOGGLE_EDIT_TICKET_MODAL_CLOSE = 'TOGGLE_EDIT_TICKET_MODAL_CLOSE'
 
+export const TOGGLE_ASSIGN_TICKET_MODAL_OPEN = 'TOGGLE_ASSIGN_TICKET_MODAL_OPEN'
+export const TOGGLE_ASSIGN_TICKET_MODAL_CLOSE = 'TOGGLE_ASSIGN_TICKET_MODAL_CLOSE'
+
 export const TICKET_TO_VIEW = 'TICKET_TO_VIEW'
 
 export const GET_ALL_TICKETS_REQUEST = 'GET_ALL_TICKETS_REQUEST'
@@ -41,6 +44,18 @@ export const toggleEditTicketModalOpen = () => (dispatch) => {
 export const toggleEditTicketModalClose = () => (dispatch) => {
   dispatch({
     type: TOGGLE_EDIT_TICKET_MODAL_CLOSE,
+  })
+}
+
+export const toggleAssignTicketModalOpen = () => (dispatch) => {
+  dispatch({
+    type: TOGGLE_ASSIGN_TICKET_MODAL_OPEN,
+  })
+}
+
+export const toggleAssignTicketModalClose = () => (dispatch) => {
+  dispatch({
+    type: TOGGLE_ASSIGN_TICKET_MODAL_CLOSE,
   })
 }
 
