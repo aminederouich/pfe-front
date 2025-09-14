@@ -127,7 +127,6 @@ const Tickets = () => {
       </CRow>
       <CTable hover responsive align="middle" small>
         <CTableBody>
-          {console.log(currentTickets)}
           {currentTickets.map((ticket, index) =>
             Object.prototype.hasOwnProperty.call(ticket, 'fields') ? (
               <CTableRow
