@@ -4,6 +4,7 @@ import ModalCreateTicket from '../components/Modal/ModalCreateTicket'
 import ModalEditConfigJira from '../components/Modal/ModalEditConfigJira'
 import ModalEditProject from '../components/Modal/ModalEditProject'
 import ModalEditTicket from '../components/Modal/ModalEditTicket'
+import ModalAssignTicket from '../components/Modal/ModalAssignTicket'
 
 const DefaultLayout = () => {
   return (
@@ -12,6 +13,7 @@ const DefaultLayout = () => {
         <AppHeader />
         <div className="body flex-grow-1">
           <AppContent />
+          <ModalAssignTicket />
           <ModalCreateTicket />
           <ModalEditTicket />
           <ModalEditProject />
