@@ -3,6 +3,8 @@ import {
   TOGGLE_CREATE_TICKET_MODAL_OPEN,
   TOGGLE_EDIT_TICKET_MODAL_CLOSE,
   TOGGLE_EDIT_TICKET_MODAL_OPEN,
+  TOGGLE_ASSIGN_TICKET_MODAL_CLOSE,
+  TOGGLE_ASSIGN_TICKET_MODAL_OPEN,
   TICKET_TO_VIEW,
   GET_ALL_TICKETS_FAILURE,
   GET_ALL_TICKETS_REQUEST,
@@ -21,6 +23,7 @@ const initialState = {
   ticketSelected: null,
   error: null,
   isCreateTicketModalOpen: false,
+  isAssignTicketModalOpen: false,
   isEditTicketModalOpen: false,
 }
 
@@ -45,6 +48,16 @@ const ticketReducer = (state = initialState, action) => {
       return {
         ...state,
         isEditTicketModalOpen: false,
+      }
+    case TOGGLE_ASSIGN_TICKET_MODAL_OPEN:
+      return {
+        ...state,
+        isAssignTicketModalOpen: true,
+      }
+    case TOGGLE_ASSIGN_TICKET_MODAL_CLOSE:
+      return {
+        ...state,
+        isAssignTicketModalOpen: false,
       }
     case TICKET_TO_VIEW:
       return {
