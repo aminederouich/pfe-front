@@ -149,7 +149,7 @@ const ModalCreateTicket = () => {
     // Traitement des projets externes
     if (projectType === 'externe') {
       if (!newIssue.fields?.externalLink?.trim()) {
-        toast.error(t('modal.fieldsErrors.externalLink'))
+        toast.error(t('modalCreateTicket.fieldsErrors.externalLink'))
         return
       }
       window.open(newIssue.fields.externalLink, '_blank')
@@ -160,22 +160,22 @@ const ModalCreateTicket = () => {
     if (projectType === 'interne') {
       if (!newIssue.fields?.project?.id || newIssue.fields?.project?.id === '-1') {
         setValidated(false)
-        toast.error(t('modal.fieldsErrors.project'))
+        toast.error(t('modalCreateTicket.fieldsErrors.project'))
         return
       }
       if (!newIssue.fields?.issuetype?.id || newIssue.fields?.issuetype?.id === '-1') {
         setValidated(false)
-        toast.error(t('modal.fieldsErrors.issuetype'))
+        toast.error(t('modalCreateTicket.fieldsErrors.issuetype'))
         return
       }
       if (!newIssue.fields?.summary?.trim()) {
         setValidated(false)
-        toast.error(t('modal.fieldsErrors.summary'))
+        toast.error(t('modalCreateTicket.fieldsErrors.summary'))
         return
       }
       if (!newIssue.fields?.priority?.id) {
         setValidated(false)
-        toast.error(t('modal.fieldsErrors.priority'))
+        toast.error(t('modalCreateTicket.fieldsErrors.priority'))
         return
       }
       if (
@@ -191,7 +191,7 @@ const ModalCreateTicket = () => {
           startDate.getMonth() === endDate.getMonth() &&
           startDate.getDate() === endDate.getDate()
         ) {
-          toast.error(t('modal.fieldsErrors.sameStartEndDate'))
+          toast.error(t('modalCreateTicket.fieldsErrors.sameStartEndDate'))
           setValidated(false)
           return
         }
@@ -322,7 +322,7 @@ const ModalCreateTicket = () => {
       scrollable
     >
       <CModalHeader>
-        <CModalTitle>{t('modal.title')}</CModalTitle>
+        <CModalTitle>{t('modalCreateTicket.title')}</CModalTitle>
       </CModalHeader>
       <CForm
         className="needs-validation overflow-auto"
@@ -332,12 +332,14 @@ const ModalCreateTicket = () => {
       >
         <CModalBody>
           <CCallout color="info" className="mb-3">
-            {t('modal.description')}
+            {t('modalCreateTicket.description')}
           </CCallout>
 
           <CRow className="mb-3">
             <CCol md={3}>
-              <CFormLabel className="fw-bold">{t('modal.fields.projectType')}</CFormLabel>
+              <CFormLabel className="fw-bold">
+                {t('modalCreateTicket.fields.projectType')}
+              </CFormLabel>
             </CCol>
             <CCol md={5}>
               <CFormSelect
@@ -355,7 +357,7 @@ const ModalCreateTicket = () => {
                 ))}
               </CFormSelect>
               <small id="project-help" className="form-text text-muted">
-                {t('modal.fieldsHelper.project')}
+                {t('modalCreateTicket.fieldsHelper.project')}
               </small>
             </CCol>
           </CRow>
@@ -363,7 +365,9 @@ const ModalCreateTicket = () => {
           {projectType === 'externe' ? (
             <CRow className="mb-3">
               <CCol md={3}>
-                <CFormLabel className="fw-bold">{t('modal.fields.configJira')}</CFormLabel>
+                <CFormLabel className="fw-bold">
+                  {t('modalCreateTicket.fields.configJira')}
+                </CFormLabel>
               </CCol>
               <CCol md={9}>
                 <CFormSelect
@@ -381,7 +385,7 @@ const ModalCreateTicket = () => {
                     }))
                   }}
                 >
-                  <option value="">{t('modal.fieldsHelper.configJira')}</option>
+                  <option value="">{t('modalCreateTicket.fieldsHelper.configJira')}</option>
                   {jiraConfigList.map((conf) => (
                     <option key={conf.id} value={`${conf.protocol}://${conf.host}`}>
                       {conf.host} ({conf.username})
@@ -389,7 +393,7 @@ const ModalCreateTicket = () => {
                   ))}
                 </CFormSelect>
                 <small className="form-text text-muted">
-                  {t('modal.fieldsHelper.configJiraHelper')}
+                  {t('modalCreateTicket.fieldsHelper.configJiraHelper')}
                 </small>
               </CCol>
             </CRow>
@@ -397,7 +401,9 @@ const ModalCreateTicket = () => {
             <>
               <CRow className="mb-3">
                 <CCol md={3}>
-                  <CFormLabel className="fw-bold">{t('modal.fields.projectName')}</CFormLabel>
+                  <CFormLabel className="fw-bold">
+                    {t('modalCreateTicket.fields.projectName')}
+                  </CFormLabel>
                 </CCol>
                 <CCol md={5}>
                   <CFormSelect
@@ -418,11 +424,16 @@ const ModalCreateTicket = () => {
                       </option>
                     ))}
                   </CFormSelect>
+                  <small className="form-text text-muted">
+                    {t('modalCreateTicket.fieldsHelper.projectName')}
+                  </small>
                 </CCol>
               </CRow>
               <CRow className="mb-3">
                 <CCol md={3}>
-                  <CFormLabel className="fw-bold">{t('modal.fields.issueType')}</CFormLabel>
+                  <CFormLabel className="fw-bold">
+                    {t('modalCreateTicket.fields.issueType')}
+                  </CFormLabel>
                 </CCol>
                 <CCol md={5}>
                   <CFormSelect
@@ -454,12 +465,14 @@ const ModalCreateTicket = () => {
               <div className="mt-3">
                 <CRow className="mb-3">
                   <CCol md={3}>
-                    <CFormLabel className="fw-bold">{t('modal.fields.summary')}</CFormLabel>
+                    <CFormLabel className="fw-bold">
+                      {t('modalCreateTicket.fields.summary')}
+                    </CFormLabel>
                   </CCol>
                   <CCol md={9}>
                     <CFormInput
                       type="text"
-                      placeholder={t('modal.fieldsHelper.summary')}
+                      placeholder={t('modalCreateTicket.fieldsHelper.summary')}
                       value={newIssue.fields.summary || ''}
                       onChange={(event) => handleChangeSummary(event)}
                       required={projectType === 'interne'}
@@ -471,7 +484,9 @@ const ModalCreateTicket = () => {
 
                 <CRow className="mb-3">
                   <CCol md={3}>
-                    <CFormLabel className="fw-bold">{t('modal.fields.description')}</CFormLabel>
+                    <CFormLabel className="fw-bold">
+                      {t('modalCreateTicket.fields.description')}
+                    </CFormLabel>
                   </CCol>
                   <CCol md={9}>
                     <Editor
@@ -495,7 +510,9 @@ const ModalCreateTicket = () => {
 
                 <CRow className="mb-3">
                   <CCol md={3}>
-                    <CFormLabel className="fw-bold">{t('modal.fields.priority')}</CFormLabel>
+                    <CFormLabel className="fw-bold">
+                      {t('modalCreateTicket.fields.priority')}
+                    </CFormLabel>
                   </CCol>
                   <CCol md={9}>
                     <CFormSelect
@@ -513,14 +530,16 @@ const ModalCreateTicket = () => {
                       ))}
                     </CFormSelect>
                     <small id="priority-help" className="form-text text-muted">
-                      {t('modal.fieldsHelper.priority')}
+                      {t('modalCreateTicket.fieldsHelper.priority')}
                     </small>
                   </CCol>
                 </CRow>
 
                 <CRow className="mb-3">
                   <CCol md={3}>
-                    <CFormLabel className="fw-bold">{t('modal.fields.assignee')}</CFormLabel>
+                    <CFormLabel className="fw-bold">
+                      {t('modalCreateTicket.fields.assignee')}
+                    </CFormLabel>
                   </CCol>
                   <CCol md={6}>
                     <CFormSelect
@@ -535,7 +554,7 @@ const ModalCreateTicket = () => {
                     >
                       {!user.user.IsEmployee && (
                         <option key="-1" value="-1">
-                          {t('modal.fields.nonAssigned')}
+                          {t('modalCreateTicket.fields.nonAssigned')}
                         </option>
                       )}
                       <option key={user.user.uid} value={user.user.uid} disabled>
@@ -555,14 +574,16 @@ const ModalCreateTicket = () => {
                       onClick={() => handleMeAssignee()}
                       disabled={isSubmitting || user.user.IsEmployee}
                     >
-                      {t('modal.actions.assigneeToMe')}
+                      {t('modalCreateTicket.actions.assigneeToMe')}
                     </CButton>
                   </CCol>
                 </CRow>
 
                 <CRow className="mb-3">
                   <CCol md={3}>
-                    <CFormLabel className="fw-bold">{t('modal.fields.endDate')}</CFormLabel>
+                    <CFormLabel className="fw-bold">
+                      {t('modalCreateTicket.fields.endDate')}
+                    </CFormLabel>
                   </CCol>
                   <CCol md={9}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -590,10 +611,12 @@ const ModalCreateTicket = () => {
         </CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={handleClose} disabled={isSubmitting}>
-            {t('modal.actions.cancel')}
+            {t('modalCreateTicket.actions.cancel')}
           </CButton>
           <CButton color="primary" onClick={handleSubmitTicket} disabled={isSubmitting}>
-            {isSubmitting ? t('modal.actions.creating') : t('modal.actions.create')}
+            {isSubmitting
+              ? t('modalCreateTicket.actions.creating')
+              : t('modalCreateTicket.actions.create')}
           </CButton>
         </CModalFooter>
       </CForm>
