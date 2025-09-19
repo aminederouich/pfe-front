@@ -57,7 +57,7 @@ const ModalAssignTicket = () => {
           assignee: {
             emailAddress: user.user.email,
             accountId: user.user.uid,
-            displayName: user.user.FirstName + ' ' + user.user.LastName,
+            displayName: user.user.firstName + ' ' + user.user.lastName,
             accountType: 'takeit',
             timeZone: 'Etc/GMT-1',
             active: true,
@@ -126,7 +126,7 @@ const ModalAssignTicket = () => {
                 )}
                 {usersList.map((option) => (
                   <option key={option.uid} value={option.uid}>
-                    {option.FirstName} {option.LastName}
+                    {option.firstName} {option.lastName}
                   </option>
                 ))}
               </CFormSelect>

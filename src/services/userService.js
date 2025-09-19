@@ -34,20 +34,39 @@ const getAllUsers = () => {
     })
 }
 
-const sendInvite = (userData) => {
-  return axios.post(`${API_URL}invite-employee`, userData, {
+const sendInvitationEmail = (userData) => {
+  console.log(userData)
+  return axios.post(`${API_URL}inviteUser`, userData, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
   })
 }
-const setPassword = (data) => {
-  return axios.post(`${API_URL}set-password`, data)
+
+const updateUser = (uid, userData) => {
+  return axios.post(`${API_URL}updateUser/${uid}`, userData, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+  })
+}
+
+const setPassword = (uid, password) => {
+  return axios.post(
+    `${API_URL}setPassword/${uid}`,
+    { password },
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    },
+  )
 }
 
 export default {
   getUserById,
   getAllUsers,
-  sendInvite,
+  sendInvitationEmail,
   setPassword,
+  updateUser,
 }

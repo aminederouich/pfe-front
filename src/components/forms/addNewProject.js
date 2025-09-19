@@ -34,8 +34,8 @@ const AddNewProject = () => {
         projectCategory: 'No category',
         projectLead: {
           uid: user.uid,
-          FirstName: user.FirstName,
-          LastName: user.LastName,
+          firstName: user.firstName,
+          lastName: user.lastName,
           email: user.email,
         },
       }),
@@ -102,7 +102,7 @@ const AddNewProject = () => {
         label={t('projectPage.fields.projectLead')}
         aria-describedby="exampleFormControlInputHelpInline"
         required
-        value={user.FirstName.concat(' ', user.LastName)}
+        value={user.displayName}
         disabled
         text={t('projectPage.fieldsHelper.projectLead')}
       />

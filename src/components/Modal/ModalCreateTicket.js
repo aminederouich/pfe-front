@@ -117,7 +117,7 @@ const ModalCreateTicket = () => {
           assignee: {
             emailAddress: user.user.email,
             accountId: user.user.uid,
-            displayName: user.user.FirstName + ' ' + user.user.LastName,
+            displayName: user.user.firstName + ' ' + user.user.lastName,
             accountType: 'takeit',
             timeZone: 'Etc/GMT-1',
             active: true,
@@ -238,7 +238,7 @@ const ModalCreateTicket = () => {
           updated: now,
           statuscategorychangedate: now,
           creator: {
-            displayName: `${user.user.FirstName} ${user.user.LastName}`,
+            displayName: `${user.user.firstName} ${user.user.lastName}`,
             timeZone: 'Etc/GMT-1',
             accountType: 'takeit',
             active: true,
@@ -253,12 +253,12 @@ const ModalCreateTicket = () => {
             accountId: user.user.uid,
             timeZone: 'Etc/GMT-1',
             active: true,
-            displayName: `${user.user.FirstName} ${user.user.LastName}`,
+            displayName: `${user.user.firstName} ${user.user.lastName}`,
           },
           assignee: {
-            emailAddress: user.user.IsEmployee ? user.user.email : '',
-            accountId: user.user.IsEmployee ? user.user.uid : '',
-            displayName: user.user.IsEmployee ? user.user.FirstName + ' ' + user.user.LastName : '',
+            emailAddress: user.user.isEmployee ? user.user.email : '',
+            accountId: user.user.isEmployee ? user.user.uid : '',
+            displayName: user.user.isEmployee ? user.user.firstName + ' ' + user.user.lastName : '',
             accountType: 'takeit',
             timeZone: 'Etc/GMT-1',
             active: true,
@@ -558,7 +558,7 @@ const ModalCreateTicket = () => {
                         </option>
                       )}
                       <option key={user.user.uid} value={user.user.uid} disabled>
-                        {user.user.FirstName} {user.user.LastName}
+                        {user.user.firstName} {user.user.lastName}
                       </option>
                       {usersList.map((option) => (
                         <option key={option.uid} value={option.uid}>

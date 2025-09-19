@@ -134,8 +134,8 @@ const ModalEditProject = () => {
             aria-describedby="exampleFormControlInputHelpInline"
             required
             value={
-              projectLead && projectLead.FirstName && projectLead.LastName
-                ? projectLead.FirstName.concat(' ', projectLead.LastName)
+              projectLead && projectLead.firstName && projectLead.lastName
+                ? projectLead.firstName.concat(' ', projectLead.lastName)
                 : ''
             }
             disabled

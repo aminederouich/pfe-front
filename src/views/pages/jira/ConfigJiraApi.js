@@ -17,7 +17,7 @@ import {
   CButtonGroup,
   CBadge,
 } from '@coreui/react'
-import AddNewConfigJira from '../../forms/addNewConfigJira'
+import AddNewConfigJira from '../../../components/forms/addNewConfigJira'
 import { toast } from 'react-toastify'
 import { toggleEditConfigJiraModalOpen } from '../../../actions/jiraActions'
 const columns = [

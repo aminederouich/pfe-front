@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import {
   CCard,
   CCardHeader,
@@ -18,9 +19,9 @@ import {
   CButton,
 } from '@coreui/react'
 import { getAllUsersAPI } from '../../../actions/userActions'
-
 const EmployeeList = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const isFirstRender = useRef(true)
 
   const { usersList, loading } = useSelector((state) => state.user)
@@ -61,21 +62,20 @@ const EmployeeList = () => {
           {usersList && usersList.length > 0 ? (
             usersList.map((user) => (
               <CTableRow
-                v-for="item in tableItems"
                 key={user.uid}
                 className="text-center align-middle"
                 style={{ cursor: 'pointer' }}
-                onClick={() => (window.location.href = `/employees/${user.uid}`)}
+                onClick={() => navigate(`/employees/${user.uid}`)}
               >
                 <CTableDataCell className="text-center">
-                  <span className="text-dark fw-semibold">{user.LastName || '-'}</span>
+                  <span className="text-dark fw-semibold">{user.lastName || '-'}</span>
                 </CTableDataCell>
-                <CTableDataCell className="text-center">{user.FirstName || '-'}</CTableDataCell>
+                <CTableDataCell className="text-center">{user.firstName || '-'}</CTableDataCell>
                 <CTableDataCell className="text-center">{user.email || '-'}</CTableDataCell>
                 <CTableDataCell className="text-center">
-                  {user.IsManager ? (
+                  {user.isManager ? (
                     <CBadge color="danger">Manager</CBadge>
-                  ) : user.IsEmployee ? (
+                  ) : user.isEmployee ? (
                     <CBadge color="info">Employé</CBadge>
                   ) : (
                     <CBadge color="secondary">Utilisateur</CBadge>
