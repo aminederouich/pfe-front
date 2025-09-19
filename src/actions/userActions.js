@@ -140,6 +140,7 @@ export const setPasswordAPI = (uid, password) => async (dispatch) => {
       type: SET_PASSWORD_SUCCESS,
       payload: response.data,
     })
+    return response.data
   } catch (error) {
     if (error.response && error.response.data && error.response.data.message) {
       toast.error(error.response.data.message)

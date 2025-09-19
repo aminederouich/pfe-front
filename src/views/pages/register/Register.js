@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { AppFooter } from '../../../components'
 import {
   CAvatar,
@@ -25,9 +25,6 @@ const IncompletAccountLayout = () => {
   const [selectedAvatar, setSelectedAvatar] = useState(
     () => avatarList[Math.floor(Math.random() * avatarList.length)],
   )
-  const [avatarBase64, setAvatarBase64] = useState('')
-  const [avatarEncoding, setAvatarEncoding] = useState(false)
-  const [avatarError, setAvatarError] = useState('')
   const [formData, setFormData] = useState({
     emailAddress: user?.user?.emailAddress || '',
     active: true,
@@ -108,10 +105,7 @@ const IncompletAccountLayout = () => {
       toast.error('Les mots de passe ne correspondent pas.')
       return
     }
-    // if (!avatarBase64) {
-    //   toast.error("L'avatar n'est pas encore encodé, réessayez.")
-    //   return
-    // }
+
     const payload = {
       ...formData,
       avatarUrls: {
@@ -136,37 +130,14 @@ const IncompletAccountLayout = () => {
     )
     if (!res.error) {
       const resp = await dispatch(setPasswordAPI(user?.user?.uid, payload.password))
-      console.log(resp)
+      if (!resp.error) {
+        window.location.reload() // redirection vers tableau de bord ou autre page
+      }
     }
     // registerUser(payload)
     console.log('Payload inscription:', payload)
   }
 
-  const encodeAvatar = async (url) => {
-    try {
-      setAvatarEncoding(true)
-      setAvatarError('')
-      const res = await fetch(url)
-      const blob = await res.blob()
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setAvatarBase64(reader.result || '')
-        setAvatarEncoding(false)
-      }
-      reader.onerror = () => {
-        setAvatarError('Erreur encodage avatar')
-        setAvatarEncoding(false)
-      }
-      reader.readAsDataURL(blob)
-    } catch (err) {
-      setAvatarError('Erreur chargement avatar')
-      setAvatarEncoding(false)
-    }
-  }
-
-  // useEffect(() => {
-  //   if (selectedAvatar) encodeAvatar(selectedAvatar)
-  // }, [selectedAvatar])
   return (
     <div>
       <div className="wrapper d-flex flex-column min-vh-100">
@@ -281,15 +252,6 @@ const IncompletAccountLayout = () => {
                       Continuer
                     </CButton>
                   </div>
-                  <input type="hidden" name="avatar" value={avatarBase64} />
-                  {avatarEncoding && (
-                    <div style={{ fontSize: '0.75rem', color: '#6c757d' }}>Encodage avatar...</div>
-                  )}
-                  {avatarError && (
-                    <div style={{ fontSize: '0.75rem', color: 'var(--cui-danger,#dc3545)' }}>
-                      {avatarError}
-                    </div>
-                  )}
                 </CForm>
               </CCard>
 
