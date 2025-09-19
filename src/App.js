@@ -1,12 +1,11 @@
 import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import PropTypes from 'prop-types'
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import './scss/style.scss'
 import PrivateRoute from './PrivateRute'
 import { checkAuthentication } from './actions/authActions'
 import { CSpinner } from '@coreui/react'
-import { getAllTicketAPI } from './actions/ticketActions'
-import { getAllUsersAPI } from './actions/userActions'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -14,13 +13,36 @@ const PublicLayout = React.lazy(() => import('./layout/PublicLayout'))
 
 // Pages
 const Login = React.lazy(() => import('./views/pages/login/Login'))
-const ResetPassword = React.lazy(() => import('./views/pages/employee/ResetPassword'))
 // Ajoute Register si tu en as un
-// const Register = React.lazy(() => import('./views/pages/register/Register'))
+const Register = React.lazy(() => import('./views/pages/register/Register'))
+
+const IncompleteAccountGuard = ({ children }) => {
+  const { isAuthenticated, user } = useSelector((state) => state.auth)
+  const isActive = user?.user?.active
+  if (!isAuthenticated) return <Navigate to="/login" replace />
+  if (isActive) return <Navigate to="/" replace />
+  return children
+}
+
+IncompleteAccountGuard.propTypes = {
+  children: PropTypes.node,
+}
+
+const LoginRedirectGuard = ({ children }) => {
+  const { isAuthenticated, user } = useSelector((state) => state.auth)
+  if (!isAuthenticated) return children
+  const isActive = user?.user?.active
+  if (isActive) return <Navigate to="/" replace />
+  return <Navigate to="/incomplete-account" replace />
+}
+
+LoginRedirectGuard.propTypes = {
+  children: PropTypes.node,
+}
 
 const App = () => {
   const dispatch = useDispatch()
-  const [isChecking, setIsChecking] = useState(true)
+  const [isChecking, setIsChecking] = useState(false)
   const isFirstRender = useRef(true)
 
   const checkAuth = useCallback(async () => {
@@ -29,12 +51,10 @@ const App = () => {
       if (res.error) {
         console.log('User is not authenticated')
       } else {
-        dispatch(getAllTicketAPI())
-        dispatch(getAllUsersAPI())
+        // dispatch(getAllTicketAPI())
+        // dispatch(getAllUsersAPI())
       }
     } catch (error) {
-      console.error('Authentication check failed:', error)
-    } finally {
       setIsChecking(false)
     }
   }, [dispatch])
@@ -44,7 +64,7 @@ const App = () => {
       checkAuth()
       isFirstRender.current = false
     }
-  }, [checkAuth])
+  }, [dispatch, checkAuth])
 
   if (isChecking) {
     return (
@@ -66,9 +86,23 @@ const App = () => {
         <Routes>
           {/* Public routes (sans header/sidebar) */}
           <Route element={<PublicLayout />}>
-            <Route path="/login" name="Login Page" element={<Login />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            {/* <Route path="/register" element={<Register />} /> */}
+            <Route
+              path="/login"
+              name="Login Page"
+              element={
+                <LoginRedirectGuard>
+                  <Login />
+                </LoginRedirectGuard>
+              }
+            />
+            <Route
+              path="/incomplete-account"
+              element={
+                <IncompleteAccountGuard>
+                  <Register />
+                </IncompleteAccountGuard>
+              }
+            />
           </Route>
 
           {/* Private routes (avec header/sidebar) */}

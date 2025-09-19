@@ -5,6 +5,7 @@ import ModalEditConfigJira from '../components/Modal/ModalEditConfigJira'
 import ModalEditProject from '../components/Modal/ModalEditProject'
 import ModalEditTicket from '../components/Modal/ModalEditTicket'
 import ModalAssignTicket from '../components/Modal/ModalAssignTicket'
+import ModalAddUser from '../components/Modal/ModalAddUser'
 
 const DefaultLayout = () => {
   return (
@@ -18,6 +19,7 @@ const DefaultLayout = () => {
           <ModalEditTicket />
           <ModalEditProject />
           <ModalEditConfigJira />
+          <ModalAddUser />
         </div>
         <AppFooter />
       </div>

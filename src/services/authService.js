@@ -45,17 +45,12 @@ const logout = async () => {
 }
 
 const checkAuth = async () => {
-  try {
-    const response = await axios.get(`${API_URL}check-auth`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    })
-    return response
-  } catch (error) {
-    console.error('Error checking authentication:', error)
-    throw error
-  }
+  const response = await axios.get(`${API_URL}check-auth`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+  })
+  return response
 }
 
 const getCurrentUser = () => {

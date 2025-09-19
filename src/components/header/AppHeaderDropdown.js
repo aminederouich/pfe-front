@@ -41,11 +41,13 @@ const AppHeaderDropdown = () => {
   return (
     <CDropdown variant="nav-item">
       <CCol className="d-flex align-items-center">
-        <div className="fw-semibold">
-          {user.user.FirstName} {user.user.LastName}
-        </div>
+        <div className="fw-semibold">{user.user.displayName}</div>
         <CDropdownToggle placement="bottom-end" className="py-0 pe-0" caret={false}>
-          <CAvatar src={avatar8} size="md" />
+          <CAvatar
+            src={user?.user?.avatarUrls ? user.user.avatarUrls['48x48'] : avatar8}
+            size="md"
+            alt="avatar"
+          />
         </CDropdownToggle>
       </CCol>
       <CDropdownMenu className="pt-0" placement="bottom-end">

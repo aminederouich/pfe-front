@@ -18,7 +18,7 @@ import {
   deleteProjectAPI,
   toggleEditProjectModalOpen,
 } from '../../../actions/projectActions'
-import AddNewProject from '../../forms/addNewProject'
+import AddNewProject from '../../../components/forms/addNewProject'
 import { useTranslation } from 'react-i18next'
 
 const columns = [
@@ -99,7 +99,7 @@ const Projet = () => {
         projectName: item.projectName,
         key: item.key,
         projectType: item.projectType,
-        projectLead: item.projectLead.FirstName.concat(' ', item.projectLead.LastName),
+        projectLead: item.projectLead.firstName.concat(' ', item.projectLead.lastName),
         projectCategory: item.projectCategory,
         actions: (
           <CButtonGroup size="sm" role="group" aria-label="Small button group">

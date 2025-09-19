@@ -91,7 +91,6 @@ export const checkAuthentication = () => async (dispatch) => {
   } catch (error) {
     dispatch(checkAuthFailure())
     const errorMsg = error.response?.data?.error || 'Erreur inconnue'
-    console.error('Authentication check failed:', errorMsg)
     throw new Error(errorMsg)
   }
 }

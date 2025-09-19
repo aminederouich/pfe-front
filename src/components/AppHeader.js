@@ -31,19 +31,12 @@ const AppHeader = () => {
   const { user } = useSelector((state) => state.auth)
   const location = useLocation()
 
-  // Liste des routes où on cache le menu utilisateur
-  const hideUserHeaderRoutes = ['/reset-password', '/login', '/register']
-
   useEffect(() => {
     document.addEventListener('scroll', () => {
       headerRef.current &&
         headerRef.current.classList.toggle('shadow-sm', document.documentElement.scrollTop > 0)
     })
   }, [])
-
-  const switchColorMode = (color) => {
-    dispatch(switchThemeMode(color))
-  }
 
   useEffect(() => {
     setColorMode(theme)
@@ -56,9 +49,6 @@ const AppHeader = () => {
           <CImage src={Logo} alt="Logo" height={45} />
         </CNavbarBrand>
         <CHeaderNav className="d-none d-md-flex ms-4">
-          {/* <CNavItem>
-            <CNavLink>{t('welcome')}</CNavLink>
-          </CNavItem> */}
           <CNavItem>
             <CNavLink to="/dashboard" as={NavLink}>
               Dashboard
@@ -130,13 +120,11 @@ const AppHeader = () => {
           <li className="nav-item py-1">
             <div className="vr h-100 mx-2 text-body text-opacity-75"></div>
           </li>
-          {/* On affiche le menu utilisateur seulement si on n'est PAS sur une route à cacher */}
-          {!hideUserHeaderRoutes.includes(location.pathname) &&
-            (user !== null && user.user.IsEmployee && !user.user.IsManager ? (
-              <AppHeaderDropdown />
-            ) : user !== null && !user.user.IsEmployee && user.user.IsManager ? (
-              <AppHeaderDropdownManager />
-            ) : null)}
+          {user !== null && user.user.IsEmployee && !user.user.IsManager ? (
+            <AppHeaderDropdown />
+          ) : user !== null && !user.user.IsEmployee && user.user.IsManager ? (
+            <AppHeaderDropdownManager />
+          ) : null}
         </CHeaderNav>
       </CContainer>
       <CContainer className="px-4" fluid>
