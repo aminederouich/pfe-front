@@ -96,7 +96,7 @@ const Tickets = () => {
     }
     dispatch(updateTicketAPI(ticketUpdated)).then((res) => {
       if (res?.data?.success) {
-        toast.success('Ticket mis à jour avec succès')
+        toast.success(t('ticketPage.other.updateSuccess'))
         setTimeout(() => {
           dispatch(getAllTicketAPI())
         }, 1000)
@@ -220,7 +220,7 @@ const Tickets = () => {
                   />
                 </CTableDataCell>
                 <CTableDataCell>
-                  {ticket.fields.assignee?.displayName || 'Unassigned'}
+                  {ticket.fields.assignee?.displayName || t('ticketPage.other.unassigned')}
                 </CTableDataCell>
               </CTableRow>
             ) : null,
@@ -279,7 +279,7 @@ const Tickets = () => {
                 } else if (page === currentPage - 3 || page === currentPage + 3) {
                   return (
                     <CPaginationItem key={page} disabled>
-                      ...
+                      {t('ticketPage.other.pagination')}
                     </CPaginationItem>
                   )
                 }

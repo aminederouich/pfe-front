@@ -1,43 +1,14 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import {
-  CCard,
-  CCardBody,
-  CRow,
-  CCol,
-  CBadge,
-  CSpinner,
-  CContainer,
-  CAvatar,
-  CImage,
-} from '@coreui/react'
+import { useTranslation } from 'react-i18next'
+import { CCard, CCardBody, CRow, CCol, CBadge, CSpinner, CContainer, CImage } from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUserByUidAPI } from '../../../actions/userActions'
 import { getScoreByOwnerIdAPI } from '../../../actions/scoreAction'
 import UserScoreWidgetStats from '../../../components/charts/userScoreWidgetStats'
-
-// Helper: construit une data URL si la valeur ressemble à du base64 brut
-const getAvatarSrc = (avatarUrls) => {
-  if (!avatarUrls) return undefined
-  const raw = avatarUrls['48x48'] || avatarUrls
-  if (!raw) return undefined
-  // Si déjà une data URL ou une URL http(s), on retourne tel quel
-  if (
-    typeof raw === 'string' &&
-    (raw.startsWith('data:') || raw.startsWith('http://') || raw.startsWith('https://'))
-  ) {
-    return raw
-  }
-  // Détecter base64 plausible (longueur multiple de 4, seulement chars base64 + éventuellement =)
-  const base64Regex = /^[A-Za-z0-9+/]+={0,2}$/
-  if (typeof raw === 'string' && base64Regex.test(raw.replace(/\n|\r/g, ''))) {
-    // Par défaut supposer image/png; ajuster si vous stockez aussi le mime ailleurs
-    return `data:image/png;base64,${raw}`
-  }
-  return raw
-}
 const EmployeeDetail = () => {
   const { uid } = useParams()
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const isFirstRender = useRef(true)
   const { user, loading } = useSelector((state) => state.user)
@@ -61,13 +32,13 @@ const EmployeeDetail = () => {
     )
   }
 
-  if (!user) return <p>Employé introuvable</p>
+  if (!user) return <p>{t('employeePage.detail.notFound')}</p>
 
   return (
     <CContainer>
       <CRow>
         <CCol sm={10}>
-          <h2>Détails de l&apos;employé</h2>
+          <h2>{t('employeePage.detail.title')}</h2>
           <p className="text-medium-emphasis"></p>
         </CCol>
       </CRow>
@@ -91,11 +62,11 @@ const EmployeeDetail = () => {
             <CCol md={7}>
               <CRow>
                 <CCol xs={6}>
-                  <p className="mb-1 text-muted">Role</p>
+                  <p className="mb-1 text-muted">{t('employeePage.detail.role')}</p>
                   {user.IsManager ? (
-                    <CBadge color="warning">Manager</CBadge>
+                    <CBadge color="warning">{t('employeePage.table.roles.manager')}</CBadge>
                   ) : (
-                    <CBadge color="info">Employé</CBadge>
+                    <CBadge color="info">{t('employeePage.table.roles.employee')}</CBadge>
                   )}
                 </CCol>
               </CRow>

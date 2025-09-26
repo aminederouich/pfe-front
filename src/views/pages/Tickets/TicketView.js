@@ -19,7 +19,6 @@ import {
   CPaginationItem,
   CRow,
   CSpinner,
-  CTab,
   CTable,
   CTableBody,
   CTableDataCell,
@@ -34,16 +33,17 @@ import {
   toggleAssignTicketModalOpen,
   updateTicketAPI,
 } from '../../../actions/ticketActions'
-import { t } from 'i18next'
 import { status } from '../../../utils/TicketsConsts'
 import { toast } from 'react-toastify'
 import { calculateScoreTicketDoneAPI } from '../../../actions/scoreAction'
+import { useTranslation } from 'react-i18next'
 import { Editor } from '@tinymce/tinymce-react'
 
 const TicketView = () => {
   const { code } = useParams()
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const { t } = useTranslation()
 
   // Récupérer le ticket depuis le store
   const { ticketList, ticketSelected, loading } = useSelector((state) => state.ticket)
@@ -103,11 +103,11 @@ const TicketView = () => {
           <CCol>
             <CCard>
               <CCardBody className="text-center">
-                <h4>Ticket non trouvé</h4>
-                <p>Le ticket avec la clé &quot;{code}&quot; n&apos;a pas été trouvé.</p>
+                <h4>{t('ticketPage.ticketView.notFound.title')}</h4>
+                <p>{t('ticketPage.ticketView.notFound.message')}</p>
                 <CButton color="primary" onClick={handleGoBack}>
                   <CIcon icon={cilArrowLeft} className="me-2" />
-                  Retour à la liste
+                  {t('ticketPage.ticketView.notFound.backButton')}
                 </CButton>
               </CCardBody>
             </CCard>
@@ -197,7 +197,7 @@ const TicketView = () => {
     }
     const res = await dispatch(updateTicketAPI(ticketUpdated))
     if (res?.data?.success) {
-      toast.success('Ticket mis à jour avec succès')
+      toast.success(t('ticketPage.other.updateSuccess'))
 
       const tickets = await dispatch(getAllTicketAPI())
       if (tickets?.data?.results) {
@@ -295,7 +295,7 @@ const TicketView = () => {
                     } else if (page === currentPage - 3 || page === currentPage + 3) {
                       return (
                         <CPaginationItem key={page} disabled>
-                          ...
+                          {t('ticketPage.other.pagination')}
                         </CPaginationItem>
                       )
                     }
@@ -333,7 +333,9 @@ const TicketView = () => {
                         color={ticketSelected.configId ? 'primary' : 'secondary'}
                         shape="rounded-pill"
                       >
-                        {ticketSelected.configId ? 'Externe' : 'Interne'}
+                        {ticketSelected.configId
+                          ? t('ticketPage.ticketView.values.external')
+                          : t('ticketPage.ticketView.values.internal')}
                       </CBadge>
                     </CCol>
                   </CRow>
@@ -344,10 +346,11 @@ const TicketView = () => {
                       className="me-2"
                       onClick={() => handleEditTicket()}
                     >
-                      <CIcon icon={cilPen} /> Edit
+                      <CIcon icon={cilPen} /> {t('ticketPage.ticketView.actions.edit')}
                     </CButton>
                     <CButton color="secondary" size="sm" className="me-2">
-                      <CIcon icon={cilCommentBubble} /> Add Comment
+                      <CIcon icon={cilCommentBubble} />{' '}
+                      {t('ticketPage.ticketView.actions.addComment')}
                     </CButton>
                     <CButton
                       color="secondary"
@@ -355,7 +358,7 @@ const TicketView = () => {
                       className="me-1"
                       onClick={() => handleAssign()}
                     >
-                      Assign
+                      {t('ticketPage.ticketView.actions.assign')}
                     </CButton>
 
                     <CDropdown variant="btn-group" className="ms-1">
@@ -384,10 +387,10 @@ const TicketView = () => {
                       </CDropdownMenu>
                     </CDropdown>
                   </CCol>
-                  <h5 className="mt-2">Details</h5>
+                  <h5 className="mt-2">{t('ticketPage.ticketView.sections.details')}</h5>
                   <CRow>
                     <CCol sm={2} className="fw-bold">
-                      Type:
+                      {t('ticketPage.ticketView.fields.type')}
                     </CCol>
                     <CCol sm={4}>
                       <img
@@ -398,19 +401,19 @@ const TicketView = () => {
                       {ticketSelected.fields?.issuetype?.name}
                     </CCol>
                     <CCol sm={2} className="fw-bold">
-                      Resolution:
+                      {t('ticketPage.ticketView.fields.resolution')}:
                     </CCol>
                     <CCol sm={4}>
                       {ticketSelected.fields?.resolution?.name ? (
                         <CBadge color="success">{ticketSelected?.fields?.resolution?.name}</CBadge>
                       ) : (
-                        'Unresolved'
+                        t('ticketPage.ticketView.values.unresolved')
                       )}
                     </CCol>
                   </CRow>
                   <CRow>
                     <CCol sm={2} className="fw-bold">
-                      Priorité:
+                      {t('ticketPage.ticketView.fields.priority')}
                     </CCol>
                     <CCol sm={10}>
                       <img
@@ -422,7 +425,7 @@ const TicketView = () => {
                     </CCol>
                   </CRow>
                   <CRow>
-                    <h5 className="mt-2">Description</h5>
+                    <h5 className="mt-2">{t('ticketPage.ticketView.sections.description')}</h5>
                     <CCol sm={12}>
                       {ticketSelected.fields?.description ? (
                         <Editor
@@ -454,7 +457,7 @@ const TicketView = () => {
                           }}
                         />
                       ) : (
-                        <em>Aucun commentaire pour ce ticket.</em>
+                        <em>{t('ticketPage.ticketView.values.noComments')}</em>
                       )}
                     </CCol>
                   </CRow>
@@ -465,13 +468,15 @@ const TicketView = () => {
             <CCol sm={4}>
               <CCard>
                 <CCardHeader>
-                  <h6 className="mb-0">Détails</h6>
+                  <h6 className="mb-0">{t('ticketPage.ticketView.sections.detailsPanel')}</h6>
                 </CCardHeader>
                 <CCardBody>
                   <CTable small borderless>
                     <CTableBody>
                       <CTableRow>
-                        <CTableDataCell className="fw-bold">Statut</CTableDataCell>
+                        <CTableDataCell className="fw-bold">
+                          {t('ticketPage.ticketView.fields.status')}
+                        </CTableDataCell>
                         <CTableDataCell>
                           <CBadge color={getStatusColor(ticketSelected.fields?.status?.name)}>
                             {ticketSelected.fields?.status?.name || 'N/A'}
@@ -481,7 +486,9 @@ const TicketView = () => {
 
                       {ticketSelected.fields?.priority && (
                         <CTableRow>
-                          <CTableDataCell className="fw-bold">Priorité</CTableDataCell>
+                          <CTableDataCell className="fw-bold">
+                            {t('ticketPage.ticketView.fields.priority')}
+                          </CTableDataCell>
                           <CTableDataCell>
                             <CBadge color={getPriorityColor(ticketSelected.fields.priority.name)}>
                               {ticketSelected.fields.priority.name}
@@ -491,7 +498,9 @@ const TicketView = () => {
                       )}
 
                       <CTableRow>
-                        <CTableDataCell className="fw-bold">Assigné à</CTableDataCell>
+                        <CTableDataCell className="fw-bold">
+                          {t('ticketPage.ticketView.fields.assignedTo')}
+                        </CTableDataCell>
                         {ticketSelected.fields?.assignee ? (
                           <CTableDataCell>
                             <div className="d-flex align-items-center">
@@ -504,7 +513,7 @@ const TicketView = () => {
                                 />
                               )} */}
                               <div>
-                                <div>{ticketSelected.fields.assignee.displayName}</div>
+                                <div>{'ticketSelected.fields.assignee.displayName'}</div>
                                 {/* {ticketSelected.fields.assignee.emailAddress && (
                                   <small className="text-muted">
                                     {ticketSelected.fields.assignee.emailAddress}
@@ -515,14 +524,18 @@ const TicketView = () => {
                           </CTableDataCell>
                         ) : (
                           <CTableDataCell>
-                            <CBadge color="warning">Non assigné</CBadge>
+                            <CBadge color="warning">
+                              {t('ticketPage.ticketView.fields.assignedTo')}
+                            </CBadge>
                           </CTableDataCell>
                         )}
                       </CTableRow>
 
                       {ticketSelected.fields?.reporter && (
                         <CTableRow>
-                          <CTableDataCell className="fw-bold">Rapporteur</CTableDataCell>
+                          <CTableDataCell className="fw-bold">
+                            {t('ticketPage.ticketView.fields.reporter')}
+                          </CTableDataCell>
                           <CTableDataCell>
                             <div className="d-flex align-items-center">
                               {/* {ticketSelected.fields.reporter.avatarUrls && (
@@ -548,7 +561,9 @@ const TicketView = () => {
 
                       {ticketSelected.fields?.project && (
                         <CTableRow>
-                          <CTableDataCell className="fw-bold">Projet</CTableDataCell>
+                          <CTableDataCell className="fw-bold">
+                            {t('ticketPage.ticketView.fields.project')}
+                          </CTableDataCell>
                           <CTableDataCell>
                             <div className="d-flex align-items-center">
                               {/* {ticketSelected.fields.project.avatarUrls && (
@@ -572,7 +587,9 @@ const TicketView = () => {
 
                       {ticketSelected.fields?.resolution && (
                         <CTableRow>
-                          <CTableDataCell className="fw-bold">Résolution</CTableDataCell>
+                          <CTableDataCell className="fw-bold">
+                            {t('ticketPage.ticketView.fields.resolution')}
+                          </CTableDataCell>
                           <CTableDataCell>
                             <CBadge color="success">{ticketSelected.fields.resolution.name}</CBadge>
                             {ticketSelected.fields.resolution.description && (
@@ -588,25 +605,33 @@ const TicketView = () => {
 
                       {ticketSelected.fields?.timeestimate && (
                         <CTableRow>
-                          <CTableDataCell className="fw-bold">Estimation</CTableDataCell>
+                          <CTableDataCell className="fw-bold">
+                            {t('ticketPage.ticketView.fields.estimate')}
+                          </CTableDataCell>
                           <CTableDataCell>
-                            {Math.round(ticketSelected.fields.timeestimate / 3600)} heures
+                            {Math.round(ticketSelected.fields.timeestimate / 3600)}{' '}
+                            {t('ticketPage.ticketView.values.hours')}
                           </CTableDataCell>
                         </CTableRow>
                       )}
 
                       {ticketSelected.fields?.timespent && (
                         <CTableRow>
-                          <CTableDataCell className="fw-bold">Temps passé</CTableDataCell>
+                          <CTableDataCell className="fw-bold">
+                            {t('ticketPage.ticketView.fields.timeSpent')}
+                          </CTableDataCell>
                           <CTableDataCell>
-                            {Math.round(ticketSelected.fields.timespent / 3600)} heures
+                            {Math.round(ticketSelected.fields.timespent / 3600)}{' '}
+                            {t('ticketPage.ticketView.values.hours')}
                           </CTableDataCell>
                         </CTableRow>
                       )}
 
                       {ticketSelected.fields?.duedate && (
                         <CTableRow>
-                          <CTableDataCell className="fw-bold">Date d&apos;échéance</CTableDataCell>
+                          <CTableDataCell className="fw-bold">
+                            {t('ticketPage.ticketView.fields.dueDate')}
+                          </CTableDataCell>
                           <CTableDataCell>
                             <span
                               className={
@@ -623,7 +648,9 @@ const TicketView = () => {
 
                       {ticketSelected.fields?.resolutiondate && (
                         <CTableRow>
-                          <CTableDataCell className="fw-bold">Date de résolution</CTableDataCell>
+                          <CTableDataCell className="fw-bold">
+                            {t('ticketPage.ticketView.fields.resolutionDate')}
+                          </CTableDataCell>
                           <CTableDataCell>
                             {formatDate(ticketSelected.fields.resolutiondate)}
                           </CTableDataCell>
@@ -631,14 +658,18 @@ const TicketView = () => {
                       )}
 
                       <CTableRow>
-                        <CTableDataCell className="fw-bold">Créé</CTableDataCell>
+                        <CTableDataCell className="fw-bold">
+                          {t('ticketPage.ticketView.fields.created')}
+                        </CTableDataCell>
                         <CTableDataCell>
                           {formatDate(ticketSelected.fields?.created)}
                         </CTableDataCell>
                       </CTableRow>
 
                       <CTableRow>
-                        <CTableDataCell className="fw-bold">Mis à jour</CTableDataCell>
+                        <CTableDataCell className="fw-bold">
+                          {t('ticketPage.ticketView.fields.updated')}
+                        </CTableDataCell>
                         <CTableDataCell>
                           {formatDate(ticketSelected.fields?.updated)}
                         </CTableDataCell>

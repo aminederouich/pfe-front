@@ -2,31 +2,24 @@
 import React, { useState } from 'react'
 import {
   CButton,
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCol,
-  CContainer,
   CForm,
   CFormInput,
   CFormLabel,
   CFormSelect,
-  CRow,
-  CSpinner,
   CModal,
   CModalHeader,
   CModalBody,
-  CModalFooter,
 } from '@coreui/react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import ticketService from '../../../services/ticketService'
-import { getAllTicketAPI } from '../../../actions/ticketActions'
 
 const EditTicketModal = ({ visible, setVisible, ticket, refresh }) => {
+  const { t } = useTranslation()
   const [summary, setSummary] = useState(ticket?.fields?.summary || '')
   const [description, setDescription] = useState(ticket?.fields?.description || '')
-  const [status, setStatus] = useState(ticket?.fields?.status?.name || 'À faire')
+  const [status, setStatus] = useState(
+    ticket?.fields?.status?.name || t('ticketPage.editModal.statusOptions.todo'),
+  )
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -52,28 +45,30 @@ const EditTicketModal = ({ visible, setVisible, ticket, refresh }) => {
 
   return (
     <CModal visible={visible} onClose={() => setVisible(false)} size="lg">
-      <CModalHeader>Modifier le ticket {ticket?.key}</CModalHeader>
+      <CModalHeader>
+        {t('ticketPage.editModal.title')} {ticket?.key}
+      </CModalHeader>
       <CModalBody>
         <CForm onSubmit={handleSubmit}>
-          <CFormLabel>Résumé</CFormLabel>
+          <CFormLabel>{t('ticketPage.editModal.labels.summary')}</CFormLabel>
           <CFormInput value={summary} onChange={(e) => setSummary(e.target.value)} />
 
-          <CFormLabel className="mt-3">Description</CFormLabel>
+          <CFormLabel className="mt-3">{t('ticketPage.editModal.labels.description')}</CFormLabel>
           <CFormInput value={description} onChange={(e) => setDescription(e.target.value)} />
 
-          <CFormLabel className="mt-3">Statut</CFormLabel>
+          <CFormLabel className="mt-3">{t('ticketPage.editModal.labels.status')}</CFormLabel>
           <CFormSelect value={status} onChange={(e) => setStatus(e.target.value)}>
-            <option>À faire</option>
-            <option>En cours</option>
-            <option>Terminé(e)</option>
+            <option>{t('ticketPage.editModal.statusOptions.todo')}</option>
+            <option>{t('ticketPage.editModal.statusOptions.inProgress')}</option>
+            <option>{t('ticketPage.editModal.statusOptions.done')}</option>
           </CFormSelect>
 
           <div className="mt-4 d-flex justify-content-end">
             <CButton color="secondary" className="me-2" onClick={() => setVisible(false)}>
-              Annuler
+              {t('ticketPage.editModal.buttons.cancel')}
             </CButton>
             <CButton color="primary" type="submit">
-              Enregistrer
+              {t('ticketPage.editModal.buttons.save')}
             </CButton>
           </div>
         </CForm>

@@ -34,11 +34,71 @@ const ticketPage = {
     elementsPerPage: 'éléments par page',
     noTickets: 'Aucun ticket trouvé',
     loading: 'Chargement des tickets...',
+    unassigned: 'Non assigné',
+    updateSuccess: 'Ticket mis à jour avec succès',
+    pagination: '...',
   },
   actions: {
     add: 'Ajouter un ticket',
     delete: 'Supprimer',
     edit: 'Modifier',
+  },
+  editModal: {
+    title: 'Modifier le ticket',
+    labels: {
+      summary: 'Résumé',
+      description: 'Description',
+      status: 'Statut',
+    },
+    statusOptions: {
+      todo: 'À faire',
+      inProgress: 'En cours',
+      done: 'Terminé(e)',
+    },
+    buttons: {
+      cancel: 'Annuler',
+      save: 'Enregistrer',
+    },
+  },
+  ticketView: {
+    notFound: {
+      title: 'Ticket non trouvé',
+      message: 'Le ticket avec la clé "{{code}}" n\'a pas été trouvé.',
+      backButton: 'Retour à la liste',
+    },
+    actions: {
+      edit: 'Modifier',
+      addComment: 'Ajouter un commentaire',
+      assign: 'Assigner',
+    },
+    sections: {
+      details: 'Détails',
+      description: 'Description',
+      detailsPanel: 'Détails',
+    },
+    fields: {
+      type: 'Type',
+      resolution: 'Résolution',
+      priority: 'Priorité',
+      status: 'Statut',
+      assignedTo: 'Assigné à',
+      reporter: 'Rapporteur',
+      project: 'Projet',
+      estimate: 'Estimation',
+      timeSpent: 'Temps passé',
+      dueDate: "Date d'écheance",
+      resolutionDate: 'Date de résolution',
+      created: 'Créé',
+      updated: 'Mis à jour',
+    },
+    values: {
+      internal: 'Interne',
+      external: 'Externe',
+      unresolved: 'Non résolu',
+      unassigned: 'Non assigné',
+      noComments: 'Aucun commentaire pour ce ticket.',
+      hours: 'heures',
+    },
   },
 }
 export default ticketPage

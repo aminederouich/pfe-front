@@ -2,6 +2,7 @@ import modalCreateTicketEn from './modals/modalCreateTicket/en'
 import loginPage from './pages/login/en.js'
 import projectPage from './pages/project/en.js'
 import ticketPage from './pages/ticket/en.js'
+import employeePage from './pages/employee/en'
 
 const en = {
   translation: {
@@ -14,6 +15,7 @@ const en = {
     loginPage: loginPage,
     projectPage: projectPage,
     ticketPage: ticketPage,
+    employeePage: employeePage,
     //Modal Create Ticket
     modalCreateTicket: modalCreateTicketEn,
   },
