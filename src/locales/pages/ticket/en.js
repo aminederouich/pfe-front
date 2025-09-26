@@ -33,11 +33,71 @@ const ticketPage = {
     elementsPerPage: 'Elements per page',
     noTickets: 'No tickets found',
     loading: 'Loading tickets...',
+    unassigned: 'Unassigned',
+    updateSuccess: 'Ticket updated successfully',
+    pagination: '...',
   },
   actions: {
     add: 'Add Ticket',
     delete: 'Delete',
     edit: 'Edit',
+  },
+  editModal: {
+    title: 'Edit ticket',
+    labels: {
+      summary: 'Summary',
+      description: 'Description',
+      status: 'Status',
+    },
+    statusOptions: {
+      todo: 'To Do',
+      inProgress: 'In Progress',
+      done: 'Done',
+    },
+    buttons: {
+      cancel: 'Cancel',
+      save: 'Save',
+    },
+  },
+  ticketView: {
+    notFound: {
+      title: 'Ticket not found',
+      message: 'The ticket with key "{code}" was not found.',
+      backButton: 'Back to list',
+    },
+    actions: {
+      edit: 'Edit',
+      addComment: 'Add Comment',
+      assign: 'Assign',
+    },
+    sections: {
+      details: 'Details',
+      description: 'Description',
+      detailsPanel: 'Details',
+    },
+    fields: {
+      type: 'Type',
+      resolution: 'Resolution',
+      priority: 'Priority',
+      status: 'Status',
+      assignedTo: 'Assigned to',
+      reporter: 'Reporter',
+      project: 'Project',
+      estimate: 'Estimate',
+      timeSpent: 'Time spent',
+      dueDate: 'Due date',
+      resolutionDate: 'Resolution date',
+      created: 'Created',
+      updated: 'Updated',
+    },
+    values: {
+      external: 'External',
+      internal: 'Internal',
+      unresolved: 'Unresolved',
+      unassigned: 'Unassigned',
+      noComment: 'No comment for this ticket.',
+      hours: 'hours',
+    },
   },
 }
 export default ticketPage
