@@ -1,6 +1,7 @@
 import { toast } from 'react-toastify'
 import userService from '../services/userService'
 import { store } from '../store'
+import i18n from '../i18n'
 
 export const TOGGLE_ADD_USER_MODAL_OPEN = 'TOGGLE_ADD_USER_MODAL_OPEN'
 export const TOGGLE_ADD_USER_MODAL_CLOSE = 'TOGGLE_ADD_USER_MODAL_CLOSE'
@@ -85,7 +86,7 @@ export const sendInvitationEmailAPI = (email) => async (dispatch) => {
     const accountId = state.auth.user?.user?.accountId
     const response = await userService.sendInvitationEmail({ email, managerId: accountId })
     console.log({ response })
-    toast.success('Invitation envoyée avec succès.')
+    toast.success(i18n.t('employee.invite.success'))
     dispatch({
       type: SEND_INVITE_EMAIL_SUCCESS,
       payload: response.data,
@@ -94,7 +95,7 @@ export const sendInvitationEmailAPI = (email) => async (dispatch) => {
     if (error.response && error.response.data && error.response.data.message) {
       toast.error(error.response.data.message)
     } else {
-      toast.error("Une erreur s'est produite lors de l'envoi de l'invitation.")
+      toast.error(i18n.t('employee.invite.errorSend'))
     }
     dispatch({
       type: SEND_INVITE_EMAIL_FAILURE,
@@ -109,7 +110,7 @@ export const updateUserAPI = (uid, userData) => async (dispatch) => {
   })
   try {
     const response = await userService.updateUser(uid, userData)
-    toast.success('Utilisateur mis à jour avec succès.')
+    toast.success(i18n.t('user.update.success'))
     dispatch({
       type: UPDATE_USER_SUCCESS,
       payload: response.data,
@@ -119,7 +120,7 @@ export const updateUserAPI = (uid, userData) => async (dispatch) => {
     if (error.response && error.response.data && error.response.data.message) {
       toast.error(error.response.data.message)
     } else {
-      toast.error("Une erreur s'est produite lors de la mise à jour de l'utilisateur.")
+      toast.error(i18n.t('user.update.error'))
     }
     dispatch({
       type: UPDATE_USER_FAILURE,
@@ -135,7 +136,7 @@ export const setPasswordAPI = (uid, password) => async (dispatch) => {
   })
   try {
     const response = await userService.setPassword(uid, password)
-    toast.success('Mot de passe mis à jour avec succès.')
+    toast.success(i18n.t('user.password.success'))
     dispatch({
       type: SET_PASSWORD_SUCCESS,
       payload: response.data,
@@ -145,7 +146,7 @@ export const setPasswordAPI = (uid, password) => async (dispatch) => {
     if (error.response && error.response.data && error.response.data.message) {
       toast.error(error.response.data.message)
     } else {
-      toast.error("Une erreur s'est produite lors de la mise à jour du mot de passe.")
+      toast.error(i18n.t('user.password.error'))
     }
     dispatch({
       type: SET_PASSWORD_FAILURE,

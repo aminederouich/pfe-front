@@ -1,11 +1,15 @@
-import ticketService from '../services/userService'
+import userService from '../services/userService'
 
-export const sendInviteEmail = (data) => async (dispatch) => {
+// Cette fonction ne fait pas directement d'affichage (alert/toast) afin de laisser
+// la couche UI gérer la traduction via les clés: employee.invite.success / employee.invite.errorSend
+// Retour: { ok: true, data } ou { ok: false, error }
+export const sendInviteEmail = (data) => async () => {
   try {
-    await ticketService.sendInvite(data)
-    alert('Invitation envoyée avec succès !')
+    const response = await userService.sendInvite(data)
+    return { ok: true, data: response }
   } catch (error) {
-    console.error('Erreur lors de l’envoi de l’invitation :', error)
-    alert('Échec de l’envoi de l’invitation')
+    // Log technique (ne pas traduire ici)
+    console.error('sendInviteEmail error:', error)
+    return { ok: false, error }
   }
 }
