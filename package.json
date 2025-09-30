@@ -17,8 +17,9 @@
     "lint": "eslint src/**/*.{js,jsx}",
     "lint:fix": "eslint src/**/*.{js,jsx} --fix",
     "serve": "vite preview",
-    "frontend": "vite",
-    "start": "concurrently \"vite\" \"nodemon ../pfe-back/bin/www\""
+    "front": "vite",
+    "back": "nodemon ../pfe-back/bin/www",
+    "start": "concurrently -n FRONT,BACK -c green,cyan --prefix [{name}] \"npm:front\" \"npm:back\""
   },
   "dependencies": {
     "@coreui/chartjs": "^4.0.0",
