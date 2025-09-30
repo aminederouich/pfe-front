@@ -4,6 +4,7 @@ const projectPage = {
   description:
     'This is the project management page. You can view, add, edit, or delete projects here.',
   modifierConfigurationJira: 'Edit Jira Configuration',
+  editModalTitle: 'Edit project',
   fields: {
     projectName: 'Project Name',
     key: 'Key',
@@ -31,6 +32,12 @@ const projectPage = {
     add: 'Add Project',
     delete: 'Delete',
     edit: 'Edit',
+    cancel: 'Cancel',
+  },
+  noCategory: 'No category',
+  projectTypeOptions: {
+    software: 'Software',
+    business: 'Business',
   },
 }
 export default projectPage
