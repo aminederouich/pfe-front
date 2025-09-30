@@ -45,6 +45,7 @@ const ticketPage = {
   },
   editModal: {
     title: 'Modifier le ticket',
+    editDescriptionTitle: 'Modifier la description',
     labels: {
       summary: 'Résumé',
       description: 'Description',
