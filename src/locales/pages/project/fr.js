@@ -4,6 +4,7 @@ const projectPage = {
   description:
     'Ceci est la page de gestion des projets. Vous pouvez consulter, ajouter, modifier ou supprimer des projets ici.',
   modifierConfigurationJira: 'Modifier configuration Jira',
+  editModalTitle: 'Modifier le projet',
   fields: {
     projectName: 'Nom du projet',
     key: 'Clé',
@@ -32,6 +33,12 @@ const projectPage = {
     add: 'Ajouter un projet',
     delete: 'Supprimer',
     edit: 'Modifier',
+    cancel: 'Annuler',
+  },
+  noCategory: 'Aucune catégorie',
+  projectTypeOptions: {
+    software: 'Logiciel',
+    business: 'Business',
   },
 }
 export default projectPage

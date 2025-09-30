@@ -34,5 +34,24 @@ const jiraPage = {
       testConnection: 'Test Connection',
     },
   },
+  editConfig: {
+    title: 'Edit Jira configuration',
+    fields: {
+      strictSSL: 'Strict SSL',
+    },
+    messages: {
+      checkConnectionFirst: 'Please check the connection before editing a configuration',
+    },
+    alert: {
+      warning:
+        'Before editing a configuration, please make sure that the host url is reachable and the username and password are correct.',
+      noteLabel: 'Note:',
+      note: 'Please check the Connection before editing a configuration.',
+    },
+    buttons: {
+      editConfig: 'Edit Configuration',
+      testConnection: 'Test Connection',
+    },
+  },
 }
 export default jiraPage

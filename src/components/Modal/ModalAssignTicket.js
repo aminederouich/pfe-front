@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next'
 import { addNewTicketAPI, toggleAssignTicketModalClose } from '../../actions/ticketActions'
 import { emptyIssue } from '../../utils/emptyIssue'
 import { getAllUsersAPI } from '../../actions/userActions'
+import { toast } from 'react-toastify'
 
 const ModalAssignTicket = () => {
   const dispatch = useDispatch()
@@ -78,8 +79,8 @@ const ModalAssignTicket = () => {
       await dispatch(addNewTicketAPI(editIssue))
       handleClose()
     } catch (error) {
-      console.error('Erreur lors de la création du ticket:', error)
-      alert('Erreur lors de la création du ticket')
+      console.error(t('modal.assignTicket.errors.createFailed'), error)
+      toast.error(t('modal.assignTicket.errors.createFailed'))
     } finally {
       setIsSubmitting(false)
     }
@@ -103,7 +104,7 @@ const ModalAssignTicket = () => {
       scrollable
     >
       <CModalHeader>
-        <CModalTitle>Personne assignée</CModalTitle>
+        <CModalTitle>{t('modal.assignTicket.title')}</CModalTitle>
       </CModalHeader>
       <CModalBody>
         <div className="mt-3">
@@ -149,7 +150,11 @@ const ModalAssignTicket = () => {
           {t('modal.actions.cancel')}
         </CButton>
         <CButton color="primary" onClick={handleSubmitTicket} disabled={isSubmitting}>
-          {isSubmitting ? <CSpinner animation="border" size="sm" /> : 'assigner'}
+          {isSubmitting ? (
+            <CSpinner animation="border" size="sm" />
+          ) : (
+            t('modal.assignTicket.submit')
+          )}
         </CButton>
       </CModalFooter>
     </CModal>

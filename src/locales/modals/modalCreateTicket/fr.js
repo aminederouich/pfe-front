@@ -31,6 +31,13 @@ const modalCreateTicketFr = {
     priority: 'La priorité est obligatoire pour un projet interne.',
     sameStartEndDate: 'La date de début et la date de fin ne peuvent pas être identiques.',
   },
+  projectTypeOptions: {
+    interne: 'Interne',
+    externe: 'Externe',
+  },
+  errors: {
+    createFailed: 'Erreur lors de la création du ticket',
+  },
   actions: {
     assigneeToMe: "Me l'assigner",
     create: 'Créer',

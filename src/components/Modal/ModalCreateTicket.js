@@ -204,8 +204,8 @@ const ModalCreateTicket = () => {
       await dispatch(addNewTicketAPI(newIssue))
       handleClose()
     } catch (error) {
-      console.error('Erreur lors de la création du ticket:', error)
-      alert('Erreur lors de la création du ticket')
+      console.error(t('modalCreateTicket.errors.createFailed'), error)
+      toast.error(t('modalCreateTicket.errors.createFailed'))
     } finally {
       setIsSubmitting(false)
     }
@@ -352,7 +352,9 @@ const ModalCreateTicket = () => {
                 <option key="-1" value="-1"></option>
                 {projects.map((option) => (
                   <option key={option.value} value={option.value}>
-                    {option.label}
+                    {t(`modalCreateTicket.projectTypeOptions.${option.value}`, {
+                      defaultValue: option.label,
+                    })}
                   </option>
                 ))}
               </CFormSelect>

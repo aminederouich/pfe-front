@@ -3,11 +3,13 @@ import { CCard, CCardBody, CCol, CRow, CWidgetStatsB } from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getScoreByOwnerIdAPI } from '../../actions/scoreAction'
 import PropTypes from 'prop-types'
+import { useTranslation } from 'react-i18next'
 
 const UserScoreWidgetStats = ({ forMe }) => {
   const dispatch = useDispatch()
+  const { t } = useTranslation()
   const { user: authUser } = useSelector((state) => state.auth)
-  const { score: scoreList = [], loading: scoreLoading } = useSelector((state) => state.score)
+  const { score: scoreList = [] } = useSelector((state) => state.score)
   // const userId = forMe ? user?.uid : null
 
   useEffect(() => {
@@ -85,8 +87,11 @@ const UserScoreWidgetStats = ({ forMe }) => {
               color="primary"
               inverse
               progress={{ value: lastScorePercent }}
-              text={`Date: ${lastScoreDate} | % du total: ${lastScorePercent}%`}
-              title="Dernier score"
+              text={t('scoreWidget.lastScore.text', {
+                date: lastScoreDate,
+                percent: lastScorePercent,
+              })}
+              title={t('scoreWidget.lastScore.title')}
               value={lastScore || '-'}
             />
           </CCol>
@@ -96,8 +101,8 @@ const UserScoreWidgetStats = ({ forMe }) => {
               color="danger"
               inverse
               progress={{ value: weekScorePercent }}
-              text={`% du total: ${weekScorePercent}%`}
-              title="Score semaine"
+              text={t('scoreWidget.weekScore.text', { percent: weekScorePercent })}
+              title={t('scoreWidget.weekScore.title')}
               value={weekScore || '-'}
             />
           </CCol>
@@ -107,8 +112,8 @@ const UserScoreWidgetStats = ({ forMe }) => {
               color="info"
               inverse
               progress={{ value: lastWeekScorePercent }}
-              text={`% du total: ${lastWeekScorePercent}%`}
-              title="Score dernière semaine"
+              text={t('scoreWidget.lastWeekScore.text', { percent: lastWeekScorePercent })}
+              title={t('scoreWidget.lastWeekScore.title')}
               value={lastWeekScore || '-'}
             />
           </CCol>
@@ -118,8 +123,8 @@ const UserScoreWidgetStats = ({ forMe }) => {
               color="success"
               inverse
               progress={{ value: totalScorePercent }}
-              text={`Score global (${totalScorePercent}%)`}
-              title="Score total"
+              text={t('scoreWidget.totalScore.text', { percent: totalScorePercent })}
+              title={t('scoreWidget.totalScore.title')}
               value={totalScore || '-'}
             />
           </CCol>
