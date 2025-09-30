@@ -7,9 +7,11 @@ import {
 } from '../../actions/jiraActions'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import { useTranslation } from 'react-i18next'
 
 const AddNewConfigJira = () => {
   const dispatch = useDispatch()
+  const { t } = useTranslation()
   const { configCanbeAdded } = useSelector((state) => state.jira)
 
   const [FormControlInputHostURL, setFormControlInputHostURL] = useState('')
@@ -33,15 +35,15 @@ const AddNewConfigJira = () => {
       .then((response) => {
         if (response) {
           if (response.data.error) {
-            toast.error('Connection failed')
+            toast.error(t('jira.addConfig.messages.connectionFailed'))
           } else {
-            toast.success('Connection successful')
+            toast.success(t('jira.addConfig.messages.connectionSuccess'))
           }
         }
       })
       .catch((error) => {
         console.error('Error checking connection:', error)
-        toast.error('Connection failed')
+        toast.error(t('jira.addConfig.messages.connectionFailed'))
       })
   }
 
@@ -62,9 +64,9 @@ const AddNewConfigJira = () => {
           if (response) {
             console.log(response)
             if (response.data.error) {
-              toast.error('adding failed')
+              toast.error(t('jira.addConfig.messages.addingFailed'))
             } else {
-              toast.success('successful adding')
+              toast.success(t('jira.addConfig.messages.addingSuccess'))
             }
           }
         })
@@ -73,10 +75,10 @@ const AddNewConfigJira = () => {
         })
         .catch((error) => {
           console.error('Error checking connection:', error)
-          toast.error('Connection failed')
+          toast.error(t('jira.addConfig.messages.connectionFailed'))
         })
     } else {
-      toast.error('please check the connection before adding a configuration')
+      toast.error(t('jira.addConfig.messages.checkConnectionFirst'))
     }
   }
   return (
@@ -84,9 +86,9 @@ const AddNewConfigJira = () => {
       <CFormInput
         type="text"
         id="FormControlInputHostURL"
-        label="Host URL"
-        placeholder="jira.somehost.com"
-        text="What host is this tool connecting to for the jira instance? Ex: jira.somehost.com"
+        label={t('jira.addConfig.fields.hostUrl')}
+        placeholder={t('jira.addConfig.fields.placeholder')}
+        text={t('jira.addConfig.fields.help')}
         aria-describedby="exampleFormControlInputHelpInline"
         required
         onChange={(e) => setFormControlInputHostURL(e.target.value)}
@@ -118,8 +120,8 @@ const AddNewConfigJira = () => {
       <CFormInput
         type="test"
         id="FormControlInputUsername"
-        label="username"
-        text="Specify a username for this tool to authenticate all requests with."
+        label={t('jira.addConfig.username.label')}
+        text={t('jira.addConfig.username.help')}
         aria-describedby="exampleFormControlInputHelpInline"
         required
         onChange={(e) => setFormControlInputUsername(e.target.value)}
@@ -128,9 +130,9 @@ const AddNewConfigJira = () => {
       <CFormInput
         type="password"
         id="FormControlInputPassword"
-        label="password"
+        label={t('jira.addConfig.password.label')}
         placeholder="*********"
-        text="Specify a password for this tool to authenticate all requests with. Cloud users need to generate an API token for this value."
+        text={t('jira.addConfig.password.help')}
         aria-describedby="exampleFormControlInputHelpInline"
         required
         onChange={(e) => setFormControlInputPassword(e.target.value)}
@@ -139,8 +141,8 @@ const AddNewConfigJira = () => {
       <CFormInput
         type="number"
         id="FormControlInputAPIVersion"
-        label="API Version"
-        text="What version of the jira rest api is the instance the tool is connecting to? default is 2"
+        label={t('jira.addConfig.apiVersion.label')}
+        text={t('jira.addConfig.apiVersion.help')}
         aria-describedby="exampleFormControlInputHelpInline"
         required
         onChange={(e) => setFormControlInputAPIVersion(e.target.value)}
@@ -154,16 +156,15 @@ const AddNewConfigJira = () => {
         checked={CheckStrictSSL}
       />
       <CCallout color="danger">
-        before adding a configuration, please make sure that the host url is reachable and the
-        username and password are correct. <br />
-        <strong>Note:</strong> please check the Connection before adding a configuration.
+        {t('jira.addConfig.alert.warning')} <br />
+        <strong>Note:</strong> {t('jira.addConfig.alert.note')}
       </CCallout>
       <div className="d-flex gap-2">
         <CButton color="primary" type="submit" onClick={(e) => handleFormSubmit(e)}>
-          Add Configuration
+          {t('jira.addConfig.buttons.addConfig')}
         </CButton>
         <CButton color="success" onClick={() => checkConnection()}>
-          Test Connection
+          {t('jira.addConfig.buttons.testConnection')}
         </CButton>
       </div>
     </CForm>
