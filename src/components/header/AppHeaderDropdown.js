@@ -25,14 +25,13 @@ import CIcon from '@coreui/icons-react'
 
 import avatar8 from './../../assets/images/avatars/homme_00.png'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import { checkAuthentication, logout } from '../../actions/authActions'
+import { logout } from '../../actions/authActions'
+import { useTranslation } from 'react-i18next'
 
 const AppHeaderDropdown = () => {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const { t } = useTranslation()
   const { user } = useSelector((state) => state.auth)
-
   const handleLogout = async (e) => {
     e.preventDefault()
     await dispatch(logout())
@@ -51,43 +50,47 @@ const AppHeaderDropdown = () => {
         </CDropdownToggle>
       </CCol>
       <CDropdownMenu className="pt-0" placement="bottom-end">
-        <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">Account</CDropdownHeader>
+        <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">
+          {t('header.dropdown.account')}
+        </CDropdownHeader>
         <CDropdownItem href="#">
           <CIcon icon={cilBell} className="me-2" />
-          Updates
+          {t('header.dropdown.updates')}
           <CBadge color="info" className="ms-2">
             42
           </CBadge>
         </CDropdownItem>
         <CDropdownItem href="#">
           <CIcon icon={cilEnvelopeOpen} className="me-2" />
-          Messages
+          {t('header.dropdown.messages')}
           <CBadge color="success" className="ms-2">
             42
           </CBadge>
         </CDropdownItem>
         <CDropdownItem href="#">
           <CIcon icon={cilTask} className="me-2" />
-          Tasks
+          {t('header.dropdown.tasks')}
           <CBadge color="danger" className="ms-2">
             42
           </CBadge>
         </CDropdownItem>
         <CDropdownItem href="#">
           <CIcon icon={cilCommentSquare} className="me-2" />
-          Comments
+          {t('header.dropdown.comments')}
           <CBadge color="warning" className="ms-2">
             42
           </CBadge>
         </CDropdownItem>
-        <CDropdownHeader className="bg-body-secondary fw-semibold my-2">Settings</CDropdownHeader>
+        <CDropdownHeader className="bg-body-secondary fw-semibold my-2">
+          {t('header.dropdown.settingsSection')}
+        </CDropdownHeader>
         <CDropdownItem href="#">
           <CIcon icon={cilUser} className="me-2" />
-          Profile
+          {t('header.dropdown.profile')}
         </CDropdownItem>
         <CDropdownItem href="#">
           <CIcon icon={cilSettings} className="me-2" />
-          Settings
+          {t('header.dropdown.settings')}
         </CDropdownItem>
         {/* <CDropdownItem href="#">
           <CIcon icon={cilCreditCard} className="me-2" />
@@ -106,7 +109,7 @@ const AppHeaderDropdown = () => {
         <CDropdownDivider />
         <CDropdownItem onClick={handleLogout}>
           <CIcon icon={cilAccountLogout} className="me-2" />
-          Logout
+          {t('header.dropdown.logout')}
         </CDropdownItem>
       </CDropdownMenu>
     </CDropdown>

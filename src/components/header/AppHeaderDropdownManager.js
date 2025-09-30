@@ -17,11 +17,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { logout } from '../../actions/authActions'
 import { toggleAddUserModalOpen } from '../../actions/userActions'
+import { useTranslation } from 'react-i18next'
 
 const AppHeaderDropdownManager = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { user } = useSelector((state) => state.auth)
+  const { t } = useTranslation()
 
   const handleLogout = async (e) => {
     e.preventDefault()
@@ -32,29 +34,33 @@ const AppHeaderDropdownManager = () => {
     <>
       <CDropdown variant="nav-item">
         <CCol className="d-flex align-items-center">
-          <div className="fw-semibold">{user.user.displayName}</div>
+          <div className="fw-semibold">{user?.user?.displayName || ''}</div>
           <CDropdownToggle placement="bottom-end" className="py-0 pe-0" caret={false}>
             <CAvatar
               src={user?.user?.avatarUrls ? user.user.avatarUrls['48x48'] : avatar8}
               size="md"
-              alt="avatar"
+              alt={t('header.dropdown.avatarAlt')}
             />
           </CDropdownToggle>
         </CCol>
         <CDropdownMenu className="pt-0" placement="bottom-end">
-          <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">Settings</CDropdownHeader>
+          <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">
+            {t('header.dropdown.settingsSection')}
+          </CDropdownHeader>
           <CDropdownItem onClick={() => navigate('/jira/config-jira-api')}>
-            configuration des jira API
+            {t('header.dropdown.jiraConfig')}
           </CDropdownItem>
           <CDropdownItem onClick={() => navigate('/rule/Config')}>
-            configuration des rules
+            {t('header.dropdown.rulesConfig')}
+          </CDropdownItem>
+          <CDropdownItem onClick={() => dispatch(toggleAddUserModalOpen())}>
+            {t('header.dropdown.addUser')}
           </CDropdownItem>
 
-          <CDropdownItem onClick={() => dispatch(toggleAddUserModalOpen())}>Add New</CDropdownItem>
           <CDropdownDivider />
           <CDropdownItem onClick={handleLogout}>
             <CIcon icon={cilAccountLogout} className="me-2" />
-            Logout
+            {t('header.dropdown.logout')}
           </CDropdownItem>
         </CDropdownMenu>
       </CDropdown>
