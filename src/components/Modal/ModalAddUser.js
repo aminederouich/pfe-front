@@ -15,9 +15,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { sendInviteEmail } from '../../actions/employeeActions'
 import { toggleAddUserModalClose, sendInvitationEmailAPI } from '../../actions/userActions'
+import { useTranslation } from 'react-i18next'
 
 const ModalAddUser = () => {
   const dispatch = useDispatch()
+  const { t } = useTranslation()
   const { user } = useSelector((state) => state.auth)
   const { isAddUserModalOpen } = useSelector((state) => state.user)
 
@@ -28,7 +30,7 @@ const ModalAddUser = () => {
     const accountId = user.user.accountId
     console.log(accountId)
     if (!accountId) {
-      toast.error('Impossible d’envoyer l’invitation : identifiant manager introuvable.')
+      toast.error(t('user.add.errors.managerNotFound'))
       return
     }
     try {
@@ -44,12 +46,12 @@ const ModalAddUser = () => {
 
   return (
     <CModal visible={isAddUserModalOpen} onClose={() => dispatch(toggleAddUserModalClose())}>
-      <CModalHeader>Ajouter un nouveau membre d&apos;équipe</CModalHeader>
+      <CModalHeader>{t('user.add.title')}</CModalHeader>
       <CModalBody>
         <CForm onSubmit={handleSubmit}>
           <CRow className="mb-3">
             <CFormLabel htmlFor="email" className="col-sm-2 col-form-label">
-              Email
+              {t('user.add.email.label')}
             </CFormLabel>
             <CCol sm={10}>
               <CFormInput
@@ -58,14 +60,14 @@ const ModalAddUser = () => {
                 name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder='par exemple : "maria@entreprise.com"'
+                placeholder={t('user.add.email.placeholder')}
                 required
               />
             </CCol>
           </CRow>
           <CModalFooter>
             <CButton type="submit" color="primary">
-              Envoyer l’invitation
+              {t('user.add.submit')}
             </CButton>
             <CButton
               color="secondary"
@@ -74,7 +76,7 @@ const ModalAddUser = () => {
                 setEmail('')
               }}
             >
-              Annuler
+              {t('user.add.cancel')}
             </CButton>
           </CModalFooter>
         </CForm>

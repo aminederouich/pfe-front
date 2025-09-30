@@ -18,9 +18,11 @@ import {
 } from '../../actions/jiraActions'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import { useTranslation } from 'react-i18next'
 
 const ModalEditConfigJira = () => {
   const dispatch = useDispatch()
+  const { t } = useTranslation()
   const { configCanbeAdded, isEditConfigJiraModalOpen, configIdToEdit, jiraConfigList } =
     useSelector((state) => state.jira)
 
@@ -63,15 +65,15 @@ const ModalEditConfigJira = () => {
       .then((response) => {
         if (response) {
           if (response.data.error) {
-            toast.error('Connection failed')
+            toast.error(t('jira.addConfig.messages.connectionFailed'))
           } else {
-            toast.success('Connection successful')
+            toast.success(t('jira.addConfig.messages.connectionSuccess'))
           }
         }
       })
       .catch((error) => {
         console.error('Error checking connection:', error)
-        toast.error('Connection failed')
+        toast.error(t('jira.addConfig.messages.connectionFailed'))
       })
   }
 
@@ -94,9 +96,9 @@ const ModalEditConfigJira = () => {
           if (response) {
             console.log(response)
             if (response.data.error) {
-              toast.error('edited failed')
+              toast.error(t('jira.config.toast.updateFailed'))
             } else {
-              toast.success('successful edited')
+              toast.success(t('jira.config.toast.updateSuccess'))
               dispatch(toggleEditConfigJiraModalClose())
             }
           }
@@ -106,10 +108,10 @@ const ModalEditConfigJira = () => {
         })
         .catch((error) => {
           console.error('Error checking connection:', error)
-          toast.error('Connection failed')
+          toast.error(t('jira.addConfig.messages.connectionFailed'))
         })
     } else {
-      toast.error('please check the connection before adding a configuration')
+      toast.error(t('jira.editConfig.messages.checkConnectionFirst'))
     }
   }
   return (
@@ -122,16 +124,16 @@ const ModalEditConfigJira = () => {
       alignment="center"
     >
       <CModalHeader onClose={() => dispatch(toggleEditConfigJiraModalClose())}>
-        Modifier configuration Jira
+        {t('jira.editConfig.title')}
       </CModalHeader>
       <CModalBody>
         <CForm>
           <CFormInput
             type="text"
             id="EditInputHostURL"
-            label="Host URL"
-            placeholder="jira.somehost.com"
-            text="What host is this tool connecting to for the jira instance? Ex: jira.somehost.com"
+            label={t('jira.addConfig.fields.hostUrl')}
+            placeholder={t('jira.addConfig.fields.placeholder')}
+            text={t('jira.addConfig.fields.help')}
             aria-describedby="exampleFormControlInputHelpInline"
             required
             onChange={(e) => setFormControlInputHostURL(e.target.value)}
@@ -161,10 +163,10 @@ const ModalEditConfigJira = () => {
           />
           <br />
           <CFormInput
-            type="test"
+            type="text"
             id="EditInputUsername"
-            label="username"
-            text="Specify a username for this tool to authenticate all requests with."
+            label={t('jira.addConfig.username.label')}
+            text={t('jira.addConfig.username.help')}
             aria-describedby="exampleFormControlInputHelpInline"
             required
             onChange={(e) => setFormControlInputUsername(e.target.value)}
@@ -173,9 +175,9 @@ const ModalEditConfigJira = () => {
           <CFormInput
             type="password"
             id="EditInputPassword"
-            label="password"
+            label={t('jira.addConfig.password.label')}
             placeholder="*********"
-            text="Specify a password for this tool to authenticate all requests with. Cloud users need to generate an API token for this value."
+            text={t('jira.addConfig.password.help')}
             aria-describedby="exampleFormControlInputHelpInline"
             required
             onChange={(e) => setFormControlInputPassword(e.target.value)}
@@ -184,8 +186,8 @@ const ModalEditConfigJira = () => {
           <CFormInput
             type="number"
             id="EditInputAPIVersion"
-            label="API Version"
-            text="What version of the jira rest api is the instance the tool is connecting to? default is 2"
+            label={t('jira.addConfig.apiVersion.label')}
+            text={t('jira.addConfig.apiVersion.help')}
             aria-describedby="exampleFormControlInputHelpInline"
             required
             onChange={(e) => setFormControlInputAPIVersion(e.target.value)}
@@ -193,24 +195,24 @@ const ModalEditConfigJira = () => {
           />
           <CFormCheck
             id="EditCheckStrictSSL"
-            label="Strict SSL"
+            label={t('jira.editConfig.fields.strictSSL')}
             required
             onChange={(e) => setCheckStrictSSL(e.target.checked)}
             checked={CheckStrictSSL}
           />
           <CCallout color="danger">
-            before editing a configuration, please make sure that the host url is reachable and the
-            username and password are correct. <br />
-            <strong>Note:</strong> please check the Connection before editing a configuration.
+            {t('jira.editConfig.alert.warning')} <br />
+            <strong>{t('jira.editConfig.alert.noteLabel')}</strong>{' '}
+            {t('jira.editConfig.alert.note')}
           </CCallout>
         </CForm>
       </CModalBody>
       <CModalFooter>
         <CButton color="success" onClick={(e) => checkConnection(e)}>
-          Test Connection
+          {t('jira.editConfig.buttons.testConnection')}
         </CButton>
         <CButton color="primary" onClick={(e) => handleFormSubmit(e)}>
-          Edit Configuration
+          {t('jira.editConfig.buttons.editConfig')}
         </CButton>
       </CModalFooter>
     </CModal>

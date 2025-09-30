@@ -1,6 +1,5 @@
 import {
   CButton,
-  CCallout,
   CCol,
   CForm,
   CFormInput,
@@ -71,7 +70,7 @@ const ModalEditProject = () => {
       alignment="center"
     >
       <CModalHeader onClose={() => dispatch(toggleEditProjectModalClose())}>
-        {t('projectPage.modifierConfigurationJira')}
+        {t('projectPage.editModalTitle')}
       </CModalHeader>
       <CModalBody>
         <CForm>
@@ -108,8 +107,8 @@ const ModalEditProject = () => {
                 aria-label={t('projectPage.fields.projectType')}
                 options={[
                   { label: '' },
-                  { label: 'Software', value: 'software' },
-                  { label: 'Business', value: 'business' },
+                  { label: t('projectPage.projectTypeOptions.software'), value: 'software' },
+                  { label: t('projectPage.projectTypeOptions.business'), value: 'business' },
                 ]}
                 onChange={(e) => e.target.value && setProjectType(e.target.value)}
                 value={projectType}
@@ -122,7 +121,9 @@ const ModalEditProject = () => {
                 label={t('projectPage.fields.projectCategory')}
                 aria-describedby="exampleFormControlInputHelpInline"
                 required
-                value={projectCategory}
+                value={
+                  projectCategory === 'No category' ? t('projectPage.noCategory') : projectCategory
+                }
                 disabled
               />
             </CCol>
@@ -144,6 +145,9 @@ const ModalEditProject = () => {
         </CForm>
       </CModalBody>
       <CModalFooter>
+        <CButton color="secondary" onClick={() => dispatch(toggleEditProjectModalClose())}>
+          {t('projectPage.actions.cancel')}
+        </CButton>
         <CButton color="primary" onClick={(e) => handleFormSubmit(e)}>
           {t('projectPage.actions.edit')}
         </CButton>
