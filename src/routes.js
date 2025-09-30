@@ -17,27 +17,97 @@ const ConfigRules = React.lazy(() => import('./views/pages/rule/RulesIndex'))
 const Login = React.lazy(() => import('./views/pages/login/Login'))
 
 const routes = [
-  { path: '/', exact: true, name: 'Home' },
-  { path: '/dashboard', name: 'Dashboard', element: Dashboard },
-  { path: '/login', name: 'Login', element: Login },
+  { path: '/', exact: true, name: 'Home', tKey: 'routes.home' },
+  { path: '/dashboard', name: 'Dashboard', element: Dashboard, tKey: 'routes.dashboard' },
+  { path: '/login', name: 'Login', element: Login, tKey: 'routes.login' },
 
-  { path: '/employees', name: 'employés', element: EmployeeList, exact: true },
-  { path: '/employees/list', name: 'Liste des employés', element: EmployeeList },
-  { path: '/employees/:uid', name: 'Détail Employé', element: EmployeeDetail },
+  {
+    path: '/employees',
+    name: 'employés',
+    element: EmployeeList,
+    exact: true,
+    tKey: 'routes.employees',
+  },
+  {
+    path: '/employees/list',
+    name: 'Liste des employés',
+    element: EmployeeList,
+    tKey: 'routes.employeeList',
+  },
+  {
+    path: '/employees/:uid',
+    name: 'Détail Employé',
+    element: EmployeeDetail,
+    tKey: 'routes.employeeDetail',
+  },
 
-  { path: '/tickets', name: 'Tickets', element: Tickets, exact: true },
-  { path: '/tickets/list', name: 'liste des Tickets', element: Tickets },
-  { path: '/ticket/:code', name: 'Ticket View', element: TicketView },
-  { path: '/ticket/edit/:code', name: 'Edit Ticket', element: EditTicket },
+  {
+    path: '/tickets',
+    name: 'Tickets',
+    element: Tickets,
+    exact: true,
+    tKey: 'routes.tickets',
+  },
+  {
+    path: '/tickets/list',
+    name: 'liste des Tickets',
+    element: Tickets,
+    tKey: 'routes.ticketsList',
+  },
+  {
+    path: '/ticket/:code',
+    name: 'Ticket View',
+    element: TicketView,
+    tKey: 'routes.ticketView',
+  },
+  {
+    path: '/ticket/edit/:code',
+    name: 'Edit Ticket',
+    element: EditTicket,
+    tKey: 'routes.ticketEdit',
+  },
 
-  { path: '/jira', name: 'Jira', element: ConfigJiraApi, exact: true },
-  { path: '/jira/config-jira-api', name: 'Configuration Jira API', element: ConfigJiraApi },
+  {
+    path: '/jira',
+    name: 'Jira',
+    element: ConfigJiraApi,
+    exact: true,
+    tKey: 'routes.jira',
+  },
+  {
+    path: '/jira/config-jira-api',
+    name: 'Configuration Jira API',
+    element: ConfigJiraApi,
+    tKey: 'routes.jiraConfig',
+  },
 
-  { path: '/projet', element: Projet, name: 'Projet', exact: true },
-  { path: '/projet/list', name: 'liste des projets', element: Projet },
+  {
+    path: '/projet',
+    element: Projet,
+    name: 'Projet',
+    exact: true,
+    tKey: 'routes.projet',
+  },
+  {
+    path: '/projet/list',
+    name: 'liste des projets',
+    element: Projet,
+    tKey: 'routes.projetList',
+  },
 
-  { path: '/rule', name: 'Rule', element: ConfigRules, exact: true },
-  { path: '/rule/Config', name: 'Configuration des rules ', element: ConfigRules },
+  {
+    path: '/rule',
+    name: 'Rule',
+    element: ConfigRules,
+    exact: true,
+    tKey: 'routes.rule',
+  },
+  {
+    path: '/rule/Config',
+    name: 'Configuration des rules ',
+    element: ConfigRules,
+    tKey: 'routes.ruleConfig',
+  },
 ]
 
 export default routes
