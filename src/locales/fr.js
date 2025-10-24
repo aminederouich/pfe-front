@@ -87,6 +87,7 @@ const fr = {
           connectionFailed: 'Échec de la connexion',
         },
       },
+      editConfig: jiraPage.editConfig,
       addConfig: jiraPage.addConfig,
     },
     // Widget Score Utilisateur

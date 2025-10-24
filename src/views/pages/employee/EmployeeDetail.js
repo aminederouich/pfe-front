@@ -63,10 +63,12 @@ const EmployeeDetail = () => {
               <CRow>
                 <CCol xs={6}>
                   <p className="mb-1 text-muted">{t('employeePage.detail.role')}</p>
-                  {user.IsManager ? (
-                    <CBadge color="warning">{t('employeePage.table.roles.manager')}</CBadge>
-                  ) : (
+                  {user.isManager ? (
+                    <CBadge color="danger">{t('employeePage.table.roles.manager')}</CBadge>
+                  ) : user.isEmployee ? (
                     <CBadge color="info">{t('employeePage.table.roles.employee')}</CBadge>
+                  ) : (
+                    <CBadge color="secondary">{t('employeePage.table.roles.user')}</CBadge>
                   )}
                 </CCol>
               </CRow>

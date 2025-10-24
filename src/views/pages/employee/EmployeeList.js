@@ -85,9 +85,9 @@ const EmployeeList = () => {
                 <CTableDataCell className="text-center">{user.firstName || '-'}</CTableDataCell>
                 <CTableDataCell className="text-center">{user.email || '-'}</CTableDataCell>
                 <CTableDataCell className="text-center">
-                  {user.IsManager ? (
+                  {user.isManager ? (
                     <CBadge color="danger">{t('employeePage.table.roles.manager')}</CBadge>
-                  ) : user.IsEmployee ? (
+                  ) : user.isEmployee ? (
                     <CBadge color="info">{t('employeePage.table.roles.employee')}</CBadge>
                   ) : (
                     <CBadge color="secondary">{t('employeePage.table.roles.user')}</CBadge>
