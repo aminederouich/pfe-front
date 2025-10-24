@@ -88,6 +88,7 @@ const en = {
         },
       },
       // Reuse existing jira page (add configuration form) translations
+      editConfig: jiraPage.editConfig,
       addConfig: jiraPage.addConfig,
     },
     // User Score Widget translations
