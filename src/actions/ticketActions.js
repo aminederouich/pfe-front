@@ -23,6 +23,10 @@ export const UPDATE_TICKET_REQUEST = 'UPDATE_TICKET_REQUEST'
 export const UPDATE_TICKET_SUCCESS = 'UPDATE_TICKET_SUCCESS'
 export const UPDATE_TICKET_FAILURE = 'UPDATE_TICKET_FAILURE'
 
+export const UPDATE_ASSIGN_TICKET_IN_JIRA_REQUEST = 'UPDATE_ASSIGN_TICKET_IN_JIRA_REQUEST'
+export const UPDATE_ASSIGN_TICKET_IN_JIRA_SUCCESS = 'UPDATE_ASSIGN_TICKET_IN_JIRA_SUCCESS'
+export const UPDATE_ASSIGN_TICKET_IN_JIRA_FAILURE = 'UPDATE_ASSIGN_TICKET_IN_JIRA_FAILURE'
+
 export const toggleCreateTicketModalOpen = () => (dispatch) => {
   dispatch({
     type: TOGGLE_CREATE_TICKET_MODAL_OPEN,
@@ -148,6 +152,35 @@ export const updateTicketAPI = (ticketUpdated) => (dispatch) => {
     .catch((error) => {
       dispatch({
         type: UPDATE_TICKET_FAILURE,
+        payload: error,
+      })
+      throw new Error(error)
+    })
+}
+
+export const updateAssignTicketInJiraAPI = (ticketKey, jiraId, config) => (dispatch) => {
+  dispatch({
+    type: UPDATE_ASSIGN_TICKET_IN_JIRA_REQUEST,
+  })
+  return ticketService
+    .assignIssueExterne(ticketKey, jiraId, config)
+    .then((response) => {
+      if (response.error) {
+        dispatch({
+          type: UPDATE_ASSIGN_TICKET_IN_JIRA_FAILURE,
+          payload: response.error,
+        })
+        throw new Error(response.error)
+      } else {
+        dispatch({
+          type: UPDATE_ASSIGN_TICKET_IN_JIRA_SUCCESS,
+        })
+        return response
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: UPDATE_ASSIGN_TICKET_IN_JIRA_FAILURE,
         payload: error,
       })
       throw new Error(error)

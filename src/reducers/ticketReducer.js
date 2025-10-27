@@ -15,6 +15,9 @@ import {
   UPDATE_TICKET_REQUEST,
   UPDATE_TICKET_SUCCESS,
   UPDATE_TICKET_FAILURE,
+  UPDATE_ASSIGN_TICKET_IN_JIRA_REQUEST,
+  UPDATE_ASSIGN_TICKET_IN_JIRA_SUCCESS,
+  UPDATE_ASSIGN_TICKET_IN_JIRA_FAILURE,
 } from '../actions/ticketActions'
 
 const initialState = {
@@ -108,6 +111,22 @@ const ticketReducer = (state = initialState, action) => {
         loading: false,
       }
     case UPDATE_TICKET_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      }
+    case UPDATE_ASSIGN_TICKET_IN_JIRA_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      }
+    case UPDATE_ASSIGN_TICKET_IN_JIRA_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+      }
+    case UPDATE_ASSIGN_TICKET_IN_JIRA_FAILURE:
       return {
         ...state,
         loading: false,

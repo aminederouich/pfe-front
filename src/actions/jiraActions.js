@@ -1,5 +1,9 @@
 import jiraService from '../services/jiraService'
 
+export const GET_CONFIG_JIRA_BY_ID_REQUEST = 'GET_CONFIG_JIRA_BY_ID_REQUEST'
+export const GET_CONFIG_JIRA_BY_ID_SUCCESS = 'GET_CONFIG_JIRA_BY_ID_SUCCESS'
+export const GET_CONFIG_JIRA_BY_ID_FAILURE = 'GET_CONFIG_JIRA_BY_ID_FAILURE'
+
 export const GetAllConfigJiraRequest = () => ({
   type: 'GET_ALL_CONFIG_JIRA_REQUEST',
 })
@@ -162,3 +166,33 @@ export const editConfigJiraAPI =
         throw new Error(error)
       })
   }
+
+export const getConfigJiraByIdAPI = (id) => (dispatch) => {
+  dispatch({
+    type: GET_CONFIG_JIRA_BY_ID_REQUEST,
+  })
+  return jiraService
+    .getConfigJiraById(id)
+    .then((response) => {
+      if (response.error) {
+        dispatch({
+          type: GET_CONFIG_JIRA_BY_ID_FAILURE,
+          payload: response.error,
+        })
+        throw new Error(response.error)
+      } else {
+        dispatch({
+          type: GET_CONFIG_JIRA_BY_ID_SUCCESS,
+          payload: response.data.data,
+        })
+        return response
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: GET_CONFIG_JIRA_BY_ID_FAILURE,
+        payload: error,
+      })
+      throw new Error(error)
+    })
+}

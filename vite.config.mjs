@@ -47,7 +47,13 @@ export default defineConfig(() => {
     server: {
       port: 3000,
       proxy: {
-        // https://vitejs.dev/config/server-options.html
+        // Proxy Jira API calls during local development to avoid browser CORS blocks
+        '/jira': {
+          target: 'https://sesame-team-pfe.atlassian.net',
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/jira/, ''),
+        },
       },
     },
   }

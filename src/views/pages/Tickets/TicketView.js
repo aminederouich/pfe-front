@@ -504,21 +504,16 @@ const TicketView = () => {
                         {ticketSelected.fields?.assignee ? (
                           <CTableDataCell>
                             <div className="d-flex align-items-center">
-                              {/* {ticketSelected.fields.assignee.avatarUrls && (
+                              {ticketSelected.fields.assignee.avatarUrls && (
                                 <img
                                   src={ticketSelected.fields.assignee.avatarUrls['24x24']}
                                   alt={ticketSelected.fields.assignee.displayName}
                                   className="rounded-circle me-2"
                                   style={{ width: '24px', height: '24px' }}
                                 />
-                              )} */}
+                              )}
                               <div>
-                                <div>{'ticketSelected.fields.assignee.displayName'}</div>
-                                {/* {ticketSelected.fields.assignee.emailAddress && (
-                                  <small className="text-muted">
-                                    {ticketSelected.fields.assignee.emailAddress}
-                                  </small>
-                                )} */}
+                                <div>{ticketSelected.fields.assignee.displayName}</div>
                               </div>
                             </div>
                           </CTableDataCell>
