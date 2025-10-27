@@ -15,10 +15,15 @@ import {
 } from '@coreui/react'
 import { useTranslation } from 'react-i18next'
 
-import { toggleAssignTicketModalClose, updateTicketAPI } from '../../actions/ticketActions'
+import {
+  toggleAssignTicketModalClose,
+  updateAssignTicketInJiraAPI,
+  updateTicketAPI,
+} from '../../actions/ticketActions'
 import { emptyIssue } from '../../utils/emptyIssue'
 import { getAllUsersAPI } from '../../actions/userActions'
 import { toast } from 'react-toastify'
+import { getConfigJiraByIdAPI } from '../../actions/jiraActions'
 
 const ModalAssignTicket = () => {
   const dispatch = useDispatch()
@@ -76,14 +81,32 @@ const ModalAssignTicket = () => {
 
   const handleSubmitTicket = async () => {
     setIsSubmitting(true)
-    try {
-      await dispatch(updateTicketAPI(editIssue))
-      handleClose()
-    } catch (error) {
-      console.error(t('modal.assignTicket.errors.createFailed'), error)
-      toast.error(t('modal.assignTicket.errors.createFailed'))
-    } finally {
-      setIsSubmitting(false)
+    if (editIssue.configId.length > 0) {
+      try {
+        const assignee = editIssue.fields.assignee || {}
+        const { jiraId } = assignee
+        const config = await dispatch(getConfigJiraByIdAPI(editIssue.configId))
+        const updateTicket = await dispatch(
+          updateAssignTicketInJiraAPI(editIssue.key, jiraId, config.data.data),
+        )
+        toast.success(updateTicket.message)
+        handleClose()
+      } catch (error) {
+        toast.error(t('modal.assignTicket.errors.createFailed'))
+      } finally {
+        setIsSubmitting(false)
+      }
+    } else {
+      console.log('else')
+      try {
+        await dispatch(updateTicketAPI(editIssue))
+        handleClose()
+      } catch (error) {
+        console.error(t('modal.assignTicket.errors.createFailed'), error)
+        toast.error(t('modal.assignTicket.errors.createFailed'))
+      } finally {
+        setIsSubmitting(false)
+      }
     }
   }
 
