@@ -107,10 +107,27 @@ const editConfigJiraAPI = (
     })
 }
 
+const getConfigJiraById = (id) => {
+  return axios
+    .get(`${API_URL}getConfig/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    .then((response) => {
+      return response
+    })
+    .catch((error) => {
+      console.error('Error fetching config Jira by ID:', error)
+      return error
+    })
+}
+
 export default {
   getAllConfigJira,
   checkConnectionJiraApi,
   addNewConfigJiraAPI,
   deleteConfigJiraAPI,
   editConfigJiraAPI,
+  getConfigJiraById,
 }

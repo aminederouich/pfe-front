@@ -1,3 +1,9 @@
+import {
+  GET_CONFIG_JIRA_BY_ID_REQUEST,
+  GET_CONFIG_JIRA_BY_ID_SUCCESS,
+  GET_CONFIG_JIRA_BY_ID_FAILURE,
+} from '../actions/jiraActions'
+
 const initialState = {
   configCanbeAdded: false,
   jiraConfigList: [],
@@ -98,6 +104,22 @@ const jiraReducer = (state = initialState, action) => {
         loading: false,
       }
     case 'EDIT_CONFIG_JIRA_API_FAILURE':
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      }
+    case GET_CONFIG_JIRA_BY_ID_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      }
+    case GET_CONFIG_JIRA_BY_ID_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+      }
+    case GET_CONFIG_JIRA_BY_ID_FAILURE:
       return {
         ...state,
         loading: false,
