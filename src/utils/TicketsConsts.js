@@ -193,18 +193,18 @@ export const issuetype = [
 
 export const status = [
   {
-    self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/status/10000',
+    self: 'https://sesame-team-pfe.atlassian.net/rest/api/3/status/10000',
     description: '',
     iconUrl: 'https://sesame-team-pfe.atlassian.net/',
-    name: 'À faire',
+    name: 'To Do',
     untranslatedName: 'To Do',
     id: '10000',
     statusCategory: {
-      self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/statuscategory/2',
+      self: 'https://sesame-team-pfe.atlassian.net/rest/api/3/statuscategory/2',
       id: 2,
       key: 'new',
       colorName: 'blue-gray',
-      name: 'A faire',
+      name: 'To Do',
     },
     scope: {
       type: 'PROJECT',
@@ -214,18 +214,18 @@ export const status = [
     },
   },
   {
-    self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/status/10001',
-    description: 'Ce ticket est en cours de traitement par la personne assignée.',
+    self: 'https://sesame-team-pfe.atlassian.net/rest/api/3/status/10001',
+    description: 'This work item is being actively worked on at the moment by the assignee.',
     iconUrl: 'https://sesame-team-pfe.atlassian.net/',
-    name: 'En cours',
+    name: 'In Progress',
     untranslatedName: 'In Progress',
     id: '10001',
     statusCategory: {
-      self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/statuscategory/4',
+      self: 'https://sesame-team-pfe.atlassian.net/rest/api/3/statuscategory/4',
       id: 4,
       key: 'indeterminate',
       colorName: 'yellow',
-      name: 'En cours',
+      name: 'In Progress',
     },
     scope: {
       type: 'PROJECT',
@@ -235,18 +235,18 @@ export const status = [
     },
   },
   {
-    self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/status/10002',
+    self: 'https://sesame-team-pfe.atlassian.net/rest/api/3/status/10002',
     description: '',
     iconUrl: 'https://sesame-team-pfe.atlassian.net/',
-    name: 'Terminé(e)',
+    name: 'Done',
     untranslatedName: 'Done',
     id: '10002',
     statusCategory: {
-      self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/statuscategory/3',
+      self: 'https://sesame-team-pfe.atlassian.net/rest/api/3/statuscategory/3',
       id: 3,
       key: 'done',
       colorName: 'green',
-      name: 'Terminé',
+      name: 'Done',
     },
     scope: {
       type: 'PROJECT',
@@ -256,18 +256,18 @@ export const status = [
     },
   },
   {
-    self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/status/10033',
+    self: 'https://sesame-team-pfe.atlassian.net/rest/api/3/status/10033',
     description: '',
     iconUrl: 'https://sesame-team-pfe.atlassian.net/',
     name: 'en attend de validation',
     untranslatedName: 'en attend de validation',
     id: '10033',
     statusCategory: {
-      self: 'https://sesame-team-pfe.atlassian.net/rest/api/2/statuscategory/4',
+      self: 'https://sesame-team-pfe.atlassian.net/rest/api/3/statuscategory/4',
       id: 4,
       key: 'indeterminate',
       colorName: 'yellow',
-      name: 'En cours',
+      name: 'In Progress',
     },
     scope: {
       type: 'PROJECT',

@@ -116,9 +116,40 @@ const assignIssueExterne = async (issueId, jiraId, config) => {
   }
 }
 
+const buildIssueUrl = (issueId, config) => {
+  const path = `/rest/api/${config.apiVersion}/issue/${issueId}`
+  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    return `/jira${path}`
+  }
+  return `${config.protocol}://${config.host}${path}`
+}
+
+const getIssueDetailsFromJira = async (issueId, config) => {
+  const url = buildIssueUrl(issueId, config)
+  const headers = {
+    Authorization: `Basic ${encodeBasicCredentials(`${config.username}:${config.password}`)}`,
+    Accept: 'application/json',
+  }
+  try {
+    const response = await axios.get(url, { headers })
+    return {
+      success: true,
+      data: response.data,
+      status: response.status,
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: 'Failed to fetch issue details from Jira',
+      error: error.message,
+    }
+  }
+}
+
 export default {
   getAllTickets,
   addNewTicket,
   updateTicket,
+  getIssueDetailsFromJira,
   assignIssueExterne,
 }
