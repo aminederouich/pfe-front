@@ -15,7 +15,7 @@ import {
 } from '@coreui/react'
 import { useTranslation } from 'react-i18next'
 
-import { addNewTicketAPI, toggleAssignTicketModalClose } from '../../actions/ticketActions'
+import { toggleAssignTicketModalClose, updateTicketAPI } from '../../actions/ticketActions'
 import { emptyIssue } from '../../utils/emptyIssue'
 import { getAllUsersAPI } from '../../actions/userActions'
 import { toast } from 'react-toastify'
@@ -41,6 +41,7 @@ const ModalAssignTicket = () => {
         assignee: {
           emailAddress: userObj.email,
           accountId: userObj.uid,
+          jiraId: userObj.jiraId,
           displayName: userObj.firstName + ' ' + userObj.lastName,
           accountType: 'takeit',
           timeZone: 'Etc/GMT-1',
@@ -76,7 +77,7 @@ const ModalAssignTicket = () => {
   const handleSubmitTicket = async () => {
     setIsSubmitting(true)
     try {
-      await dispatch(addNewTicketAPI(editIssue))
+      await dispatch(updateTicketAPI(editIssue))
       handleClose()
     } catch (error) {
       console.error(t('modal.assignTicket.errors.createFailed'), error)
