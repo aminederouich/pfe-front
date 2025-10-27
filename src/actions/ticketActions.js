@@ -27,6 +27,10 @@ export const UPDATE_ASSIGN_TICKET_IN_JIRA_REQUEST = 'UPDATE_ASSIGN_TICKET_IN_JIR
 export const UPDATE_ASSIGN_TICKET_IN_JIRA_SUCCESS = 'UPDATE_ASSIGN_TICKET_IN_JIRA_SUCCESS'
 export const UPDATE_ASSIGN_TICKET_IN_JIRA_FAILURE = 'UPDATE_ASSIGN_TICKET_IN_JIRA_FAILURE'
 
+export const GET_ISSUE_DETAILS_FROM_JIRA_REQUEST = 'GET_ISSUE_DETAILS_FROM_JIRA_REQUEST'
+export const GET_ISSUE_DETAILS_FROM_JIRA_SUCCESS = 'GET_ISSUE_DETAILS_FROM_JIRA_SUCCESS'
+export const GET_ISSUE_DETAILS_FROM_JIRA_FAILURE = 'GET_ISSUE_DETAILS_FROM_JIRA_FAILURE'
+
 export const toggleCreateTicketModalOpen = () => (dispatch) => {
   dispatch({
     type: TOGGLE_CREATE_TICKET_MODAL_OPEN,
@@ -158,6 +162,36 @@ export const updateTicketAPI = (ticketUpdated) => (dispatch) => {
     })
 }
 
+export const getIssueDetailsFromJiraAPI = (issueId, config) => (dispatch) => {
+  dispatch({
+    type: GET_ISSUE_DETAILS_FROM_JIRA_REQUEST,
+  })
+  return ticketService
+    .getIssueDetailsFromJira(issueId, config)
+    .then((response) => {
+      if (response.error) {
+        dispatch({
+          type: GET_ISSUE_DETAILS_FROM_JIRA_FAILURE,
+          payload: response.error,
+        })
+        throw new Error(response.error)
+      } else {
+        dispatch({
+          type: GET_ISSUE_DETAILS_FROM_JIRA_SUCCESS,
+          payload: response.data,
+        })
+        return response
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: GET_ISSUE_DETAILS_FROM_JIRA_FAILURE,
+        payload: error,
+      })
+      throw new Error(error)
+    })
+}
+
 export const updateAssignTicketInJiraAPI = (ticketKey, jiraId, config) => (dispatch) => {
   dispatch({
     type: UPDATE_ASSIGN_TICKET_IN_JIRA_REQUEST,
@@ -175,6 +209,7 @@ export const updateAssignTicketInJiraAPI = (ticketKey, jiraId, config) => (dispa
         dispatch({
           type: UPDATE_ASSIGN_TICKET_IN_JIRA_SUCCESS,
         })
+        dispatch(getIssueDetailsFromJiraAPI(ticketKey, config))
         return response
       }
     })
