@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom'
 import { logout } from '../../actions/authActions'
 import { toggleAddUserModalOpen } from '../../actions/userActions'
 import { useTranslation } from 'react-i18next'
+import { calculateWeeklyScores } from '../../actions/weeklyTopScoresActions'
 
 const AppHeaderDropdownManager = () => {
   const dispatch = useDispatch()
@@ -52,6 +53,9 @@ const AppHeaderDropdownManager = () => {
           </CDropdownItem>
           <CDropdownItem onClick={() => navigate('/rule/Config')}>
             {t('header.dropdown.rulesConfig')}
+          </CDropdownItem>
+          <CDropdownItem onClick={() => dispatch(calculateWeeklyScores())}>
+            calculer les scores
           </CDropdownItem>
           <CDropdownItem onClick={() => dispatch(toggleAddUserModalOpen())}>
             {t('header.dropdown.addUser')}
