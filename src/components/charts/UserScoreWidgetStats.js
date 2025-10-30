@@ -14,10 +14,10 @@ const UserScoreWidgetStats = ({ forMe }) => {
 
   useEffect(() => {
     if (forMe) {
-      const userId = authUser?.user?.uid
+      const userId = authUser?.user?.jiraId
       dispatch(getScoreByOwnerIdAPI(userId))
     }
-  }, [authUser?.user?.uid, dispatch, forMe])
+  }, [authUser, authUser?.user?.jiraId, dispatch, forMe])
 
   // Helper: convert Firestore timestamp to JS Date
   const toDate = (ts) => {

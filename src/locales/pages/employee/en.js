@@ -19,6 +19,12 @@ const employeePage = {
     title: 'Employee Details',
     notFound: 'Employee not found',
     role: 'Role',
+    weeklyScores: 'Weekly Scores',
+    noWeeklyScores: 'No weekly scores found.',
+    startWeek: 'Start Week',
+    endWeek: 'End Week',
+    score: 'Score',
+    position: 'Position',
   },
 }
 

@@ -19,6 +19,12 @@ const employeePage = {
     title: "Détails de l'employé",
     notFound: 'Employé introuvable',
     role: 'Rôle',
+    weeklyScores: 'Scores hebdomadaires',
+    noWeeklyScores: 'Aucun score hebdomadaire trouvé.',
+    startWeek: 'Semaine de début',
+    endWeek: 'Semaine de fin',
+    score: 'Score',
+    position: 'Position',
   },
 }
 export default employeePage

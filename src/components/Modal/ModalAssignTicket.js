@@ -64,6 +64,7 @@ const ModalAssignTicket = () => {
           assignee: {
             emailAddress: user.user.email,
             accountId: user.user.uid,
+            jiraId: user.user.jiraId,
             displayName: user.user.firstName + ' ' + user.user.lastName,
             accountType: 'takeit',
             timeZone: 'Etc/GMT-1',
