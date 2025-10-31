@@ -42,10 +42,12 @@ const Tickets = () => {
 
   useEffect(() => {
     if (isFirstRender.current) {
-      dispatch(getAllTicketAPI())
+      if (!ticketList.length) {
+        dispatch(getAllTicketAPI())
+      }
       isFirstRender.current = false
     }
-  }, [dispatch])
+  }, [dispatch, ticketList.length])
 
   const handleClickAjouterTicket = (event) => {
     event.preventDefault()

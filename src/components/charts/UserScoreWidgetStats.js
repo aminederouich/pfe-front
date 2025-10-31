@@ -83,7 +83,7 @@ const UserScoreWidgetStats = ({ forMe }) => {
         <CRow>
           <CCol xs={3}>
             <CWidgetStatsB
-              className="mb-3"
+              className="mb-3 h-100"
               color="primary"
               inverse
               progress={{ value: lastScorePercent }}
@@ -97,7 +97,7 @@ const UserScoreWidgetStats = ({ forMe }) => {
           </CCol>
           <CCol xs={3}>
             <CWidgetStatsB
-              className="mb-3"
+              className="mb-3 h-100"
               color="danger"
               inverse
               progress={{ value: weekScorePercent }}
@@ -108,7 +108,7 @@ const UserScoreWidgetStats = ({ forMe }) => {
           </CCol>
           <CCol xs={3}>
             <CWidgetStatsB
-              className="mb-3"
+              className="mb-3 h-100"
               color="info"
               inverse
               progress={{ value: lastWeekScorePercent }}
@@ -119,7 +119,7 @@ const UserScoreWidgetStats = ({ forMe }) => {
           </CCol>
           <CCol xs={3}>
             <CWidgetStatsB
-              className="mb-3"
+              className="mb-3 h-100"
               color="success"
               inverse
               progress={{ value: totalScorePercent }}
