@@ -25,6 +25,7 @@ import { getAllWeeklyTopScoresAPI } from '../../../actions/weeklyTopScoresAction
 import best from '../../../assets/images/best.png'
 import middle from '../../../assets/images/middle.png'
 import last from '../../../assets/images/last.png'
+import { getAllWeeklyScoresAPI } from '../../../actions/weeklyAllScoresActions'
 const EmployeeDetail = () => {
   const { uid } = useParams()
   const { t } = useTranslation()
@@ -32,12 +33,16 @@ const EmployeeDetail = () => {
   const isFirstRender = useRef(true)
   const { user, loading } = useSelector((state) => state.user)
   const { weeklyScores } = useSelector((state) => state.weeklyTopScores)
+  const { weeklyAllScores } = useSelector((state) => state.weeklyAllScores)
+
   const [userWeeklyScores, setUserWeeklyScores] = useState([])
+  const [userWeeklyAllScores, setUserWeeklyAllScores] = useState([])
 
   useEffect(() => {
     if (isFirstRender.current) {
       dispatch(getUserByUidAPI(uid))
       dispatch(getAllWeeklyTopScoresAPI())
+      dispatch(getAllWeeklyScoresAPI())
 
       isFirstRender.current = false
     }
@@ -86,6 +91,29 @@ const EmployeeDetail = () => {
       // Do something with userWeeklyScores, e.g. set state or log
     }
   }, [user, weeklyScores])
+
+  useEffect(() => {
+    if (user && weeklyAllScores && Array.isArray(weeklyAllScores)) {
+      const userScores = weeklyAllScores
+        .filter(
+          (score) =>
+            Array.isArray(score.weeklyAllScores) &&
+            score.weeklyAllScores.some((lb) => lb.id === user.jiraId),
+        )
+        .map((score) => {
+          const userLb = score.weeklyAllScores.find((lb) => lb.id === user.jiraId)
+          console.log({ userLb })
+          // Calculate position type: 'best', 'middle', 'last'
+          return {
+            startWeek: score.startOfWeek,
+            endWeek: score.endOfWeek,
+            score: userLb ? userLb.score : null,
+            rank: userLb ? userLb.rank : null,
+          }
+        })
+      setUserWeeklyAllScores(userScores)
+    }
+  }, [user, weeklyAllScores])
 
   if (loading) {
     return (
@@ -143,7 +171,7 @@ const EmployeeDetail = () => {
       <UserScoreWidgetStats />
       <CRow className="mt-4">
         <CCol>
-          <h5 className="mb-3">{t('employeePage.detail.weeklyScores')}</h5>
+          <h5 className="mb-3">Tableau des badges obtenus</h5>
           <CTable striped align="middle" responsive>
             <CTableHead>
               <CTableRow>
@@ -172,6 +200,53 @@ const EmployeeDetail = () => {
                             '-'
                           )}
                         </CTableDataCell>
+                        <CTableDataCell>{score ?? '-'}</CTableDataCell>
+                        <CTableDataCell>
+                          {startWeek ? new Date(startWeek).toLocaleDateString() : '-'}
+                        </CTableDataCell>
+                        <CTableDataCell>
+                          {endWeek
+                            ? new Date(
+                                new Date(endWeek).getTime() + 6 * 24 * 60 * 60 * 1000,
+                              ).toLocaleDateString()
+                            : '-'}
+                        </CTableDataCell>
+                      </CTableRow>
+                    </>
+                  )
+                })
+              ) : (
+                <CTableRow>
+                  <CTableDataCell colSpan={3} className="text-center text-muted">
+                    {t('employeePage.detail.noWeeklyScores')}
+                  </CTableDataCell>
+                </CTableRow>
+              )}
+            </CTableBody>
+          </CTable>
+        </CCol>
+      </CRow>
+      <CRow className="mt-4">
+        <CCol>
+          <h5 className="mb-3">{t('employeePage.detail.weeklyScores')}</h5>
+          <CTable striped align="middle" responsive>
+            <CTableHead>
+              <CTableRow>
+                <CTableHeaderCell scope="col">{t('employeePage.detail.position')}</CTableHeaderCell>
+                <CTableHeaderCell scope="col">{t('employeePage.detail.score')}</CTableHeaderCell>
+                <CTableHeaderCell scope="col">
+                  {t('employeePage.detail.startWeek')}
+                </CTableHeaderCell>
+                <CTableHeaderCell scope="col">{t('employeePage.detail.endWeek')}</CTableHeaderCell>
+              </CTableRow>
+            </CTableHead>
+            <CTableBody>
+              {userWeeklyAllScores.length > 0 ? (
+                userWeeklyAllScores.map(({ startWeek, endWeek, score, rank }) => {
+                  return (
+                    <>
+                      <CTableRow key={startWeek}>
+                        <CTableDataCell>{rank ? `Rank ${rank}` : '-'}</CTableDataCell>
                         <CTableDataCell>{score ?? '-'}</CTableDataCell>
                         <CTableDataCell>
                           {startWeek ? new Date(startWeek).toLocaleDateString() : '-'}
