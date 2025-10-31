@@ -1,12 +1,12 @@
 import axios from 'axios'
 
-const API_URL = 'http://localhost:8081/weeklytopscores/'
+const API_URL = 'http://localhost:8081/weeklyscores/'
 const SUNDAY_OFFSET = -6 // décalage pour que lundi soit le début de la semaine
 const WEEK_LENGTH_DAYS = 6 // nombre de jours à ajouter pour fin de semaine (lundi +6 => dimanche)
 
 const getAllWeeklyTopScores = () => {
   return axios
-    .get(`${API_URL}getAll`, {
+    .get(`${API_URL}getAllWeeklyTopScores`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },

@@ -12,6 +12,7 @@ import projectReducer from './reducers/projectReducer'
 import scoreReducer from './reducers/scoreReducer'
 import rulesReducer from './reducers/rulesReducer'
 import weeklyTopScoresReducer from './reducers/weeklyTopScoresReducer'
+import weeklyAllScoresReducer from './reducers/weeklyAllScoresReducer'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   project: projectReducer,
   score: scoreReducer,
   weeklyTopScores: weeklyTopScoresReducer,
+  weeklyAllScores: weeklyAllScoresReducer,
 })
 
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)))
