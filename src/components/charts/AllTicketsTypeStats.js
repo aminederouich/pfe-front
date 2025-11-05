@@ -44,7 +44,6 @@ export const AllTicketsTypeStats = () => {
     }
 
     const ctx = canvas.getContext('2d')
-    console.log(generatorOfData())
     const { labels, data: datasetData } = generatorOfData()
     const data = {
       labels: labels,

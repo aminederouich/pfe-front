@@ -53,7 +53,6 @@ export const AllTicketsPrioriteStats = () => {
     }
 
     const ctx = canvas.getContext('2d')
-    console.log(generatorOfData())
     const { labels, data: datasetData } = generatorOfData()
     const data = {
       labels: labels,
