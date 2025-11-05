@@ -76,10 +76,44 @@ const calculateScoreTicketDone = async (ticket, ruleId) => {
   }
 }
 
+const calculateScoreTicketsList = async (tickets, ruleId) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}calculate-multiple`,
+      { ticketIds: tickets, ruleId },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      },
+    )
+    return response
+  } catch (error) {
+    console.error('Error calculating score for ticket done:', error)
+    return error
+  }
+}
+
+const getScoresByTicketId = async (ticketId) => {
+  try {
+    const response = await axios.get(`${API_URL}tickets/${ticketId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    return response
+  } catch (error) {
+    console.error('Error fetching scores by ticket ID:', error)
+    return error
+  }
+}
+
 export default {
   addScore,
   getAllScores,
   getScoreById,
+  getScoresByTicketId,
   getScoreByOwnerId,
   calculateScoreTicketDone,
+  calculateScoreTicketsList,
 }
