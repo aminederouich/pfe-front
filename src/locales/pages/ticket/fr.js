@@ -78,6 +78,7 @@ const ticketPage = {
       detailsPanel: 'Détails',
     },
     fields: {
+      score: 'Score',
       type: 'Type',
       resolution: 'Résolution',
       priority: 'Priorité',
