@@ -35,7 +35,7 @@ import {
 } from '../../../actions/ticketActions'
 import { status } from '../../../utils/TicketsConsts'
 import { toast } from 'react-toastify'
-import { calculateScoreTicketDoneAPI } from '../../../actions/scoreAction'
+import { calculateScoreTicketDoneAPI, getScoresByTicketIdAPI } from '../../../actions/scoreAction'
 import { useTranslation } from 'react-i18next'
 import { Editor } from '@tinymce/tinymce-react'
 
@@ -47,6 +47,7 @@ const TicketView = () => {
 
   // Récupérer le ticket depuis le store
   const { ticketList, ticketSelected, loading } = useSelector((state) => state.ticket)
+  const { scoreByTicketId } = useSelector((state) => state.score)
 
   // Pour l'édition du summary au hover
   // const [ticket, setTicket] = useState(null)
@@ -58,6 +59,7 @@ const TicketView = () => {
     const ticketSelectedFromList = ticketList.find((t) => t.id === code)
     // setTicket(ticketSelectedFromList)
     dispatch(ticketToView(ticketSelectedFromList))
+    dispatch(getScoresByTicketIdAPI(ticketSelectedFromList.id))
   }, [code, dispatch, ticketList])
 
   // Logique de pagination
@@ -318,7 +320,7 @@ const TicketView = () => {
               <CCard className="mb-4">
                 <CCardBody>
                   <CRow>
-                    <CCol sm={11}>
+                    <CCol sm={7}>
                       <CRow>
                         <small className="mb-0">
                           {ticketSelected.key} / {ticketSelected.id}
@@ -327,6 +329,49 @@ const TicketView = () => {
                       <CRow>
                         <h2 className="mb-3">{ticketSelected.fields?.summary}</h2>
                       </CRow>
+                    </CCol>
+                    <CCol sm={4}>
+                      {scoreByTicketId?.score !== undefined ? (
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-evenly',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <CButton
+                            color="info"
+                            size="sm"
+                            className="mb-0"
+                            style={{
+                              '--cui-btn-padding-y': '.1rem',
+                              '--cui-btn-padding-x': '.5rem',
+                              '--cui-btn-font-size': '.8rem',
+                            }}
+                            onClick={() => dispatch(calculateScoreTicketDoneAPI(ticketSelected))}
+                          >
+                            Recalculate
+                          </CButton>
+                          <small className="text-muted">
+                            {t('ticketPage.ticketView.fields.score')}
+                          </small>
+                          <h4 className="mb-0">{scoreByTicketId?.score}</h4>
+                        </div>
+                      ) : (
+                        <CButton
+                          color="info"
+                          size="sm"
+                          className="mb-0"
+                          style={{
+                            '--cui-btn-padding-y': '.1rem',
+                            '--cui-btn-padding-x': '.5rem',
+                            '--cui-btn-font-size': '.8rem',
+                          }}
+                          onClick={() => dispatch(calculateScoreTicketDoneAPI(ticketSelected))}
+                        >
+                          calculate score
+                        </CButton>
+                      )}
                     </CCol>
                     <CCol sm={1} className="d-flex justify-content-end align-items-start">
                       <CBadge
