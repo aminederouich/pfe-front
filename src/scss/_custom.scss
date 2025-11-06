@@ -1,1 +1,20 @@
 // Here you can add other styles
+
+// Highlight entire selected week in react-calendar
+.react-calendar__tile.week-selected {
+	background: #0d6efd !important; // primary color
+	color: #fff !important;
+	border-radius: 6px;
+}
+
+// Slight hover for week-selected for clarity
+.react-calendar__tile.week-selected:enabled:hover,
+.react-calendar__tile.week-selected:enabled:focus {
+	background: #0b5ed7 !important;
+}
+
+// Style week numbers to look clickable
+.react-calendar__tile.react-calendar__tile--weekNumber {
+	cursor: pointer;
+	font-weight: 600;
+}

@@ -26,12 +26,12 @@ export const getAllWeeklyTopScoresAPI = () => async (dispatch) => {
   }
 }
 
-export const calculateWeeklyScores = () => async (dispatch) => {
+export const calculateWeeklyScores = (startOfWeek, endOfWeek) => async (dispatch) => {
   dispatch({
     type: CALCULATE_WEEKLY_SCORES_REQUEST,
   })
   try {
-    const response = await weeklyTopScoresService.calculateWeeklyScores()
+    const response = await weeklyTopScoresService.calculateWeeklyScores(startOfWeek, endOfWeek)
     dispatch({
       type: CALCULATE_WEEKLY_SCORES_SUCCESS,
       payload: response.data.data,
