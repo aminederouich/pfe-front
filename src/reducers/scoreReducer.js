@@ -30,7 +30,7 @@ const initialState = {
   scoreByTicketId: {},
   loading: false,
   error: null,
-  isCalculateScoreModalOpen: true,
+  isCalculateScoreModalOpen: false,
 }
 
 const scoreReducer = (state = initialState, action) => {
