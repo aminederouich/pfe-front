@@ -24,7 +24,7 @@ import {
 } from '../../../actions/ticketActions'
 import { useTranslation } from 'react-i18next'
 import CIcon from '@coreui/icons-react'
-import { cilActionUndo, cilCheck, cilPen } from '@coreui/icons'
+import { cilActionUndo, cilCheck, cilPen, cilReload } from '@coreui/icons'
 import { toast } from 'react-toastify'
 
 const Tickets = () => {
@@ -122,6 +122,9 @@ const Tickets = () => {
           <p className="text-medium-emphasis">{t('ticketPage.description')}</p>
         </CCol>
         <CCol sm={3} className="text-end">
+          <CButton color="info" onClick={() => dispatch(getAllTicketAPI())}>
+            <CIcon icon={cilReload} /> Synchroniser
+          </CButton>
           <CButton color="primary" className="ms-2" onClick={handleClickAjouterTicket}>
             {t('ticketPage.actions.add')}
           </CButton>

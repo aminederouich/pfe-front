@@ -144,7 +144,7 @@ const ModalCalculateScore = () => {
       scrollable
     >
       <CModalHeader>
-        <CModalTitle>{t('modal.assignTicket.title')}</CModalTitle>
+        <CModalTitle>Attribuer des scores / badges</CModalTitle>
       </CModalHeader>
       <CModalBody>
         <div className="mt-3">
@@ -344,7 +344,7 @@ const ModalCalculateScore = () => {
               onClick={handleCalculateScores}
               disabled={!selectedTicketIds.length}
             >
-              calculer les score des ticket selectionner
+              Calculer les scores et attribuer des badges
             </CButton>
           </div>
         </div>
