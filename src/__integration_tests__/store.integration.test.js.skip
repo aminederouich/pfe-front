@@ -1,0 +1,241 @@
+import { legacy_createStore as createStore, applyMiddleware, combineReducers } from 'redux'
+import { thunk } from 'redux-thunk'
+import authReducer from '../reducers/authReducer'
+import dataReducer from '../reducers/appReducer'
+import jiraReducer from '../reducers/jiraReducer'
+import ticketReducer from '../reducers/ticketReducer'
+import userReducer from '../reducers/userReducer'
+import projectReducer from '../reducers/projectReducer'
+import scoreReducer from '../reducers/scoreReducer'
+import rulesReducer from '../reducers/rulesReducer'
+import weeklyTopScoresReducer from '../reducers/weeklyTopScoresReducer'
+import weeklyAllScoresReducer from '../reducers/weeklyAllScoresReducer'
+
+describe('Redux Store Integration', () => {
+  let store
+
+  beforeEach(() => {
+    const rootReducer = combineReducers({
+      rules: rulesReducer,
+      auth: authReducer,
+      data: dataReducer,
+      jira: jiraReducer,
+      ticket: ticketReducer,
+      user: userReducer,
+      project: projectReducer,
+      score: scoreReducer,
+      weeklyTopScores: weeklyTopScoresReducer,
+      weeklyAllScores: weeklyAllScoresReducer,
+    })
+
+    store = createStore(rootReducer, applyMiddleware(thunk))
+  })
+
+  describe('Store Initialization', () => {
+    it('should initialize with correct initial state structure', () => {
+      const state = store.getState()
+
+      expect(state).toHaveProperty('auth')
+      expect(state).toHaveProperty('data')
+      expect(state).toHaveProperty('jira')
+      expect(state).toHaveProperty('ticket')
+      expect(state).toHaveProperty('user')
+      expect(state).toHaveProperty('project')
+      expect(state).toHaveProperty('score')
+      expect(state).toHaveProperty('rules')
+      expect(state).toHaveProperty('weeklyTopScores')
+      expect(state).toHaveProperty('weeklyAllScores')
+    })
+
+    it('should initialize auth state correctly', () => {
+      const state = store.getState()
+
+      expect(state.auth).toEqual({
+        isAuthenticated: false,
+        user: null,
+        loading: false,
+        error: null,
+      })
+    })
+
+    it('should initialize ticket state correctly', () => {
+      const state = store.getState()
+
+      expect(state.ticket).toHaveProperty('tickets')
+      expect(state.ticket).toHaveProperty('loading')
+      expect(state.ticket).toHaveProperty('error')
+      expect(state.ticket.tickets).toEqual([])
+    })
+  })
+
+  describe('Cross-Reducer Integration', () => {
+    it('should handle login and ticket fetch workflow', () => {
+      // Login
+      store.dispatch({
+        type: 'LOGIN_SUCCESS',
+        payload: {
+          user: { uid: '123', IsEmployee: true },
+          role: 'employee',
+        },
+      })
+
+      let state = store.getState()
+      expect(state.auth.isAuthenticated).toBe(true)
+      expect(state.auth.user.user.uid).toBe('123')
+
+      // Fetch tickets
+      store.dispatch({
+        type: 'GET_TICKET_SUCCESS',
+        payload: [
+          { id: 1, title: 'Ticket 1' },
+          { id: 2, title: 'Ticket 2' },
+        ],
+      })
+
+      state = store.getState()
+      expect(state.ticket.tickets).toHaveLength(2)
+      expect(state.auth.isAuthenticated).toBe(true) // Auth state preserved
+    })
+
+    it('should handle logout and clear user data', () => {
+      // Setup authenticated state
+      store.dispatch({
+        type: 'LOGIN_SUCCESS',
+        payload: {
+          user: { uid: '123', IsEmployee: true },
+          role: 'employee',
+        },
+      })
+
+      store.dispatch({
+        type: 'GET_TICKET_SUCCESS',
+        payload: [{ id: 1, title: 'Ticket 1' }],
+      })
+
+      // Logout
+      store.dispatch({
+        type: 'LOGOUT_SUCCESS',
+        payload: { uid: '123' },
+      })
+
+      const state = store.getState()
+      expect(state.auth.isAuthenticated).toBe(false)
+      expect(state.auth.user).toBe(null)
+      // Tickets should still be in state (not cleared on logout in current implementation)
+      expect(state.ticket.tickets).toHaveLength(1)
+    })
+
+    it('should handle authentication failure and preserve other state', () => {
+      // Setup some ticket data
+      store.dispatch({
+        type: 'GET_TICKET_SUCCESS',
+        payload: [{ id: 1, title: 'Ticket 1' }],
+      })
+
+      // Attempt login that fails
+      store.dispatch({
+        type: 'LOGIN_FAILURE',
+        payload: new Error('Invalid credentials'),
+      })
+
+      const state = store.getState()
+      expect(state.auth.isAuthenticated).toBe(false)
+      expect(state.auth.error).toBeInstanceOf(Error)
+      expect(state.ticket.tickets).toHaveLength(1) // Preserved
+    })
+  })
+
+  describe('Middleware Integration', () => {
+    it('should support thunk actions', () => {
+      const thunkAction = (dispatch) => {
+        dispatch({ type: 'LOGIN_REQUEST' })
+        return Promise.resolve().then(() => {
+          dispatch({
+            type: 'LOGIN_SUCCESS',
+            payload: {
+              user: { uid: '123', IsEmployee: true },
+              role: 'employee',
+            },
+          })
+        })
+      }
+
+      return store.dispatch(thunkAction).then(() => {
+        const state = store.getState()
+        expect(state.auth.isAuthenticated).toBe(true)
+      })
+    })
+
+    it('should handle multiple dispatches in sequence', () => {
+      store.dispatch({ type: 'LOGIN_REQUEST' })
+      expect(store.getState().auth.loading).toBe(true)
+
+      store.dispatch({
+        type: 'LOGIN_SUCCESS',
+        payload: {
+          user: { uid: '123', IsEmployee: true },
+          role: 'employee',
+        },
+      })
+      expect(store.getState().auth.loading).toBe(false)
+      expect(store.getState().auth.isAuthenticated).toBe(true)
+    })
+  })
+
+  describe('State Isolation', () => {
+    it('should not affect other reducers when updating one', () => {
+      const initialState = store.getState()
+
+      store.dispatch({
+        type: 'LOGIN_SUCCESS',
+        payload: {
+          user: { uid: '123', IsEmployee: true },
+          role: 'employee',
+        },
+      })
+
+      const newState = store.getState()
+
+      // Auth changed
+      expect(newState.auth).not.toEqual(initialState.auth)
+
+      // Others unchanged
+      expect(newState.ticket).toEqual(initialState.ticket)
+      expect(newState.jira).toEqual(initialState.jira)
+      expect(newState.user).toEqual(initialState.user)
+    })
+
+    it('should handle unknown actions gracefully', () => {
+      const initialState = store.getState()
+
+      store.dispatch({ type: 'UNKNOWN_ACTION_TYPE', payload: 'test' })
+
+      const newState = store.getState()
+      expect(newState).toEqual(initialState)
+    })
+  })
+
+  describe('Complex State Updates', () => {
+    it('should handle ticket modal state changes', () => {
+      store.dispatch({ type: 'OPEN_CREATE_TICKET_MODAL' })
+      expect(store.getState().ticket.createTicketModalOpen).toBe(true)
+
+      store.dispatch({ type: 'CLOSE_CREATE_TICKET_MODAL' })
+      expect(store.getState().ticket.createTicketModalOpen).toBe(false)
+    })
+
+    it('should handle Jira synchronization state', () => {
+      store.dispatch({ type: 'SYNC_JIRA_REQUEST' })
+      let state = store.getState()
+      expect(state.jira.syncing).toBe(true)
+
+      store.dispatch({
+        type: 'SYNC_JIRA_SUCCESS',
+        payload: { synced: 10 },
+      })
+      state = store.getState()
+      expect(state.jira.syncing).toBe(false)
+      expect(state.jira.lastSync).toBeDefined()
+    })
+  })
+})

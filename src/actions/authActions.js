@@ -35,8 +35,10 @@ export const login = (username, password) => (dispatch) => {
     .login(username, password)
     .then((response) => {
       if (response.error) {
+        const error = new Error(response.error)
+        error.alreadyDispatched = true // Mark to avoid double dispatch
         dispatch(loginFailure(response.error))
-        throw new Error(response.error)
+        throw error
       } else {
         const user = response.user
 
@@ -53,8 +55,11 @@ export const login = (username, password) => (dispatch) => {
       }
     })
     .catch((error) => {
-      dispatch(loginFailure(error))
-      throw new Error(error)
+      // Only dispatch failure if it wasn't already dispatched in the then block
+      if (!error.alreadyDispatched) {
+        dispatch(loginFailure(error))
+      }
+      throw error
     })
 }
 
