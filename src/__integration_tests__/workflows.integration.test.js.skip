@@ -1,0 +1,376 @@
+import configureMockStore from 'redux-mock-store'
+import { thunk } from 'redux-thunk'
+import * as authActions from '../actions/authActions'
+import * as ticketActions from '../actions/ticketActions'
+import authService from '../services/authService'
+import ticketService from '../services/ticketService'
+
+jest.mock('../services/authService')
+jest.mock('../services/ticketService')
+
+const middlewares = [thunk]
+const mockStore = configureMockStore(middlewares)
+
+describe('Workflow Integration Tests', () => {
+  let store
+
+  beforeEach(() => {
+    store = mockStore({
+      auth: {
+        isAuthenticated: false,
+        user: null,
+        loading: false,
+        error: null,
+      },
+      ticket: {
+        tickets: [],
+        selectedTicket: null,
+        loading: false,
+        error: null,
+        createTicketModalOpen: false,
+      },
+    })
+    localStorage.clear()
+    jest.clearAllMocks()
+  })
+
+  describe('Complete Login Workflow', () => {
+    it('should complete full login flow for employee', async () => {
+      const mockUser = {
+        user: { uid: '123', IsEmployee: true, IsManager: false, active: true },
+        token: 'test-token-123',
+      }
+      authService.login.mockResolvedValue(mockUser)
+
+      await store.dispatch(authActions.login('employee@test.com', 'password'))
+
+      const actions = store.getActions()
+      expect(actions[0].type).toBe('LOGIN_REQUEST')
+      expect(actions[1].type).toBe('LOGIN_SUCCESS')
+      expect(actions[1].payload.role).toBe('employee')
+
+      // Verify localStorage
+      expect(localStorage.getItem('userId')).toBe('123')
+    })
+
+    it('should complete full login flow for manager', async () => {
+      const mockUser = {
+        user: { uid: '456', IsEmployee: false, IsManager: true, active: true },
+        token: 'test-token-456',
+      }
+      authService.login.mockResolvedValue(mockUser)
+
+      await store.dispatch(authActions.login('manager@test.com', 'password'))
+
+      const actions = store.getActions()
+      expect(actions[1].type).toBe('LOGIN_SUCCESS')
+      expect(actions[1].payload.role).toBe('manager')
+      expect(localStorage.getItem('userId')).toBe('456')
+    })
+
+    it('should handle failed login and show error', async () => {
+      const error = new Error('Invalid credentials')
+      authService.login.mockRejectedValue(error)
+
+      await expect(store.dispatch(authActions.login('wrong@test.com', 'wrong'))).rejects.toThrow()
+
+      const actions = store.getActions()
+      expect(actions[0].type).toBe('LOGIN_REQUEST')
+      expect(actions[1].type).toBe('LOGIN_FAILURE')
+      expect(actions[1].payload).toEqual(error)
+    })
+  })
+
+  describe('Complete Logout Workflow', () => {
+    it('should complete full logout flow', async () => {
+      const mockUser = { uid: '123' }
+      authService.logout.mockResolvedValue(mockUser)
+
+      await store.dispatch(authActions.logout())
+
+      const actions = store.getActions()
+      expect(actions[0].type).toBe('LOGOUT_REQUEST')
+      expect(actions[1].type).toBe('LOGOUT_SUCCESS')
+      expect(actions[1].payload).toEqual(mockUser)
+    })
+
+    it('should handle logout failure', async () => {
+      const error = new Error('Logout failed')
+      authService.logout.mockRejectedValue(error)
+
+      await store.dispatch(authActions.logout())
+
+      const actions = store.getActions()
+      expect(actions[0].type).toBe('LOGOUT_REQUEST')
+      expect(actions[1].type).toBe('LOGOUT_FAILURE')
+      expect(actions[1].payload).toEqual(error)
+    })
+  })
+
+  describe('Ticket CRUD Workflow', () => {
+    it('should complete create ticket workflow', async () => {
+      const newTicket = {
+        title: 'New Bug',
+        description: 'Description',
+        priority: 'high',
+      }
+      const createdTicket = { id: 'T123', ...newTicket }
+      ticketService.addNewTicket.mockResolvedValue(createdTicket)
+
+      await store.dispatch(ticketActions.addTicket(newTicket))
+
+      const actions = store.getActions()
+      expect(actions[0].type).toBe('ADD_TICKET_REQUEST')
+      expect(actions[1].type).toBe('ADD_TICKET_SUCCESS')
+      expect(actions[1].payload).toEqual(createdTicket)
+    })
+
+    it('should complete read tickets workflow', async () => {
+      const mockTickets = [
+        { id: 'T1', title: 'Ticket 1' },
+        { id: 'T2', title: 'Ticket 2' },
+      ]
+      ticketService.getAllTickets.mockResolvedValue(mockTickets)
+
+      await store.dispatch(ticketActions.getAllTickets())
+
+      const actions = store.getActions()
+      expect(actions[0].type).toBe('GET_TICKET_REQUEST')
+      expect(actions[1].type).toBe('GET_TICKET_SUCCESS')
+      expect(actions[1].payload).toEqual(mockTickets)
+    })
+
+    it('should complete update ticket workflow', async () => {
+      const updatedTicket = {
+        id: 'T123',
+        title: 'Updated Ticket',
+        status: 'resolved',
+      }
+      ticketService.updateTicket.mockResolvedValue(updatedTicket)
+
+      await store.dispatch(ticketActions.updateTicket('T123', updatedTicket))
+
+      const actions = store.getActions()
+      expect(actions[0].type).toBe('UPDATE_TICKET_REQUEST')
+      expect(actions[1].type).toBe('UPDATE_TICKET_SUCCESS')
+      expect(actions[1].payload).toEqual(updatedTicket)
+    })
+
+    it('should handle ticket creation failure', async () => {
+      const error = new Error('Failed to create ticket')
+      ticketService.addNewTicket.mockRejectedValue(error)
+
+      await store.dispatch(ticketActions.addTicket({ title: 'Test' }))
+
+      const actions = store.getActions()
+      expect(actions[0].type).toBe('ADD_TICKET_REQUEST')
+      expect(actions[1].type).toBe('ADD_TICKET_FAILURE')
+      expect(actions[1].payload).toEqual(error)
+    })
+  })
+
+  describe('Login → Fetch Tickets → Logout Workflow', () => {
+    it('should complete full user session workflow', async () => {
+      // Step 1: Login
+      const mockUser = {
+        user: { uid: '123', IsEmployee: true, IsManager: false },
+        token: 'test-token',
+      }
+      authService.login.mockResolvedValue(mockUser)
+      await store.dispatch(authActions.login('user@test.com', 'password'))
+
+      let actions = store.getActions()
+      expect(actions[actions.length - 1].type).toBe('LOGIN_SUCCESS')
+
+      // Step 2: Fetch tickets
+      const mockTickets = [
+        { id: 'T1', title: 'Ticket 1' },
+        { id: 'T2', title: 'Ticket 2' },
+      ]
+      ticketService.getAllTickets.mockResolvedValue(mockTickets)
+      await store.dispatch(ticketActions.getAllTickets())
+
+      actions = store.getActions()
+      expect(actions[actions.length - 1].type).toBe('GET_TICKET_SUCCESS')
+      expect(actions[actions.length - 1].payload).toEqual(mockTickets)
+
+      // Step 3: Logout
+      authService.logout.mockResolvedValue({ uid: '123' })
+      await store.dispatch(authActions.logout())
+
+      actions = store.getActions()
+      expect(actions[actions.length - 1].type).toBe('LOGOUT_SUCCESS')
+    })
+  })
+
+  describe('Ticket Modal Workflow', () => {
+    it('should complete open → create → close modal workflow', async () => {
+      // Open modal
+      store.dispatch(ticketActions.openCreateTicketModal())
+      let actions = store.getActions()
+      expect(actions[actions.length - 1].type).toBe('OPEN_CREATE_TICKET_MODAL')
+
+      // Create ticket
+      const newTicket = { title: 'Test Ticket' }
+      const createdTicket = { id: 'T123', ...newTicket }
+      ticketService.addNewTicket.mockResolvedValue(createdTicket)
+      await store.dispatch(ticketActions.addTicket(newTicket))
+
+      actions = store.getActions()
+      expect(actions[actions.length - 1].type).toBe('ADD_TICKET_SUCCESS')
+
+      // Close modal
+      store.dispatch(ticketActions.closeCreateTicketModal())
+      actions = store.getActions()
+      expect(actions[actions.length - 1].type).toBe('CLOSE_CREATE_TICKET_MODAL')
+    })
+
+    it('should handle cancel modal workflow', () => {
+      // Open modal
+      store.dispatch(ticketActions.openCreateTicketModal())
+
+      // Close without creating
+      store.dispatch(ticketActions.closeCreateTicketModal())
+
+      const actions = store.getActions()
+      expect(actions[0].type).toBe('OPEN_CREATE_TICKET_MODAL')
+      expect(actions[1].type).toBe('CLOSE_CREATE_TICKET_MODAL')
+      expect(actions.length).toBe(2) // No ticket creation actions
+    })
+  })
+
+  describe('Jira Integration Workflow', () => {
+    it('should complete fetch Jira issue workflow', async () => {
+      const mockJiraIssue = {
+        key: 'PROJ-123',
+        fields: {
+          summary: 'Jira Issue',
+          description: 'Description from Jira',
+        },
+      }
+      ticketService.getIssueDetailsFromJira.mockResolvedValue(mockJiraIssue)
+
+      await store.dispatch(ticketActions.fetchJiraIssue('PROJ-123'))
+
+      const actions = store.getActions()
+      expect(actions[0].type).toBe('FETCH_JIRA_ISSUE_REQUEST')
+      expect(actions[1].type).toBe('FETCH_JIRA_ISSUE_SUCCESS')
+      expect(actions[1].payload).toEqual(mockJiraIssue)
+    })
+
+    it('should complete assign external Jira issue workflow', async () => {
+      const assignData = {
+        issueKey: 'PROJ-123',
+        assignee: 'user@test.com',
+      }
+      const mockResponse = { success: true }
+      ticketService.assignIssueExterne.mockResolvedValue(mockResponse)
+
+      await store.dispatch(ticketActions.assignExternalIssue(assignData))
+
+      const actions = store.getActions()
+      expect(actions[0].type).toBe('ASSIGN_EXTERNAL_ISSUE_REQUEST')
+      expect(actions[1].type).toBe('ASSIGN_EXTERNAL_ISSUE_SUCCESS')
+    })
+
+    it('should handle Jira sync failure', async () => {
+      const error = new Error('Jira API error')
+      ticketService.getIssueDetailsFromJira.mockRejectedValue(error)
+
+      await store.dispatch(ticketActions.fetchJiraIssue('INVALID'))
+
+      const actions = store.getActions()
+      expect(actions[0].type).toBe('FETCH_JIRA_ISSUE_REQUEST')
+      expect(actions[1].type).toBe('FETCH_JIRA_ISSUE_FAILURE')
+      expect(actions[1].payload).toEqual(error)
+    })
+  })
+
+  describe('Error Recovery Workflow', () => {
+    it('should recover from failed login and retry', async () => {
+      // First attempt fails
+      const error = new Error('Network error')
+      authService.login.mockRejectedValueOnce(error)
+
+      await expect(store.dispatch(authActions.login('user@test.com', 'password'))).rejects.toThrow()
+
+      let actions = store.getActions()
+      expect(actions[actions.length - 1].type).toBe('LOGIN_FAILURE')
+
+      // Retry succeeds
+      const mockUser = {
+        user: { uid: '123', IsEmployee: true, IsManager: false },
+        token: 'test-token',
+      }
+      authService.login.mockResolvedValueOnce(mockUser)
+      await store.dispatch(authActions.login('user@test.com', 'password'))
+
+      actions = store.getActions()
+      expect(actions[actions.length - 1].type).toBe('LOGIN_SUCCESS')
+    })
+
+    it('should handle ticket fetch failure and retry', async () => {
+      // First attempt fails
+      ticketService.getAllTickets.mockRejectedValueOnce(new Error('API error'))
+      await store.dispatch(ticketActions.getAllTickets())
+
+      let actions = store.getActions()
+      expect(actions[actions.length - 1].type).toBe('GET_TICKET_FAILURE')
+
+      // Retry succeeds
+      const mockTickets = [{ id: 'T1', title: 'Ticket 1' }]
+      ticketService.getAllTickets.mockResolvedValueOnce(mockTickets)
+      await store.dispatch(ticketActions.getAllTickets())
+
+      actions = store.getActions()
+      expect(actions[actions.length - 1].type).toBe('GET_TICKET_SUCCESS')
+    })
+  })
+
+  describe('Concurrent Operations', () => {
+    it('should handle concurrent ticket operations', async () => {
+      const mockTickets = [{ id: 'T1', title: 'Ticket 1' }]
+      const newTicket = { id: 'T2', title: 'New Ticket' }
+
+      ticketService.getAllTickets.mockResolvedValue(mockTickets)
+      ticketService.addNewTicket.mockResolvedValue(newTicket)
+
+      // Dispatch both actions concurrently
+      await Promise.all([
+        store.dispatch(ticketActions.getAllTickets()),
+        store.dispatch(ticketActions.addTicket({ title: 'New Ticket' })),
+      ])
+
+      const actions = store.getActions()
+
+      // Both workflows should complete
+      const getSuccess = actions.find((a) => a.type === 'GET_TICKET_SUCCESS')
+      const addSuccess = actions.find((a) => a.type === 'ADD_TICKET_SUCCESS')
+
+      expect(getSuccess).toBeDefined()
+      expect(addSuccess).toBeDefined()
+    })
+
+    it('should handle login and ticket fetch in sequence', async () => {
+      const mockUser = {
+        user: { uid: '123', IsEmployee: true, IsManager: false },
+        token: 'test-token',
+      }
+      const mockTickets = [{ id: 'T1', title: 'Ticket 1' }]
+
+      authService.login.mockResolvedValue(mockUser)
+      ticketService.getAllTickets.mockResolvedValue(mockTickets)
+
+      await store.dispatch(authActions.login('user@test.com', 'password'))
+      await store.dispatch(ticketActions.getAllTickets())
+
+      const actions = store.getActions()
+
+      // Login actions should come before ticket actions
+      const loginSuccessIndex = actions.findIndex((a) => a.type === 'LOGIN_SUCCESS')
+      const getTicketRequestIndex = actions.findIndex((a) => a.type === 'GET_TICKET_REQUEST')
+
+      expect(loginSuccessIndex).toBeLessThan(getTicketRequestIndex)
+    })
+  })
+})
