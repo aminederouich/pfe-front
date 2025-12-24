@@ -85,6 +85,7 @@ const ModalCalculateScore = () => {
     monday.setDate(d.getDate() + diffToMonday)
     const sunday = new Date(monday)
     sunday.setDate(monday.getDate() + 6)
+    sunday.setHours(23, 59, 59, 999) // Fin de la journée de dimanche
     return { start: monday, end: sunday }
   }
 
@@ -116,6 +117,14 @@ const ModalCalculateScore = () => {
     // Réinitialiser la sélection quand le modal se ferme
     if (!isCalculateScoreModalOpen) setSelectedTicketIds([])
   }, [dispatch, isCalculateScoreModalOpen])
+
+  // Présélectionner automatiquement les tickets de la semaine lorsqu'on passe à l'onglet "par Semaine"
+  useEffect(() => {
+    if (activeTab === 2 && weekTickets.length > 0) {
+      const weekTicketIds = weekTickets.map((t) => t.id)
+      setSelectedTicketIds(weekTicketIds)
+    }
+  }, [activeTab, selectedWeekDate])
 
   const handleCalculateScores = () => {
     if (activeTab === 1) {
